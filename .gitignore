@@ -1,3 +1,5 @@
 /.cproject
 /.project
 *.eclipse.cdt.codan.core.prefs
+*.o
+bin/

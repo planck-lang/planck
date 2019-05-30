@@ -25,6 +25,7 @@ SOFTWARE.
 #include <stdio.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "virtual_machine.h"
 #include "code_gen.h"
@@ -49,7 +50,8 @@ void CodeGen_add_opcode(opcode_t opcode)
 void CodeGen_add_number(double number)
 {
     check_code_buffer();
-    s_generated_code.buffer[s_generated_code.len++] = (uint64_t)number;
+    CodeGen_add_opcode(opcode_push);
+    memcpy(&s_generated_code.buffer[s_generated_code.len++], &number, sizeof(double));;
     printf("addnumber - %f\n", number);
 }
 

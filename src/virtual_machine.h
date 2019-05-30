@@ -25,9 +25,15 @@ SOFTWARE.
 #ifndef SRC_VIRTUAL_MACHINE_H_
 #define SRC_VIRTUAL_MACHINE_H_
 
+#include <assert.h>
+
 typedef enum _opcode_t_ {
     opcode_nop = 0,
+    opcode_push,
     opcode_add,
+    opcode_MAXNUM
 } opcode_t;
+
+static_assert((int)opcode_MAXNUM <= 256, "opcode must be less than 255");
 
 #endif /* SRC_VIRTUAL_MACHINE_H_ */
