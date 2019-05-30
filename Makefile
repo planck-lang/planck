@@ -8,14 +8,21 @@ BINDIR = bin
 
 VPATH = src
 
+INCDIR = -Isrc
+
 CCFLAGS = -c -std=c11
 LDFLAGS = -lreadline
 
-OBJS = $(OBJDIR)/planck.o
+OBJS  =  $(OBJDIR)/planck.o
+OBJS +=  $(OBJDIR)/code_gen.o
+OBJS +=  $(OBJDIR)/virtual_machine.o
+OBJS +=  $(OBJDIR)/lex.yy.o
+OBJS +=  $(OBJDIR)/y.tab.o
+	 
 
 all : create_dir $(OBJS)
 	$(VB)echo "Linking.."
-	$(VB)gcc -o $(BINDIR)/$(PLANCK) $(OBJS) $(LDFLAGS)
+	$(VB)gcc -o $(BINDIR)/$(PLANCK) $(OBJS) $(INCDIR) $(LDFLAGS)
 	
 clean : create_dir
 	$(VB)rm -f $(OBJDIR)/*
@@ -27,4 +34,4 @@ create_dir :
 
 $(OBJDIR)/%.o : %.c
 	$(VB)echo "compile " $<
-	$(VB)gcc $(CCFLAGS) -o $@ $<
+	$(VB)gcc $(CCFLAGS) $(INCDIR) -o $@ $<
