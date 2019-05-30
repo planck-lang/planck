@@ -1,3 +1,27 @@
+/*
+planck.c
+
+Copyright (c) May 29, 2019 Manwoo Yi
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFT
+*/
+
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -5,6 +29,11 @@
 #include <string.h>
 #include <readline/readline.h>
 #include <readline/history.h>
+
+typedef struct yy_buffer_state* YY_BUFFER_STATE;
+extern int yyparse();
+extern YY_BUFFER_STATE yy_scan_string(char * str);
+extern void yy_delete_buffer(YY_BUFFER_STATE buffer);
 
 int main(int argc, char* argv[])
 {
@@ -20,7 +49,11 @@ int main(int argc, char* argv[])
         if (strlen(buf) > 0)
         {
             add_history(buf);
-            printf("%s\n", buf);
+
+            YY_BUFFER_STATE buffer = yy_scan_string(buf);
+            yyparse();
+            yy_delete_buffer(buffer);
+            //printf("%s\n", buf);
         }
 
         free(buf);
