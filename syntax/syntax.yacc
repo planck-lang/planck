@@ -26,11 +26,16 @@ int yyerror(const char* str)
 
 %type<int_value> expr
 
-%left '+'
+%left '+' '-'
+%left '*' '/' '%'
 
 %%
 expr : NUMBER               {CodeGen_add_number($1); $$ = 0;}
      | '(' expr ')'         {$$ = $2;}
      | expr '+' expr        {CodeGen_add_opcode(opcode_add); $$ = 0;}
+     | expr '-' expr        {CodeGen_add_opcode(opcode_sub); $$ = 0;}
+     | expr '*' expr        {CodeGen_add_opcode(opcode_mul); $$ = 0;}
+     | expr '/' expr        {CodeGen_add_opcode(opcode_div); $$ = 0;}
+     | expr '%' expr        {CodeGen_add_opcode(opcode_mod); $$ = 0;}
      ;
 %%

@@ -31,6 +31,10 @@ typedef enum _opcode_t_ {
     opcode_nop = 0,
     opcode_push,
     opcode_add,
+    opcode_sub,
+    opcode_mul,
+    opcode_div,
+    opcode_mod,
     opcode_MAXNUM
 } opcode_t;
 

@@ -3,3 +3,4 @@
 *.eclipse.cdt.codan.core.prefs
 *.o
 bin/
+build/
