@@ -25,6 +25,8 @@ SOFTWARE.
 #ifndef SRC_CODE_GEN_H_
 #define SRC_CODE_GEN_H_
 
+uint64_t* CodeGen_get_bytecodes(void);
+
 void CodeGen_add_opcode(opcode_t opcode);
 void CodeGen_add_number(double number);
 

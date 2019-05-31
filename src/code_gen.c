@@ -40,11 +40,15 @@ static struct _generated_code_status_t_ {
 static void check_code_buffer(void);
 
 
+uint64_t* CodeGen_get_bytecodes(void)
+{
+    return s_generated_code.buffer;
+}
+
 void CodeGen_add_opcode(opcode_t opcode)
 {
     check_code_buffer();
     s_generated_code.buffer[s_generated_code.len++] = (uint64_t)opcode;
-    printf("opcode - %d\n", (int)opcode);
 }
 
 void CodeGen_add_number(double number)
@@ -52,7 +56,6 @@ void CodeGen_add_number(double number)
     check_code_buffer();
     CodeGen_add_opcode(opcode_push);
     memcpy(&s_generated_code.buffer[s_generated_code.len++], &number, sizeof(double));;
-    printf("addnumber - %f\n", number);
 }
 
 static void check_code_buffer(void)
