@@ -39,6 +39,10 @@ static struct _generated_code_status_t_ {
 
 static void check_code_buffer(void);
 
+void CodeGen_reset_bytecodes(void)
+{
+    s_generated_code.len = 0;
+}
 
 uint64_t* CodeGen_get_bytecodes(void)
 {
@@ -55,7 +59,7 @@ void CodeGen_add_number(double number)
 {
     check_code_buffer();
     CodeGen_add_opcode(opcode_push);
-    memcpy(&s_generated_code.buffer[s_generated_code.len++], &number, sizeof(double));;
+    memcpy(&s_generated_code.buffer[s_generated_code.len++], &number, sizeof(double));
 }
 
 static void check_code_buffer(void)

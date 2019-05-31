@@ -53,6 +53,8 @@ int main(int argc, char* argv[])
         {
             add_history(buf);
 
+            CodeGen_reset_bytecodes();
+
             YY_BUFFER_STATE yyst = yy_scan_string(buf);
             int parse_result = yyparse();
             yy_delete_buffer(yyst);
