@@ -30,6 +30,9 @@ SOFT
 #include <readline/readline.h>
 #include <readline/history.h>
 
+#include "virtual_machine.h"
+#include "code_gen.h"
+
 typedef struct yy_buffer_state* YY_BUFFER_STATE;
 extern int yyparse();
 extern YY_BUFFER_STATE yy_scan_string(char * str);
@@ -50,10 +53,18 @@ int main(int argc, char* argv[])
         {
             add_history(buf);
 
-            YY_BUFFER_STATE buffer = yy_scan_string(buf);
-            yyparse();
-            yy_delete_buffer(buffer);
-            //printf("%s\n", buf);
+            YY_BUFFER_STATE yyst = yy_scan_string(buf);
+            int parse_result = yyparse();
+            yy_delete_buffer(yyst);
+
+            if (!parse_result)  // ok
+            {
+                CodeGen_add_opcode(opcode_halt);
+            }
+            else // error
+            {
+                printf("[Error] -> %s\n", buf);
+            }
         }
 
         free(buf);

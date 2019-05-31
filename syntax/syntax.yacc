@@ -9,8 +9,7 @@ extern int yylex (void);
 
 int yyerror(const char* str)
 {
-    extern char* yytext;
-    printf("Parse Error : %s\n", yytext);
+    printf("[Error] %s\n", str);
     return 0;
 }
 %}

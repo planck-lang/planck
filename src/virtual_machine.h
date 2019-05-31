@@ -35,9 +35,13 @@ typedef enum _opcode_t_ {
     opcode_mul,
     opcode_div,
     opcode_mod,
+    opcode_halt,
     opcode_MAXNUM
 } opcode_t;
 
 static_assert((int)opcode_MAXNUM <= 256, "opcode must be less than 255");
+
+
+
 
 #endif /* SRC_VIRTUAL_MACHINE_H_ */
