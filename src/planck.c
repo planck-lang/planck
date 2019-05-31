@@ -60,6 +60,9 @@ int main(int argc, char* argv[])
             if (!parse_result)  // ok
             {
                 CodeGen_add_opcode(opcode_halt);
+                VirtualMachine_run_vm(CodeGen_get_bytecodes());
+                double ret = VirtualMachine_get_result();
+                printf("%f\n", ret);
             }
             else // error
             {
