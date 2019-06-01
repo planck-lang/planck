@@ -1,0 +1,29 @@
+dist: xenial
+addons:
+  apt:
+    update: true
+    packages:
+    - devscripts
+    - debhelper
+    - fakeroot
+    - cmake
+    - pkg-config
+    - flex
+    - bison
+    - libreadline-dev
+script:
+- debuild -us -uc
+- ls ../
+- mkdir /tmp/result/
+- cp ../*.deb ../*.gz /tmp/result/
+- ls -l /tmp/result
+deploy:
+  provider: releases
+  api_key:
+    secure: FpgG1d5SnX4vA8ccUE1eR3IhgY8ZfOqC5XPPVp609g7kRDoQ6oC5kQNtzoaTNR+fznhltcKnUiU0rw7U9exCuPUz9sgWmDQAhO/vbVeg2wylhIcCArNFJALcJRiWd8NuVQteVYj4j29maD+IKVSmy4/fYbZQd9bNVdI+7EjWNl2cm+7sjRWweZ4Ks1oqZmp3A+GWXbIQY5FDwdPIrTnfZ4p3MSEks/fD+YcC7Ggeh0ZaZO+5WxQHIPGtgSoq824pncti3lEeyHzuS7QyYMT+uon8YBQKz6pORpVOURPnQPKHI8B6gI5XW3wtd3xtBlO+ePMJ6VFFL8uNv5svzJx4hyRFNgJV40ZZo+fHaZwx3tN2lmim8YftkTiJ4i77GBZN+pPxS7NT0lrLt7ohbpatNGrNxDCGNHJbRlS9a0TJv6Fgzy6qvxPuPNGAjGVSN1p3WYITudsC9S5vTCTotkoCXEKlrfZsA118xNH11t+jeETDlkrZgqnDZGUanaDeYZwz6XiQUfABDzeoRsEnTiGRgmTyip8oOvb3pZTIBgMpfR9cfmDxxtxdDaHDihwt4ci4ApSbntNzm0h6ePazL3GyQXYd7/DnzbfuSuW4utA3qR5RXUQzkhMkWuP93fPxwZ0wQwi4U4FuB1QP+zopHij8cnYatXjZOi887WkWhoHlI4I=
+  file_glob: true
+  file: /tmp/result/*
+  skip_cleanup: true
+  on:
+    repo: planck-lang/planck
+    tags: true
