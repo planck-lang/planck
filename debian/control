@@ -1,0 +1,32 @@
+Source: planck
+Section: devel
+Priority: optional
+Maintainer: Inho Oh <webispy@gmail.com>
+Build-Depends: debhelper (>=9),
+	cmake,
+	pkg-config,
+	flex,
+	bison,
+	libreadline-dev
+Standards-Version: 3.9.6
+
+Package: libplanck
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Planck is a new awesome weird programming language.
+
+Package: libplanck-dev
+Architecture: any
+Depends: libplanck
+Description: Planck is a new awesome weird programming language. (development files)
+
+Package: libplanck-dbg
+Section: debug
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Planck is a new awesome weird programming language.(debugging symbols)
+
+Package: planck
+Architecture: any
+Depends: libplanck
+Description: Planck is a new awesome weird programming language.
