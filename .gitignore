@@ -6,3 +6,4 @@ bin/
 build/
 util/slackbot/build
 *.so
+/util/slackbot/install.txt
