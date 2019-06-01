@@ -154,8 +154,8 @@ static void execute_code(void)
         case opcode_div:
         case opcode_mod:
         {
-            double op1 = pop_stack(); // get value from stack
-            double op2 = pop_stack(); // get value from stack
+            double op2 = pop_stack(); // get value from stack. Pop the 2nd operand first because it is stack.
+            double op1 = pop_stack(); // get value from stack. Pop the 1st operand.
             double ret = 0;
             switch (opcode)             // calculation
             {
