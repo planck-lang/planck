@@ -33,10 +33,10 @@ SOFT
 
 typedef struct yy_buffer_state* YY_BUFFER_STATE;
 extern int yyparse();
-extern YY_BUFFER_STATE yy_scan_string(char * str);
+extern YY_BUFFER_STATE yy_scan_string(const char * str);
 extern void yy_delete_buffer(YY_BUFFER_STATE buffer);
 
-void Planck_do(char* buf)
+bool Planck_do(const char* buf, double* out_ret)
 {
     CodeGen_reset_bytecodes();
 
@@ -48,11 +48,9 @@ void Planck_do(char* buf)
     {
         CodeGen_add_opcode(opcode_halt);
         VirtualMachine_run_vm(CodeGen_get_bytecodes());
-        double ret = VirtualMachine_get_result();
-        printf("%f\n", ret);
+        *out_ret = VirtualMachine_get_result();
+        return true;
     }
-    else // error
-    {
-        printf("[Error] -> %s\n", buf);
-    }
+    // error
+    return false;
 }

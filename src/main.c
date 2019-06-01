@@ -47,7 +47,16 @@ int main(int argc, char* argv[])
         {
             add_history(buf);
 
-            Planck_do(buf);
+            double ret;
+            bool st = Planck_do(buf, &ret);
+            if (st)
+            {
+                printf("%f\n", ret);
+            }
+            else
+            {
+                printf("[Error] -> %s\n", buf);
+            }
         }
 
         free(buf);
