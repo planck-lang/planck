@@ -30,6 +30,8 @@ INCLUDE_DIRECTORIES(
 	${CMAKE_BINARY_DIR}
 	${CMAKE_SOURCE_DIR}/src)
 
+LINK_LIBRARIES(-Wl,--rpath=${CMAKE_BINARY_DIR})
+
 # lex & yacc
 ADD_CUSTOM_COMMAND(
 	OUTPUT ${CMAKE_BINARY_DIR}/y.tab.c ${CMAKE_BINARY_DIR}/y.tab.h
@@ -51,16 +53,43 @@ ADD_LIBRARY(syntax OBJECT
 	${CMAKE_BINARY_DIR}/lex.yy.c)
 TARGET_COMPILE_OPTIONS(syntax PRIVATE
 	-Wno-unused-function -Wno-unreachable-code
-	-Wno-all -Wno-extra -Wno-error)
+	-Wno-all -Wno-extra -Wno-error
+	-fPIC)
 
+# library sources
 SET(SRCS
-    src/main.c
 	src/planck.c
 	src/code_gen.c
 	src/virtual_machine.c)
-ADD_EXECUTABLE(planck ${SRCS}
-	$<TARGET_OBJECTS:syntax>)
+ADD_LIBRARY(modplanck OBJECT ${SRCS})
+TARGET_COMPILE_OPTIONS(modplanck PRIVATE
+	-std=c11 -fPIC)
+
+# libplanck.so, libplanck.a
+ADD_LIBRARY(libplanck_shared SHARED
+	$<TARGET_OBJECTS:syntax>
+	$<TARGET_OBJECTS:modplanck>)
+SET_TARGET_PROPERTIES(libplanck_shared
+	PROPERTIES VERSION ${VERSION} SOVERSION ${VERSION_MAJOR} OUTPUT_NAME planck)
+INSTALL(TARGETS libplanck_shared LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+ADD_LIBRARY(libplanck_static STATIC
+	$<TARGET_OBJECTS:syntax>
+	$<TARGET_OBJECTS:modplanck>)
+SET_TARGET_PROPERTIES(libplanck_static PROPERTIES
+	OUTPUT_NAME planck)
+INSTALL(TARGETS libplanck_static ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
+
+# planck exeutable with shared and static library
+ADD_EXECUTABLE(planck src/main.c)
 TARGET_COMPILE_OPTIONS(planck PRIVATE -std=c11)
-TARGET_LINK_LIBRARIES(planck PRIVATE -lreadline)
+TARGET_LINK_LIBRARIES(planck -L${CMAKE_BINARY_DIR} -lreadline -lplanck )
+ADD_DEPENDENCIES(planck libplanck_shared)
 INSTALL(TARGETS planck RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+ADD_EXECUTABLE(planck_static src/main.c)
+TARGET_COMPILE_OPTIONS(planck_static PRIVATE -std=c11)
+TARGET_LINK_LIBRARIES(planck_static ${CMAKE_BINARY_DIR}/libplanck.a -lreadline)
+ADD_DEPENDENCIES(planck_static libplanck_static)
+INSTALL(TARGETS planck_static RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
