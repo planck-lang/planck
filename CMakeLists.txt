@@ -54,6 +54,7 @@ TARGET_COMPILE_OPTIONS(syntax PRIVATE
 	-Wno-all -Wno-extra -Wno-error)
 
 SET(SRCS
+    src/main.c
 	src/planck.c
 	src/code_gen.c
 	src/virtual_machine.c)

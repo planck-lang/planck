@@ -1,7 +1,7 @@
 /*
-planck.c
+main.c
 
-Copyright (c) May 29, 2019 Manwoo Yi
+Copyright (c) May 31, 2019 Manwoo Yi
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -19,40 +19,37 @@ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFT
-*/
+SOFTWARE.
+ */
 
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <readline/readline.h>
+#include <readline/history.h>
 
-#include "virtual_machine.h"
-#include "code_gen.h"
+#include "planck.h"
 
-typedef struct yy_buffer_state* YY_BUFFER_STATE;
-extern int yyparse();
-extern YY_BUFFER_STATE yy_scan_string(char * str);
-extern void yy_delete_buffer(YY_BUFFER_STATE buffer);
-
-void Planck_do(char* buf)
+int main(int argc, char* argv[])
 {
-    CodeGen_reset_bytecodes();
-
-    YY_BUFFER_STATE yyst = yy_scan_string(buf);
-    int parse_result = yyparse();
-    yy_delete_buffer(yyst);
-
-    if (!parse_result)  // ok
+    while (true)
     {
-        CodeGen_add_opcode(opcode_halt);
-        VirtualMachine_run_vm(CodeGen_get_bytecodes());
-        double ret = VirtualMachine_get_result();
-        printf("%f\n", ret);
-    }
-    else // error
-    {
-        printf("[Error] -> %s\n", buf);
+        char* buf = readline(">> ");
+        if (buf == NULL)
+        {
+            puts("\nAnnyuonghi Gaseyo.\n");
+            break;
+        }
+
+        if (strlen(buf) > 0)
+        {
+            add_history(buf);
+
+            Planck_do(buf);
+        }
+
+        free(buf);
     }
 }
