@@ -65,7 +65,7 @@ void CodeGen_add_number(double number)
 static void check_code_buffer(void)
 {
     const uint32_t one_time_buffer_uint = 4096;
-    const uint32_t margin = 16;
+    const uint32_t margin = 4;
 
     if (s_generated_code.buffer == 0)
     {

@@ -38,7 +38,7 @@ SOFTWARE.
 #define DEBUG_MSG(_f, ...)
 #endif
 
-#define BLOCK_STACK_SIZE     4096    // 4KB
+#define BLOCK_STACK_SIZE     4096
 
 static struct _vm_registers_t_ {
     uint64_t*   pc;
@@ -83,11 +83,11 @@ static void init_stack(void)
 {
     if (s_vm_stack.stack == 0)
     {
-        s_vm_stack.stack = (double*)malloc(BLOCK_STACK_SIZE);
+        s_vm_stack.stack = (double*)malloc(sizeof(double) * BLOCK_STACK_SIZE);
     }
     else
     {
-        s_vm_stack.stack = (double*)realloc(s_vm_stack.stack, BLOCK_STACK_SIZE);
+        s_vm_stack.stack = (double*)realloc(s_vm_stack.stack, (sizeof(double) * BLOCK_STACK_SIZE));
     }
 
     s_vm_stack.limit = BLOCK_STACK_SIZE;
@@ -95,11 +95,11 @@ static void init_stack(void)
 
 static void check_stack(void)
 {
-    const uint32_t margin = 32;
+    const uint32_t margin = 4;
 
     if (s_vm_registers.sp >= (s_vm_stack.limit - margin))
     {
-        uint32_t new_size = s_vm_stack.limit + BLOCK_STACK_SIZE;
+        uint32_t new_size = s_vm_stack.limit + (sizeof(double) * BLOCK_STACK_SIZE);
         s_vm_stack.stack = (double*)realloc(s_vm_stack.stack, new_size);
         s_vm_stack.limit = new_size;
     }
