@@ -93,3 +93,10 @@ TARGET_LINK_LIBRARIES(planck_static ${CMAKE_BINARY_DIR}/libplanck.a -lreadline)
 ADD_DEPENDENCIES(planck_static libplanck_static)
 INSTALL(TARGETS planck_static RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
+# header files
+INSTALL(FILES src/planck.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/planck/)
+
+# pkgconfig
+CONFIGURE_FILE(planck.pc.in ${CMAKE_BINARY_DIR}/planck.pc @ONLY)
+INSTALL(FILES ${CMAKE_BINARY_DIR}/planck.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/)
+
