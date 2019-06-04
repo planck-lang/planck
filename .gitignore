@@ -7,3 +7,14 @@ build/
 util/slackbot/build
 *.so
 /util/slackbot/install.txt
+obj-x86_64*
+debian/libplanck
+debian/libplanck-dbg
+debian/libplanck-dev
+debian/planck
+debian/tmp
+debian/.debhelper
+debian/*.log
+debian/debhelper*
+debian/files
+debian/*.substvars
