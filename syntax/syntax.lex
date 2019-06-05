@@ -20,6 +20,12 @@ int yywrap(void)
     return NUMBER;
 }
 
+\"[^\"]*\"  |
+\'[^\']*\'  {
+    yylval.string_ptr = yytext;
+    return STRING;
+}
+
 .           {       // It must be the last rule because it can match ANY characters
     return *yytext;
 }

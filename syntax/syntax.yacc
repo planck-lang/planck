@@ -17,11 +17,13 @@ int yyerror(const char* str)
 %union {
     uint32_t    int_value;
     double      double_value;
+    char*       string_ptr;
 }
 
 %start expr
 
 %token<double_value>    NUMBER
+%token<string_ptr>      STRING
 
 %type<int_value> expr
 
@@ -30,6 +32,7 @@ int yyerror(const char* str)
 
 %%
 expr : NUMBER               {CodeGen_add_number($1); $$ = 0;}
+       STRING               {CodeGen_add_string($1); $$ = 0;}
      | '(' expr ')'         {$$ = $2;}
      | expr '+' expr        {CodeGen_add_opcode(opcode_add); $$ = 0;}
      | expr '-' expr        {CodeGen_add_opcode(opcode_sub); $$ = 0;}
