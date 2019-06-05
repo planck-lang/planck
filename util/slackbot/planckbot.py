@@ -40,6 +40,10 @@ def message_receiver(**payload):
                 text=planck_result
             )
 
+            logger.info(">>" + code_line)
+            logger.info("  " + planck_result)
+
+
 
 @RTMClient.run_on(event='hello')
 def hello(**payload):
