@@ -29,9 +29,11 @@ SOFTWARE.
 
 #include "virtual_machine.h"
 #include "code_gen.h"
+#include "object.h"
+#include "symtab.h"
 
 static struct _generated_code_status_t_ {
-    uint64_t*   buffer;
+    object_t*   buffer;
     uint32_t    len;
     uint32_t    limit;
 } s_generated_code = {0};
@@ -44,7 +46,7 @@ void CodeGen_reset_bytecodes(void)
     s_generated_code.len = 0;
 }
 
-uint64_t* CodeGen_get_bytecodes(void)
+object_t* CodeGen_get_bytecodes(void)
 {
     return s_generated_code.buffer;
 }
@@ -52,14 +54,31 @@ uint64_t* CodeGen_get_bytecodes(void)
 void CodeGen_add_opcode(opcode_t opcode)
 {
     check_code_buffer();
-    s_generated_code.buffer[s_generated_code.len++] = (uint64_t)opcode;
+    s_generated_code.buffer[s_generated_code.len++] = (object_t)opcode;
 }
 
 void CodeGen_add_number(double number)
 {
+    object_t number_obj = {0};
+
+    number_obj.type = object_type_number;
+    number_obj.value.number = number;
+
     check_code_buffer();
     CodeGen_add_opcode(opcode_push);
-    memcpy(&s_generated_code.buffer[s_generated_code.len++], &number, sizeof(double));
+    s_generated_code.buffer[s_generated_code.len++] = number_obj;
+}
+
+void CodeGen_add_string(char* str_ptr)
+{
+    object_t string_obj = {0};
+
+    string_obj.type = object_type_string;
+    string_obj.value.string_ptr = Symtab_add_string_literal(str_ptr);
+
+    check_code_buffer();
+    CodeGen_add_opcode(opcode_push);
+    s_generated_code.buffer[s_generated_code.len++] = string_obj;
 }
 
 static void check_code_buffer(void)
@@ -69,14 +88,14 @@ static void check_code_buffer(void)
 
     if (s_generated_code.buffer == 0)
     {
-        s_generated_code.buffer = (uint64_t*)malloc(sizeof(uint64_t) * one_time_buffer_uint);
+        s_generated_code.buffer = (object_t*)malloc(sizeof(object_t) * one_time_buffer_uint);
         s_generated_code.limit = one_time_buffer_uint;
     }
 
     if (s_generated_code.len >= (s_generated_code.limit - margin))
     {
         uint32_t new_size = s_generated_code.limit + one_time_buffer_uint;
-        s_generated_code.buffer = (uint64_t*)realloc(s_generated_code.buffer, (sizeof(uint64_t) * new_size));
+        s_generated_code.buffer = (object_t*)realloc(s_generated_code.buffer, (sizeof(object_t) * new_size));
         s_generated_code.limit = new_size;
     }
 }
