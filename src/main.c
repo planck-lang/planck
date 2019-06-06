@@ -30,6 +30,7 @@ SOFTWARE.
 #include <readline/readline.h>
 #include <readline/history.h>
 
+#include "object.h"
 #include "planck.h"
 
 int main(int argc, char* argv[])
@@ -47,11 +48,21 @@ int main(int argc, char* argv[])
         {
             add_history(buf);
 
-            double ret;
+            object_t ret;
             bool st = Planck_do(buf, &ret);
             if (st)
             {
-                printf("%f\n", ret);
+                switch(ret.type)
+                {
+                case object_type_number:
+                    printf("%f\n", ret.value.number);
+                    break;
+                case object_type_string:
+                    printf("\"%s\"\n", ret.value.string_ptr);
+                    break;
+                default:
+                    printf("[Type Error]\n");
+                }
             }
             else
             {

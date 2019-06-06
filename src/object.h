@@ -25,23 +25,6 @@ SOFTWARE.
 #ifndef SRC_OBJECT_H_
 #define SRC_OBJECT_H_
 
-typedef enum _object_type_t_ {
-    object_type_null,
-    object_type_number,
-    object_type_string,
-    object_type_MAXNUM
-} object_type_t;
-
-typedef struct _object_t_ {
-    object_type_t type;
-
-    union _value_t_ {
-        double  number;
-        char*   string_ptr;
-    } value;
-} object_t;
-
-
-
+#include "planck_types.h"
 
 #endif /* SRC_OBJECT_H_ */

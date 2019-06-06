@@ -25,6 +25,8 @@ SOFTWARE.
 #ifndef SRC_PLANCK_H_
 #define SRC_PLANCK_H_
 
-bool Planck_do(const char* buf, double* out_ret);
+#include "planck_types.h"
+
+bool Planck_do(const char* buf, object_t* out_ret);
 
 #endif /* SRC_PLANCK_H_ */

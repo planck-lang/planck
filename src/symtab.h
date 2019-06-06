@@ -25,6 +25,8 @@ SOFTWARE.
 #ifndef SRC_SYMTAB_H_
 #define SRC_SYMTAB_H_
 
+#include "planck_types.h"
+
 char* Symtab_add_string_literal(const char* parser_str_ptr);
 
 #endif /* SRC_SYMTAB_H_ */

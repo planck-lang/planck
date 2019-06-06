@@ -28,6 +28,7 @@ SOFT
 #include <stdlib.h>
 #include <string.h>
 
+#include "object.h"
 #include "virtual_machine.h"
 #include "code_gen.h"
 
@@ -36,7 +37,7 @@ extern int yyparse();
 extern YY_BUFFER_STATE yy_scan_string(const char * str);
 extern void yy_delete_buffer(YY_BUFFER_STATE buffer);
 
-bool Planck_do(const char* buf, double* out_ret)
+bool Planck_do(const char* buf, object_t* out_ret)
 {
     CodeGen_reset_bytecodes();
 

@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 
+#include "object.h"
 #include "virtual_machine.h"
 #include "code_gen.h"
 
@@ -32,7 +33,7 @@ int yyerror(const char* str)
 
 %%
 expr : NUMBER               {CodeGen_add_number($1); $$ = 0;}
-       STRING               {CodeGen_add_string($1); $$ = 0;}
+     | STRING               {CodeGen_add_string($1); $$ = 0;}
      | '(' expr ')'         {$$ = $2;}
      | expr '+' expr        {CodeGen_add_opcode(opcode_add); $$ = 0;}
      | expr '-' expr        {CodeGen_add_opcode(opcode_sub); $$ = 0;}

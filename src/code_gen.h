@@ -25,8 +25,10 @@ SOFTWARE.
 #ifndef SRC_CODE_GEN_H_
 #define SRC_CODE_GEN_H_
 
-void      CodeGen_reset_bytecodes(void);
-object_t* CodeGen_get_bytecodes(void);
+#include "planck_types.h"
+
+void        CodeGen_reset_bytecodes(void);
+code_buf_t* CodeGen_get_bytecodes(void);
 
 void CodeGen_add_opcode(opcode_t opcode);
 void CodeGen_add_number(double number);
