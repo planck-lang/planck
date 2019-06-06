@@ -30,6 +30,7 @@ SOFTWARE.
 
 #include "virtual_machine.h"
 #include "code_gen.h"
+#include "object.h"
 
 #define DEBUG_VM    0
 #if DEBUG_VM
@@ -41,13 +42,13 @@ SOFTWARE.
 #define BLOCK_STACK_SIZE     4096
 
 static struct _vm_registers_t_ {
-    uint64_t*   pc;
-    uint64_t*   lr;
+    object_t*   pc;
+    object_t*   lr;
     uint32_t    sp;
 } s_vm_registers = {0};
 
 static struct _vm_stack_t_ {
-    double*   stack;
+    object_t*   stack;
     uint32_t    limit;
 } s_vm_stack = {0};
 
@@ -55,12 +56,12 @@ static void init_registers(void);
 static void init_stack(void);
 static void check_stack(void);
 
-static void     push_stack(double value);
-static double pop_stack(void);
+static void     push_stack(object_t value);
+static object_t pop_stack(void);
 
 static void execute_code(void);
 
-void VirtualMachine_run_vm(uint64_t* codes)
+void VirtualMachine_run_vm(object_t* codes)
 {
     init_registers();
     init_stack();
@@ -69,7 +70,7 @@ void VirtualMachine_run_vm(uint64_t* codes)
     execute_code();
 }
 
-double  VirtualMachine_get_result(void)
+object_t  VirtualMachine_get_result(void)
 {
     return pop_stack();
 }
@@ -83,11 +84,11 @@ static void init_stack(void)
 {
     if (s_vm_stack.stack == 0)
     {
-        s_vm_stack.stack = (double*)malloc(sizeof(double) * BLOCK_STACK_SIZE);
+        s_vm_stack.stack = (object_t*)malloc(sizeof(object_t) * BLOCK_STACK_SIZE);
     }
     else
     {
-        s_vm_stack.stack = (double*)realloc(s_vm_stack.stack, (sizeof(double) * BLOCK_STACK_SIZE));
+        s_vm_stack.stack = (object_t*)realloc(s_vm_stack.stack, (sizeof(object_t) * BLOCK_STACK_SIZE));
     }
 
     s_vm_stack.limit = BLOCK_STACK_SIZE;
@@ -99,38 +100,38 @@ static void check_stack(void)
 
     if (s_vm_registers.sp >= (s_vm_stack.limit - margin))
     {
-        uint32_t new_size = s_vm_stack.limit + (sizeof(double) * BLOCK_STACK_SIZE);
-        s_vm_stack.stack = (double*)realloc(s_vm_stack.stack, new_size);
+        uint32_t new_size = s_vm_stack.limit + (sizeof(object_t) * BLOCK_STACK_SIZE);
+        s_vm_stack.stack = (object_t*)realloc(s_vm_stack.stack, new_size);
         s_vm_stack.limit = new_size;
     }
 }
 
-static void push_stack(double value)
+static void push_stack(object_t value)
 {
     check_stack();
     s_vm_stack.stack[s_vm_registers.sp++] = value;
-    DEBUG_MSG("push sp[%d], v=%f\n", s_vm_registers.sp, value);
+    DEBUG_MSG("push sp[%d], v=%f\n", s_vm_registers.sp, value.value.number);
 }
 
-static double pop_stack(void)
+static object_t pop_stack(void)
 {
-    double value = 0;
+    object_t value = {0};
 
     s_vm_registers.sp--;
     value = s_vm_stack.stack[s_vm_registers.sp];
 
-    DEBUG_MSG("pop sp[%d], v=%f\n", s_vm_registers.sp, value);
+    DEBUG_MSG("pop sp[%d], v=%f\n", s_vm_registers.sp, value.value.number);
 
     return value;
 }
 
 static void execute_code(void)
 {
-    uint64_t* pc = s_vm_registers.pc;
+    object_t* pc = s_vm_registers.pc;
 
     while(true)
     {
-        opcode_t opcode = *pc;
+        opcode_t opcode = (opcode_t)*pc;
         switch(opcode)
         {
         case opcode_nop:
@@ -140,11 +141,8 @@ static void execute_code(void)
         }
         case opcode_push:
         {
-            double value;
-
             pc++;                       // next code has value which will be pushed into stack
-            memcpy(&value, pc, sizeof(double));
-            push_stack(value);          // value has been pushed into stack and increase pc to execute next code
+            push_stack(*pc);            // value has been pushed into stack and increase pc to execute next code
             pc++;
             break;
         }

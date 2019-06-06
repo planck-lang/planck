@@ -42,7 +42,7 @@ typedef enum _opcode_t_ {
 static_assert((int)opcode_MAXNUM <= 256, "opcode must be less than 255");
 
 
-void    VirtualMachine_run_vm(uint64_t* codes);
-double  VirtualMachine_get_result(void);
+void        VirtualMachine_run_vm(object_t* codes);
+object_t    VirtualMachine_get_result(void);
 
 #endif /* SRC_VIRTUAL_MACHINE_H_ */
