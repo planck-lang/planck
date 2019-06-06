@@ -62,6 +62,7 @@ TARGET_COMPILE_OPTIONS(syntax PRIVATE
 SET(SRCS
 	src/planck.c
 	src/code_gen.c
+	src/symtab.c
 	src/virtual_machine.c)
 ADD_LIBRARY(modplanck OBJECT ${SRCS})
 TARGET_COMPILE_OPTIONS(modplanck PRIVATE
