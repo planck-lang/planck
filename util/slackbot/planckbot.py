@@ -41,7 +41,7 @@ def message_receiver(**payload):
             )
 
             logger.info(">>" + code_line)
-            logger.info("  " + planck_result)
+            logger.info("  " + str(planck_result))
 
 
 
