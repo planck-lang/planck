@@ -25,24 +25,9 @@ SOFTWARE.
 #ifndef SRC_VIRTUAL_MACHINE_H_
 #define SRC_VIRTUAL_MACHINE_H_
 
-#include <assert.h>
+#include "planck_types.h"
 
-typedef enum _opcode_t_ {
-    opcode_nop = 0,
-    opcode_push,
-    opcode_add,
-    opcode_sub,
-    opcode_mul,
-    opcode_div,
-    opcode_mod,
-    opcode_halt,
-    opcode_MAXNUM
-} opcode_t;
-
-static_assert((int)opcode_MAXNUM <= 256, "opcode must be less than 255");
-
-
-void        VirtualMachine_run_vm(object_t* codes);
+void        VirtualMachine_run_vm(code_buf_t* codes);
 object_t    VirtualMachine_get_result(void);
 
 #endif /* SRC_VIRTUAL_MACHINE_H_ */

@@ -28,9 +28,9 @@ SOFTWARE.
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "object.h"
 #include "virtual_machine.h"
 #include "code_gen.h"
-#include "object.h"
 
 #define DEBUG_VM    0
 #if DEBUG_VM
@@ -42,8 +42,8 @@ SOFTWARE.
 #define BLOCK_STACK_SIZE     4096
 
 static struct _vm_registers_t_ {
-    object_t*   pc;
-    object_t*   lr;
+    code_buf_t* pc;
+    code_buf_t* lr;
     uint32_t    sp;
 } s_vm_registers = {0};
 
@@ -59,9 +59,15 @@ static void check_stack(void);
 static void     push_stack(object_t value);
 static object_t pop_stack(void);
 
+static object_t op_add(object_t op1, object_t op2);
+static object_t op_sub(object_t op1, object_t op2);
+static object_t op_mul(object_t op1, object_t op2);
+static object_t op_div(object_t op1, object_t op2);
+static object_t op_mod(object_t op1, object_t op2);
+
 static void execute_code(void);
 
-void VirtualMachine_run_vm(object_t* codes)
+void VirtualMachine_run_vm(code_buf_t* codes)
 {
     init_registers();
     init_stack();
@@ -125,13 +131,48 @@ static object_t pop_stack(void)
     return value;
 }
 
+static object_t op_add(object_t op1, object_t op2)
+{
+    object_t ret;
+
+    return ret;
+}
+
+static object_t op_sub(object_t op1, object_t op2)
+{
+    object_t ret;
+
+    return ret;
+}
+
+static object_t op_mul(object_t op1, object_t op2)
+{
+    object_t ret;
+
+    return ret;
+}
+
+static object_t op_div(object_t op1, object_t op2)
+{
+    object_t ret;
+
+    return ret;
+}
+
+static object_t op_mod(object_t op1, object_t op2)
+{
+    object_t ret;
+
+    return ret;
+}
+
 static void execute_code(void)
 {
-    object_t* pc = s_vm_registers.pc;
+    code_buf_t* pc = s_vm_registers.pc;
 
     while(true)
     {
-        opcode_t opcode = (opcode_t)*pc;
+        opcode_t opcode = pc->opcode;
         switch(opcode)
         {
         case opcode_nop:
@@ -142,7 +183,7 @@ static void execute_code(void)
         case opcode_push:
         {
             pc++;                       // next code has value which will be pushed into stack
-            push_stack(*pc);            // value has been pushed into stack and increase pc to execute next code
+            push_stack(pc->value);      // value has been pushed into stack and increase pc to execute next code
             pc++;
             break;
         }
@@ -152,25 +193,25 @@ static void execute_code(void)
         case opcode_div:
         case opcode_mod:
         {
-            double op2 = pop_stack(); // get value from stack. Pop the 2nd operand first because it is stack.
-            double op1 = pop_stack(); // get value from stack. Pop the 1st operand.
-            double ret = 0;
+            object_t op2 = pop_stack(); // get value from stack. Pop the 2nd operand first because it is stack.
+            object_t op1 = pop_stack(); // get value from stack. Pop the 1st operand.
+            object_t ret = {0};
             switch (opcode)             // calculation
             {
             case opcode_add:
-                ret = op1 + op2;
+                ret = op_add(op1, op2);
                 break;
             case opcode_sub:
-                ret = op1 - op2;
+                ret = op_sub(op1, op2);
                 break;
             case opcode_mul:
-                ret = op1 * op2;
+                ret = op_mul(op1, op2);
                 break;
             case opcode_div:
-                ret = op1 / op2;
+                ret = op_div(op1, op2);
                 break;
             case opcode_mod:
-                ret = (uint64_t)op1 % (uint64_t)op2;
+                ret = op_mod(op1, op2);
                 break;
             default:
                 return;
