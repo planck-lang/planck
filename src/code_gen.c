@@ -26,6 +26,7 @@ SOFTWARE.
 #include <stdint.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "object.h"
 #include "virtual_machine.h"

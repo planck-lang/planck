@@ -58,7 +58,7 @@ int main(int argc, char* argv[])
                     printf("%f\n", ret.value.number);
                     break;
                 case object_type_string:
-                    printf("\"%s\"\n", ret.value.string_ptr);
+                    printf("%s\n", ret.value.string_ptr);
                     break;
                 default:
                     printf("[Type Error]\n");

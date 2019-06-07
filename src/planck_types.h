@@ -25,7 +25,15 @@ SOFTWARE.
 #ifndef SRC_PLANCK_TYPES_H_
 #define SRC_PLANCK_TYPES_H_
 
-#include <assert.h>
+/*
+ * common
+ */
+typedef enum _error_code_t_ {
+    error_code_no_error = 0,
+    error_code_type_mismatch,
+    error_code_NUM
+} error_code_t;
+
 
 /*
  * object types
@@ -61,7 +69,7 @@ typedef enum _opcode_t_ {
     opcode_halt,
     opcode_MAXNUM
 } opcode_t;
-static_assert((int)opcode_MAXNUM <= 256, "opcode must be less than 255");
+
 
 /*
  * code generator types

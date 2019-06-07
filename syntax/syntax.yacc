@@ -1,6 +1,7 @@
 %{
 #include <stdint.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 #include "object.h"
 #include "virtual_machine.h"
