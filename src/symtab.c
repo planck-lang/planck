@@ -24,6 +24,7 @@ SOFTWARE.
 
 #include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 typedef struct _string_literal_tab_t_ {
     char* string_literal_buffer;
@@ -65,6 +66,7 @@ static string_literal_tab_t* find_string_literal(const char* string_literal)
                 return iter;
             }
         }
+        iter = iter->next;
     }
 
     return NULL;
@@ -78,7 +80,7 @@ static string_literal_tab_t* insert_string_literal(const char* string_literal)
     strcpy(new_node->string_literal_buffer, string_literal);
     new_node->next = NULL;
 
-    if (s_string_literal_tab_linkedlist.head != NULL)
+    if (s_string_literal_tab_linkedlist.head == NULL)
     {
         s_string_literal_tab_linkedlist.head = new_node;
         s_string_literal_tab_linkedlist.tail = s_string_literal_tab_linkedlist.head;
