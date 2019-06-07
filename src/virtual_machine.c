@@ -52,12 +52,22 @@ static struct _vm_stack_t_ {
     uint32_t    limit;
 } s_vm_stack = {0};
 
+static struct _vm_error_status_t_ {
+    char*           msg;
+    error_code_t    error_code;
+} s_vm_error, s_predefined_error[] = {
+        {"Two ops are should be same number type.", error_code_type_mismatch},
+        {"No error", error_code_no_error}
+};
+
 static void init_registers(void);
 static void init_stack(void);
 static void check_stack(void);
 
 static void     push_stack(object_t value);
 static object_t pop_stack(void);
+static void     add_error_msg(error_code_t error_code);
+static bool     check_no_error(void);
 
 static object_t op_add(object_t op1, object_t op2);
 static object_t op_sub(object_t op1, object_t op2);
@@ -65,20 +75,28 @@ static object_t op_mul(object_t op1, object_t op2);
 static object_t op_div(object_t op1, object_t op2);
 static object_t op_mod(object_t op1, object_t op2);
 
-static void execute_code(void);
+static bool execute_code(void);
 
-void VirtualMachine_run_vm(code_buf_t* codes)
+bool VirtualMachine_run_vm(code_buf_t* codes)
 {
     init_registers();
     init_stack();
 
     s_vm_registers.pc = codes;
-    execute_code();
+    return execute_code();
 }
 
 object_t  VirtualMachine_get_result(void)
 {
     return pop_stack();
+}
+
+error_code_t VirtualMachine_get_error_msg(uint64_t* out_msg_ptr)
+{
+    error_code_t ret = s_vm_error.error_code;
+    *out_msg_ptr = (uint64_t)s_vm_error.msg;
+    memset(&s_vm_error, 0, sizeof(s_vm_error));
+    return ret;
 }
 
 static void init_registers(void)
@@ -116,7 +134,7 @@ static void push_stack(object_t value)
 {
     check_stack();
     s_vm_stack.stack[s_vm_registers.sp++] = value;
-    DEBUG_MSG("push sp[%d], v=%f\n", s_vm_registers.sp, value.value.number);
+    DEBUG_MSG("push sp[%d], t=%d v=%f\n", s_vm_registers.sp, value.type, value.value.number);
 }
 
 static object_t pop_stack(void)
@@ -126,14 +144,50 @@ static object_t pop_stack(void)
     s_vm_registers.sp--;
     value = s_vm_stack.stack[s_vm_registers.sp];
 
-    DEBUG_MSG("pop sp[%d], v=%f\n", s_vm_registers.sp, value.value.number);
+    DEBUG_MSG("pop sp[%d], t=%d v=%f\n", s_vm_registers.sp, value.type, value.value.number);
 
     return value;
+}
+
+static void add_error_msg(error_code_t error_code)
+{
+    for(uint32_t i = 0 ; i < error_code_NUM; i++)
+    {
+        if (s_predefined_error[i].error_code == error_code)
+        {
+            s_vm_error.msg = s_predefined_error[i].msg;
+            s_vm_error.error_code = error_code;
+        }
+    }
+}
+
+static bool check_no_error(void)
+{
+    bool no_error = true;
+
+    if (s_vm_error.error_code != error_code_no_error)
+    {
+        no_error = false;
+    }
+
+    return no_error;
 }
 
 static object_t op_add(object_t op1, object_t op2)
 {
     object_t ret;
+
+    if (op1.type == object_type_number && op2.type == object_type_number)
+    {
+        ret.type = object_type_number;
+        ret.value.number = op1.value.number + op2.value.number;
+    }
+    else
+    {
+        add_error_msg(error_code_type_mismatch);
+    }
+
+    DEBUG_MSG("op1 type=%d op2 type=%d\n", op1.type, op2.type);
 
     return ret;
 }
@@ -142,12 +196,32 @@ static object_t op_sub(object_t op1, object_t op2)
 {
     object_t ret;
 
+    if (op1.type == object_type_number && op2.type == object_type_number)
+    {
+        ret.type = object_type_number;
+        ret.value.number = op1.value.number - op2.value.number;
+    }
+    else
+    {
+        add_error_msg(error_code_type_mismatch);
+    }
+
     return ret;
 }
 
 static object_t op_mul(object_t op1, object_t op2)
 {
     object_t ret;
+
+    if (op1.type == object_type_number && op2.type == object_type_number)
+    {
+        ret.type = object_type_number;
+        ret.value.number = op1.value.number * op2.value.number;
+    }
+    else
+    {
+        add_error_msg(error_code_type_mismatch);
+    }
 
     return ret;
 }
@@ -156,6 +230,16 @@ static object_t op_div(object_t op1, object_t op2)
 {
     object_t ret;
 
+    if (op1.type == object_type_number && op2.type == object_type_number)
+    {
+        ret.type = object_type_number;
+        ret.value.number = op1.value.number / op2.value.number;
+    }
+    else
+    {
+        add_error_msg(error_code_type_mismatch);
+    }
+
     return ret;
 }
 
@@ -163,10 +247,20 @@ static object_t op_mod(object_t op1, object_t op2)
 {
     object_t ret;
 
+    if (op1.type == object_type_number && op2.type == object_type_number)
+    {
+        ret.type = object_type_number;
+        ret.value.number = (uint64_t)op1.value.number % (uint64_t)op2.value.number;
+    }
+    else
+    {
+        add_error_msg(error_code_type_mismatch);
+    }
+
     return ret;
 }
 
-static void execute_code(void)
+static bool execute_code(void)
 {
     code_buf_t* pc = s_vm_registers.pc;
 
@@ -214,7 +308,7 @@ static void execute_code(void)
                 ret = op_mod(op1, op2);
                 break;
             default:
-                return;
+                return check_no_error();
             }
             push_stack(ret);            // result value has been pushed into stack
             pc++;                       // increase pc to execute next code
@@ -222,7 +316,12 @@ static void execute_code(void)
         }
         case opcode_halt:
         case opcode_MAXNUM:
-            return;
+            return check_no_error();
+        }
+
+        if (check_no_error() == false)
+        {
+            return false;
         }
     }
 }

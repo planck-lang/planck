@@ -27,7 +27,8 @@ SOFTWARE.
 
 #include "planck_types.h"
 
-void        VirtualMachine_run_vm(code_buf_t* codes);
-object_t    VirtualMachine_get_result(void);
+bool         VirtualMachine_run_vm(code_buf_t* codes);
+object_t     VirtualMachine_get_result(void);
+error_code_t VirtualMachine_get_error_msg(uint64_t* out_msg_ptr);
 
 #endif /* SRC_VIRTUAL_MACHINE_H_ */
