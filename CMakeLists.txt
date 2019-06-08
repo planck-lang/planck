@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED(VERSION 3.1)
+CMAKE_MINIMUM_REQUIRED(VERSION 3.5)
 PROJECT(planck)
 
 INCLUDE(GNUInstallDirs)
@@ -34,6 +34,53 @@ IF (NOT NO-RPATH)
 LINK_LIBRARIES(-Wl,--rpath=${CMAKE_BINARY_DIR})
 ENDIF()
 
+# Add cppcheck for target
+FUNCTION(add_fake_cppcheck _target)
+	# Get include dirs to add -I{..} parameters
+	GET_TARGET_PROPERTY(_check_includes "${_target}" INCLUDE_DIRECTORIES)
+	SET(_incopt)
+	FOREACH(_inc ${_check_includes})
+		SET(_incopt "${_incopt} -I${_inc}")
+	ENDFOREACH()
+
+	# Get all source files in the target
+	GET_TARGET_PROPERTY(_check_sources "${_target}" SOURCES)
+
+	# Create fake target for all sources
+	FOREACH(_source ${_check_sources})
+		# Get full path
+		GET_SOURCE_FILE_PROPERTY(_path "${_source}" LOCATION)
+
+		# Replace '/' to '_' ('/' is invalid in target name)
+		STRING(REGEX REPLACE "\/" "_" _tname ${_source})
+
+		SET(_fake_target "FakeCppcheckTarget_${_tname}")
+		SET(_fake_path "${CMAKE_BINARY_DIR}/cppcheck")
+		MESSAGE("-- Add fake-target for cppcheck: ${_fake_target}")
+
+		# Run cppcheck and generate dummy fake target
+		ADD_CUSTOM_COMMAND(
+			OUTPUT ${_fake_path}/${_fake_target}
+			COMMAND cppcheck
+				--enable=all
+				--std=c11
+				--verbose
+				--quiet
+				${_incopt}
+				${_path}
+			COMMAND mkdir -p ${_fake_path}
+			COMMAND touch ${_fake_path}/${_fake_target}
+			DEPENDS ${_source})
+
+		# Dummy fake target
+		ADD_CUSTOM_TARGET(${_fake_target} ALL
+			DEPENDS ${_fake_path}/${_fake_target})
+
+		# Add to real target
+		ADD_DEPENDENCIES(${_target} ${_fake_target})
+	ENDFOREACH()
+ENDFUNCTION()
+
 # lex & yacc
 ADD_CUSTOM_COMMAND(
 	OUTPUT ${CMAKE_BINARY_DIR}/y.tab.c ${CMAKE_BINARY_DIR}/y.tab.h
@@ -68,6 +115,8 @@ ADD_LIBRARY(modplanck OBJECT ${SRCS})
 TARGET_COMPILE_OPTIONS(modplanck PRIVATE
 	-std=c11 -fPIC)
 
+add_fake_cppcheck(modplanck)
+
 # libplanck.so, libplanck.a
 ADD_LIBRARY(libplanck_shared SHARED
 	$<TARGET_OBJECTS:syntax>
@@ -96,10 +145,11 @@ TARGET_LINK_LIBRARIES(planck_static ${CMAKE_BINARY_DIR}/libplanck.a -lreadline)
 ADD_DEPENDENCIES(planck_static libplanck_static)
 INSTALL(TARGETS planck_static RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
+add_fake_cppcheck(planck)
+
 # header files
 INSTALL(FILES src/planck.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/planck/)
 
 # pkgconfig
 CONFIGURE_FILE(planck.pc.in ${CMAKE_BINARY_DIR}/planck.pc @ONLY)
 INSTALL(FILES ${CMAKE_BINARY_DIR}/planck.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig/)
-
