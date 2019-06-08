@@ -57,6 +57,7 @@ void CodeGen_add_opcode(opcode_t opcode)
     s_generated_code.buffer[s_generated_code.len++].opcode = opcode;
 }
 
+// cppcheck-suppress unusedFunction
 void CodeGen_add_number(double number)
 {
     object_t number_obj = {0};
@@ -69,6 +70,7 @@ void CodeGen_add_number(double number)
     s_generated_code.buffer[s_generated_code.len++].value = number_obj;
 }
 
+// cppcheck-suppress unusedFunction
 void CodeGen_add_string(char* str_ptr)
 {
     object_t string_obj = {0};
