@@ -11,6 +11,7 @@ addons:
     - flex
     - bison
     - libreadline-dev
+    - cppcheck
 script:
 - debuild -us -uc
 - ls ../
