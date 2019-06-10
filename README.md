@@ -3,9 +3,17 @@
 # planck
 
 ## build
+### cmake
 ```
     mkdir build
     cd build
     cmake ..
     make
+```
+
+### meson
+```
+meson builddir
+cd builddir
+ninja
 ```
