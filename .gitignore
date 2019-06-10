@@ -19,3 +19,7 @@ debian/debhelper*
 debian/files
 debian/*.substvars
 builddir
+.vscode
+GPATH
+GRTAGS
+GTAGS
