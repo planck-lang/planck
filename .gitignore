@@ -18,3 +18,4 @@ debian/*.log
 debian/debhelper*
 debian/files
 debian/*.substvars
+builddir
