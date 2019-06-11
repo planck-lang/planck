@@ -42,7 +42,16 @@ object_t Obj_to_string(object_t obj)
 
     if (obj.type == object_type_number)
     {
-        sprintf(temp_buffer, "%f", obj.value.number);
+        int64_t temp_int = (int64_t)obj.value.number;
+        if ((double)temp_int == obj.value.number)   // if value is that like 33.000000, take out below the decimal point -> 33
+        {
+            sprintf(temp_buffer, "%ld", temp_int);
+        }
+        else
+        {
+            sprintf(temp_buffer, "%f", obj.value.number);
+        }
+
         ret.value.string_ptr = Symtab_add_string_literal(temp_buffer);
         ret.type = object_type_string;
     }
