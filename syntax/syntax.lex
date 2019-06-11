@@ -14,6 +14,8 @@ int yywrap(void)
 %%
 [ \t]*      ;
 
+"##"        return STRCON;
+
 [0-9]+("."[0-9]*)? {
     char* ptr;
     yylval.double_value = strtod(yytext, &ptr);

@@ -29,6 +29,7 @@ libsyntax = static_library('syntax', [gen_yacc, gen_lex],
 
 # libraries (shared, static) 
 src = [ 'src/planck.c',
+        'src/object.c',
         'src/code_gen.c',
         'src/symtab.c',
         'src/virtual_machine.c']

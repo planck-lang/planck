@@ -108,6 +108,7 @@ TARGET_COMPILE_OPTIONS(syntax PRIVATE
 # library sources
 SET(SRCS
 	src/planck.c
+        src/object.c
 	src/code_gen.c
 	src/symtab.c
 	src/virtual_machine.c)

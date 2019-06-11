@@ -24,11 +24,13 @@ int yyerror(const char* str)
 
 %start expr
 
+%token                  STRCON
 %token<double_value>    NUMBER
 %token<string_ptr>      STRING
 
 %type<int_value> expr
 
+%left STRCON
 %left '+' '-'
 %left '*' '/' '%'
 
@@ -41,5 +43,6 @@ expr : NUMBER               {CodeGen_add_number($1); $$ = 0;}
      | expr '*' expr        {CodeGen_add_opcode(opcode_mul); $$ = 0;}
      | expr '/' expr        {CodeGen_add_opcode(opcode_div); $$ = 0;}
      | expr '%' expr        {CodeGen_add_opcode(opcode_mod); $$ = 0;}
+     | expr STRCON expr     {CodeGen_add_opcode(opcode_con); $$ = 0;}
      ;
 %%

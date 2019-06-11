@@ -22,4 +22,51 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
+#include <stdio.h>
+#include <stdint.h>
+#include <string.h>
+#include <stdlib.h>
 
+#include "object.h"
+#include "symtab.h"
+
+object_t Obj_to_string(object_t obj)
+{
+    if (obj.type == object_type_string)
+    {
+        return obj;
+    }
+
+    char temp_buffer[50] = {0};
+    object_t ret;
+
+    if (obj.type == object_type_number)
+    {
+        sprintf(temp_buffer, "%f", obj.value.number);
+        ret.value.string_ptr = Symtab_add_string_literal(temp_buffer);
+        ret.type = object_type_string;
+    }
+
+    return ret;
+}
+
+object_t Obj_conc_string(object_t str_obj1, object_t str_obj2)
+{
+    object_t ret = {0};
+
+    if (str_obj1.type == object_type_string && str_obj1.type == object_type_string)
+    {
+        uint32_t temp_con_str_len = strlen(str_obj1.value.string_ptr) + strlen(str_obj2.value.string_ptr) + 1;  // '+1' is for null space
+        char*    temp_con_str_buffer = (char*)malloc(temp_con_str_len);
+
+        memset(temp_con_str_buffer, 0, temp_con_str_len);
+
+        sprintf(temp_con_str_buffer, "%s%s", str_obj1.value.string_ptr, str_obj2.value.string_ptr);
+        ret.value.string_ptr = Symtab_add_string_literal(temp_con_str_buffer);
+        ret.type = object_type_string;
+
+        free(temp_con_str_buffer);
+    }
+
+    return ret;
+}

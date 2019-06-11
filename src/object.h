@@ -27,4 +27,7 @@ SOFTWARE.
 
 #include "planck_types.h"
 
+object_t Obj_to_string(object_t obj);
+object_t Obj_conc_string(object_t str_obj1, object_t str_obj2);
+
 #endif /* SRC_OBJECT_H_ */

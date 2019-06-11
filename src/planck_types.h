@@ -39,7 +39,7 @@ typedef enum _error_code_t_ {
  * object types
  */
 typedef enum _object_type_t_ {
-    object_type_null,
+    object_type_null = 0,
     object_type_number,
     object_type_string,
     object_type_MAXNUM
@@ -66,6 +66,7 @@ typedef enum _opcode_t_ {
     opcode_mul,
     opcode_div,
     opcode_mod,
+    opcode_con,
     opcode_halt,
     opcode_MAXNUM
 } opcode_t;
