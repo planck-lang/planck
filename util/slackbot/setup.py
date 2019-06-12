@@ -5,7 +5,7 @@ from distutils.core import setup, Extension
 
 planck_module = Extension('planck', sources = ['planck_module.c'],
                             include_dirs = ['../../src'],
-                            extra_objects = ['../../build/libplanck.a'])
+                            extra_objects = ['../../builddir/libplanck.a'])
 
 setup(name='planck',
       version='0.1.0',

@@ -12,10 +12,20 @@ static PyObject* planck_exe(PyObject* self, PyObject* args)
         return NULL;
     }
     
-    double ret;
+    object_t ret;
     bool st = Planck_do(buf, &ret);
 
-    return Py_BuildValue("id", (int)st, ret);
+    switch(ret.type)
+    {
+    case object_type_number:
+        return Py_BuildValue("id", (int)st, ret.value.number);
+    case object_type_string:
+        return Py_BuildValue("is", (int)st, ret.value.string_ptr);
+    default:
+        printf("[Type Error]\n");
+    }
+
+    return Py_BuildValue("is", (int)st, NULL);
 } 
 
 static PyMethodDef planck_methods[] = { 
