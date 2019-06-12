@@ -32,12 +32,18 @@ def message_receiver(**payload):
             code_line = data['text'][first_space_index:]
             st, planck_result = planck.planck_do(code_line)
 
+            ret_text = ""
             if st == 0:
                 planck_result = "[Error!]"
+            else:
+                if isinstance(planck_result, str):
+                    ret_text = '"' + str(planck_result) + '"'
+                else:
+                    ret_text = str(planck_result)
 
             client.chat_postMessage(
                 channel=channel_id,
-                text=planck_result
+                text=ret_text
             )
 
             logger.info(">>" + code_line)
