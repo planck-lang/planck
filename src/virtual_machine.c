@@ -43,7 +43,7 @@ SOFTWARE.
 
 static struct _vm_registers_t_ {
     code_buf_t* pc;
-    code_buf_t* lr;
+    // code_buf_t* lr; // avoid lint error this member must be used when implement function return feature
     uint32_t    sp;
 } s_vm_registers = {0};
 
@@ -92,11 +92,11 @@ object_t  VirtualMachine_get_result(void)
     return pop_stack();
 }
 
-error_code_t VirtualMachine_get_error_msg(uint64_t* out_msg_ptr)
+error_code_t VirtualMachine_get_error_msg(char** out_msg_ptr)
 {
     error_code_t ret = s_vm_error.error_code;
-    *out_msg_ptr = (uint64_t)s_vm_error.msg;
-    memset(&s_vm_error, 0, sizeof(s_vm_error));
+    *out_msg_ptr = s_vm_error.msg;
+    memset(&s_vm_error, 0, sizeof(s_vm_error)); // reset s_vm_error
     return ret;
 }
 
@@ -140,10 +140,8 @@ static void push_stack(object_t value)
 
 static object_t pop_stack(void)
 {
-    object_t value = {0};
-
     s_vm_registers.sp--;
-    value = s_vm_stack.stack[s_vm_registers.sp];
+    object_t value = s_vm_stack.stack[s_vm_registers.sp];
 
     DEBUG_MSG("pop sp[%d], t=%d v=%f\n", s_vm_registers.sp, value.type, value.value.number);
 

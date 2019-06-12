@@ -7,7 +7,7 @@ cflags = [  '-g', '-Os', '-std=c11',
             '-Wunreachable-code', '-Wpointer-arith', '-Wformat=2', '-Wno-format-nonliteral',
             # Not warnings
             '-Wno-missing-field-initializers', '-Wno-unused-parameter', '-Wno-unused-function'
-            ]
+        ]
 
 incdir = include_directories('src')
 
@@ -41,4 +41,7 @@ executable('planck', 'src/main.c',
 executable('planck_static', 'src/main.c', 
             link_with:libplancks.get_static_lib(),
             c_args:cflags, dependencies:readline_dep)
+
+# lint
+run_target('lint', command:['cppcheck', '--enable=all', '--std=c11', '--inline-suppr', meson.build_root() + '/../src']) 
 

@@ -37,11 +37,11 @@ object_t Obj_to_string(object_t obj)
         return obj;
     }
 
-    char temp_buffer[50] = {0};
-    object_t ret;
+    object_t ret = {0};
 
     if (obj.type == object_type_number)
     {
+        char temp_buffer[50] = {0};
         int64_t temp_int = (int64_t)obj.value.number;
         if ((double)temp_int == obj.value.number)   // if value is that like 33.000000, take out below the decimal point -> 33
         {
@@ -63,7 +63,7 @@ object_t Obj_conc_string(object_t str_obj1, object_t str_obj2)
 {
     object_t ret = {0};
 
-    if (str_obj1.type == object_type_string && str_obj1.type == object_type_string)
+    if (str_obj1.type == object_type_string && str_obj2.type == object_type_string)
     {
         uint32_t temp_con_str_len = strlen(str_obj1.value.string_ptr) + strlen(str_obj2.value.string_ptr) + 1;  // '+1' is for null space
         char*    temp_con_str_buffer = (char*)malloc(temp_con_str_len);
