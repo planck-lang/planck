@@ -77,3 +77,27 @@ object_t Obj_conc_string(object_t str_obj1, object_t str_obj2)
 
     return ret;
 }
+
+object_t Obj_rept_string(object_t str_obj, object_t num_obj)
+{
+    object_t ret = {0};
+
+    if (str_obj.type == object_type_string && num_obj.type == object_type_number)
+    {
+        size_t temp_con_str_len = (strlen(str_obj.value.string_ptr) * num_obj.value.number) + 1;  // '+1' is for null space
+        char*  temp_con_str_buffer = (char*)malloc(temp_con_str_len);
+
+        *temp_con_str_buffer = 0;
+        for(uint64_t i = 0 ; i < (uint64_t)num_obj.value.number ; i++)
+        {
+            strncat(temp_con_str_buffer, str_obj.value.string_ptr, strlen(str_obj.value.string_ptr));
+        }
+
+        ret.value.string_ptr = Symtab_add_string_literal(temp_con_str_buffer);
+        ret.type = object_type_string;
+
+        free(temp_con_str_buffer);
+    }
+
+    return ret;
+}

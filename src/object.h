@@ -29,5 +29,6 @@ SOFTWARE.
 
 object_t Obj_to_string(object_t obj);
 object_t Obj_conc_string(object_t str_obj1, object_t str_obj2);
+object_t Obj_rept_string(object_t str_obj, object_t num_obj);
 
 #endif /* SRC_OBJECT_H_ */
