@@ -76,7 +76,7 @@ void CodeGen_add_string(char* str_ptr)
 {
     object_t string_obj = {0};
 
-    str_ptr = trim_quote_in_memory(str_ptr);
+    str_ptr = trim_quote_in_memory(str_ptr);    
 
     string_obj.type = object_type_string;
     string_obj.value.string_ptr = Symtab_add_string_literal(str_ptr);
@@ -109,7 +109,7 @@ static char* trim_quote_in_memory(char* orig_str)
 {
     if (orig_str[0] == '\'' || orig_str[0] == '\"')
     {
-        uint32_t len = strlen(orig_str);
+        size_t len = strlen(orig_str);
         if (orig_str[len-1] == '\'' || orig_str[len-1] == '\"')
         {
             // trim ending quote
@@ -117,10 +117,7 @@ static char* trim_quote_in_memory(char* orig_str)
             orig_str[len] = '\0';
 
             // trim beginning quote
-            for (uint32_t i = 0 ; i < len ; i++)
-            {
-                orig_str[i] = orig_str[i + 1];
-            }
+            orig_str += 1;
         }
     }
 

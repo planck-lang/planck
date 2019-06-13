@@ -65,10 +65,8 @@ object_t Obj_conc_string(object_t str_obj1, object_t str_obj2)
 
     if (str_obj1.type == object_type_string && str_obj2.type == object_type_string)
     {
-        uint32_t temp_con_str_len = strlen(str_obj1.value.string_ptr) + strlen(str_obj2.value.string_ptr) + 1;  // '+1' is for null space
-        char*    temp_con_str_buffer = (char*)malloc(temp_con_str_len);
-
-        memset(temp_con_str_buffer, 0, temp_con_str_len);
+        size_t temp_con_str_len = strlen(str_obj1.value.string_ptr) + strlen(str_obj2.value.string_ptr) + 1;  // '+1' is for null space
+        char*  temp_con_str_buffer = (char*)malloc(temp_con_str_len);
 
         sprintf(temp_con_str_buffer, "%s%s", str_obj1.value.string_ptr, str_obj2.value.string_ptr);
         ret.value.string_ptr = Symtab_add_string_literal(temp_con_str_buffer);
