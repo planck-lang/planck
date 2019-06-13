@@ -217,6 +217,14 @@ static object_t op_mul(object_t op1, object_t op2)
         ret.type = object_type_number;
         ret.value.number = op1.value.number * op2.value.number;
     }
+    else if (op1.type == object_type_number && op2.type == object_type_string)   // number * "string"
+    {
+        ret = Obj_rept_string(op2, op1);
+    }
+    else if (op1.type == object_type_string && op2.type == object_type_number)  // "string" * number 
+    {
+        ret = Obj_rept_string(op1, op2);
+    }
     else
     {
         add_error_msg(error_code_type_mismatch);
