@@ -15,6 +15,10 @@ int yywrap(void)
 [ \t]*      ;
 
 "##"        return STRCON;
+"=="        return EQ;
+"!="        return NE;
+"<="        return LE;
+">="        return GE;
 
 [0-9]+("."[0-9]*)? {
     char* ptr;
