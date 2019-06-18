@@ -25,6 +25,8 @@ SOFTWARE.
 #ifndef SRC_PLANCK_TYPES_H_
 #define SRC_PLANCK_TYPES_H_
 
+#include "stdbool.h"
+
 /*
  * common
  */
@@ -42,6 +44,7 @@ typedef enum _object_type_t_ {
     object_type_null = 0,
     object_type_number,
     object_type_string,
+    object_type_boolean,
     object_type_MAXNUM
 } object_type_t;
 
@@ -51,6 +54,7 @@ typedef struct _object_t_ {
     union _value_t_ {
         double  number;
         char*   string_ptr;
+        bool    boolean;
     } value;
 } object_t;
 
