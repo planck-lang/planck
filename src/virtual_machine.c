@@ -75,6 +75,12 @@ static object_t op_mul(object_t op1, object_t op2);
 static object_t op_div(object_t op1, object_t op2);
 static object_t op_mod(object_t op1, object_t op2);
 static object_t op_con(object_t op1, object_t op2);
+static object_t op_lt(object_t op1, object_t op2);
+static object_t op_gt(object_t op1, object_t op2);
+static object_t op_le(object_t op1, object_t op2);
+static object_t op_ge(object_t op1, object_t op2);
+static object_t op_eq(object_t op1, object_t op2);
+static object_t op_ne(object_t op1, object_t op2);
 
 static bool execute_code(void);
 
@@ -282,6 +288,108 @@ static object_t op_con(object_t op1, object_t op2)
     return ret;
 }
 
+static object_t op_lt(object_t op1, object_t op2)
+{
+    object_t ret;
+
+    if (op1.type == object_type_number && op2.type == object_type_number)
+    {
+        ret.type = object_type_boolean;
+        ret.value.boolean = op1.value.number < op2.value.number;
+    }
+    else
+    {
+        add_error_msg(error_code_type_mismatch);
+    }
+
+    return ret;
+}
+
+static object_t op_gt(object_t op1, object_t op2)
+{
+    object_t ret;
+
+    if (op1.type == object_type_number && op2.type == object_type_number)
+    {
+        ret.type = object_type_boolean;
+        ret.value.boolean = op1.value.number > op2.value.number;
+    }
+    else
+    {
+        add_error_msg(error_code_type_mismatch);
+    }
+
+    return ret;
+}
+
+static object_t op_le(object_t op1, object_t op2)
+{
+    object_t ret;
+
+    if (op1.type == object_type_number && op2.type == object_type_number)
+    {
+        ret.type = object_type_boolean;
+        ret.value.boolean = op1.value.number <= op2.value.number;
+    }
+    else
+    {
+        add_error_msg(error_code_type_mismatch);
+    }
+    
+    return ret;
+}
+
+static object_t op_ge(object_t op1, object_t op2)
+{
+    object_t ret;
+
+    if (op1.type == object_type_number && op2.type == object_type_number)
+    {
+        ret.type = object_type_boolean;
+        ret.value.boolean = op1.value.number >= op2.value.number;
+    }
+    else
+    {
+        add_error_msg(error_code_type_mismatch);
+    }
+    
+    return ret;
+}
+
+static object_t op_eq(object_t op1, object_t op2)
+{
+    object_t ret;
+
+    if (op1.type == object_type_number && op2.type == object_type_number)
+    {
+        ret.type = object_type_boolean;
+        ret.value.boolean = op1.value.number == op2.value.number;
+    }
+    else
+    {
+        add_error_msg(error_code_type_mismatch);
+    }
+    
+    return ret;
+}
+
+static object_t op_ne(object_t op1, object_t op2)
+{
+    object_t ret;
+
+    if (op1.type == object_type_number && op2.type == object_type_number)
+    {
+        ret.type = object_type_boolean;
+        ret.value.boolean = op1.value.number != op2.value.number;
+    }
+    else
+    {
+        add_error_msg(error_code_type_mismatch);
+    }
+    
+    return ret;
+}
+
 static bool execute_code(void)
 {
     code_buf_t* pc = s_vm_registers.pc;
@@ -338,6 +446,24 @@ static bool execute_code(void)
                 break;
             case opcode_con:
                 ret = op_con(op1, op2);
+                break;
+            case opcode_lt:
+                ret = op_lt(op1, op2);
+                break;
+            case opcode_gt:
+                ret = op_gt(op1, op2);
+                break;
+            case opcode_le:
+                ret = op_le(op1, op2);
+                break;
+            case opcode_ge:
+                ret = op_ge(op1, op2);
+                break;
+            case opcode_eq:
+                ret = op_eq(op1, op2);
+                break;
+            case opcode_ne:
+                ret = op_ne(op1, op2);
                 break;
             default:
                 return check_no_error();

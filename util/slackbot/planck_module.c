@@ -15,14 +15,19 @@ static PyObject* planck_exe(PyObject* self, PyObject* args)
     object_t ret;
     bool st = Planck_do(buf, &ret);
 
-    switch(ret.type)
+    if (st)
     {
-    case object_type_number:
-        return Py_BuildValue("id", (int)st, ret.value.number);
-    case object_type_string:
-        return Py_BuildValue("is", (int)st, ret.value.string_ptr);
-    default:
-        printf("[Type Error]\n");
+        switch(ret.type)
+        {
+        case object_type_number:
+            return Py_BuildValue("id", (int)st, ret.value.number);
+        case object_type_string:
+            return Py_BuildValue("is", (int)st, ret.value.string_ptr);
+        case object_type_boolean:
+            return Py_BuildValue("ii", 3, ret.value.boolean);
+        default:
+            printf("[Type Error]\n");
+        }
     }
 
     return Py_BuildValue("is", (int)st, NULL);

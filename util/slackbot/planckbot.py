@@ -39,7 +39,10 @@ def message_receiver(**payload):
                 if isinstance(planck_result, str):
                     ret_text = '"' + str(planck_result) + '"'
                 else:
-                    ret_text = str(planck_result)
+                    if st == 3:
+                        ret_text = "True" if planck_result == 1 else "False"
+                    else:
+                        ret_text = str(planck_result)
 
             client.chat_postMessage(
                 channel=channel_id,
