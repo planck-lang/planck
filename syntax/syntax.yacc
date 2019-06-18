@@ -25,11 +25,13 @@ int yyerror(const char* str)
 %start expr
 
 %token                  STRCON
+%token                  EQ NE LE GE
 %token<double_value>    NUMBER
 %token<string_ptr>      STRING
 
 %type<int_value> expr
 
+%left EQ NE '>' '<' LE GE
 %left STRCON
 %left '+' '-'
 %left '*' '/' '%'
@@ -38,6 +40,12 @@ int yyerror(const char* str)
 expr : NUMBER               {CodeGen_add_number($1); $$ = 0;}
      | STRING               {CodeGen_add_string($1); $$ = 0;}
      | '(' expr ')'         {$$ = $2;}
+     | expr '<' expr        {CodeGen_add_opcode(opcode_lt); $$ = 0;}
+     | expr '>' expr        {CodeGen_add_opcode(opcode_gt); $$ = 0;}
+     | expr LE expr         {CodeGen_add_opcode(opcode_le); $$ = 0;}
+     | expr GE expr         {CodeGen_add_opcode(opcode_ge); $$ = 0;}
+     | expr EQ expr         {CodeGen_add_opcode(opcode_eq); $$ = 0;}
+     | expr NE expr         {CodeGen_add_opcode(opcode_ne); $$ = 0;}
      | expr '+' expr        {CodeGen_add_opcode(opcode_add); $$ = 0;}
      | expr '-' expr        {CodeGen_add_opcode(opcode_sub); $$ = 0;}
      | expr '*' expr        {CodeGen_add_opcode(opcode_mul); $$ = 0;}

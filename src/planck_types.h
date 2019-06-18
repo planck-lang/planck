@@ -67,6 +67,12 @@ typedef enum _opcode_t_ {
     opcode_div,
     opcode_mod,
     opcode_con,
+    opcode_lt,
+    opcode_gt,
+    opcode_le,
+    opcode_ge,
+    opcode_eq,
+    opcode_ne,
     opcode_halt,
     opcode_MAXNUM
 } opcode_t;

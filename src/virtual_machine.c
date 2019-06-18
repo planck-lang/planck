@@ -309,6 +309,12 @@ static bool execute_code(void)
         case opcode_div:
         case opcode_mod:
         case opcode_con:
+        case opcode_lt:
+        case opcode_gt:
+        case opcode_le:
+        case opcode_ge:
+        case opcode_eq:
+        case opcode_ne:
         {
             object_t op2 = pop_stack(); // get value from stack. Pop the 2nd operand first because it is stack.
             object_t op1 = pop_stack(); // get value from stack. Pop the 1st operand.
