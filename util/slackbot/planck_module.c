@@ -30,7 +30,7 @@ static PyObject* planck_exe(PyObject* self, PyObject* args)
         }
     }
 
-    return Py_BuildValue("is", (int)st, NULL);
+    return Py_BuildValue("is", (int)st, "NULL");
 } 
 
 static PyMethodDef planck_methods[] = { 

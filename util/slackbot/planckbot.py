@@ -30,11 +30,15 @@ def message_receiver(**payload):
         if first_space_index is not -1:
             channel_id = data['channel']
             code_line = data['text'][first_space_index:]
+
+            code_line = code_line.replace("&gt;", ">")
+            code_line = code_line.replace("&lt;", "<")
+
             st, planck_result = planck.planck_do(code_line)
 
             ret_text = ""
             if st == 0:
-                planck_result = "[Error!]"
+                ret_text = "[Error!]"
             else:
                 if isinstance(planck_result, str):
                     ret_text = '"' + str(planck_result) + '"'
