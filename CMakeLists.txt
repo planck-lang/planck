@@ -111,6 +111,7 @@ SET(SRCS
     src/object.c
 	src/code_gen.c
 	src/symtab.c
+	src/expr.c
 	src/virtual_machine.c)
 ADD_LIBRARY(modplanck OBJECT ${SRCS})
 TARGET_COMPILE_OPTIONS(modplanck PRIVATE
