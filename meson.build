@@ -26,6 +26,7 @@ src = [ 'src/planck.c',
         'src/object.c',
         'src/code_gen.c',
         'src/symtab.c',
+        'src/expr.c',
         'src/virtual_machine.c']
 libplancks = both_libraries('planck', [src, gen_yacc, gen_lex], 
                         version : meson.project_version(), soversion : '0',
