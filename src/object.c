@@ -26,6 +26,7 @@ SOFTWARE.
 #include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
+#include <stdbool.h>
 
 #include "object.h"
 #include "symtab.h"
@@ -97,6 +98,18 @@ object_t Obj_rept_string(object_t str_obj, object_t num_obj)
         ret.type = object_type_string;
 
         free(temp_con_str_buffer);
+    }
+
+    return ret;
+}
+
+int Obj_comp_string(object_t str_obj1, object_t str_obj2)
+{
+    int ret = -1;
+    
+    if (str_obj1.type == object_type_string && str_obj2.type == object_type_string)
+    {
+        ret = strncmp(str_obj1.value.string_ptr, str_obj2.value.string_ptr, strlen(str_obj1.value.string_ptr));
     }
 
     return ret;

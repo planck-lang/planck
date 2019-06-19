@@ -29,6 +29,7 @@ SOFTWARE.
 
 bool         VirtualMachine_run_vm(code_buf_t* codes);
 object_t     VirtualMachine_get_result(void);
+void         VirtualMachine_add_error_msg(error_code_t error_code);
 error_code_t VirtualMachine_get_error_msg(char** out_msg_ptr);
 
 #endif /* SRC_VIRTUAL_MACHINE_H_ */

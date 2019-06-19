@@ -31,6 +31,7 @@ SOFTWARE.
 #include "object.h"
 #include "virtual_machine.h"
 #include "code_gen.h"
+#include "expr.h"
 
 #define DEBUG_VM    0
 #if DEBUG_VM
@@ -66,21 +67,7 @@ static void check_stack(void);
 
 static void     push_stack(object_t value);
 static object_t pop_stack(void);
-static void     add_error_msg(error_code_t error_code);
 static bool     check_no_error(void);
-
-static object_t op_add(object_t op1, object_t op2);
-static object_t op_sub(object_t op1, object_t op2);
-static object_t op_mul(object_t op1, object_t op2);
-static object_t op_div(object_t op1, object_t op2);
-static object_t op_mod(object_t op1, object_t op2);
-static object_t op_con(object_t op1, object_t op2);
-static object_t op_lt(object_t op1, object_t op2);
-static object_t op_gt(object_t op1, object_t op2);
-static object_t op_le(object_t op1, object_t op2);
-static object_t op_ge(object_t op1, object_t op2);
-static object_t op_eq(object_t op1, object_t op2);
-static object_t op_ne(object_t op1, object_t op2);
 
 static bool execute_code(void);
 
@@ -93,9 +80,21 @@ bool VirtualMachine_run_vm(code_buf_t* codes)
     return execute_code();
 }
 
-object_t  VirtualMachine_get_result(void)
+object_t VirtualMachine_get_result(void)
 {
     return pop_stack();
+}
+
+void VirtualMachine_add_error_msg(error_code_t error_code)
+{
+    for(uint32_t i = 0 ; i < error_code_NUM; i++)
+    {
+        if (s_predefined_error[i].error_code == error_code)
+        {
+            s_vm_error.msg = s_predefined_error[i].msg;
+            s_vm_error.error_code = error_code;
+        }
+    }
 }
 
 error_code_t VirtualMachine_get_error_msg(char** out_msg_ptr)
@@ -154,18 +153,6 @@ static object_t pop_stack(void)
     return value;
 }
 
-static void add_error_msg(error_code_t error_code)
-{
-    for(uint32_t i = 0 ; i < error_code_NUM; i++)
-    {
-        if (s_predefined_error[i].error_code == error_code)
-        {
-            s_vm_error.msg = s_predefined_error[i].msg;
-            s_vm_error.error_code = error_code;
-        }
-    }
-}
-
 static bool check_no_error(void)
 {
     bool no_error = true;
@@ -176,218 +163,6 @@ static bool check_no_error(void)
     }
 
     return no_error;
-}
-
-static object_t op_add(object_t op1, object_t op2)
-{
-    object_t ret;
-
-    if (op1.type == object_type_number && op2.type == object_type_number)
-    {
-        ret.type = object_type_number;
-        ret.value.number = op1.value.number + op2.value.number;
-    }
-    else
-    {
-        add_error_msg(error_code_type_mismatch);
-    }
-
-    DEBUG_MSG("op1 type=%d op2 type=%d\n", op1.type, op2.type);
-
-    return ret;
-}
-
-static object_t op_sub(object_t op1, object_t op2)
-{
-    object_t ret;
-
-    if (op1.type == object_type_number && op2.type == object_type_number)
-    {
-        ret.type = object_type_number;
-        ret.value.number = op1.value.number - op2.value.number;
-    }
-    else
-    {
-        add_error_msg(error_code_type_mismatch);
-    }
-
-    return ret;
-}
-
-static object_t op_mul(object_t op1, object_t op2)
-{
-    object_t ret;
-
-    if (op1.type == object_type_number && op2.type == object_type_number)
-    {
-        ret.type = object_type_number;
-        ret.value.number = op1.value.number * op2.value.number;
-    }
-    else if (op1.type == object_type_number && op2.type == object_type_string)   // number * "string"
-    {
-        ret = Obj_rept_string(op2, op1);
-    }
-    else if (op1.type == object_type_string && op2.type == object_type_number)  // "string" * number 
-    {
-        ret = Obj_rept_string(op1, op2);
-    }
-    else
-    {
-        add_error_msg(error_code_type_mismatch);
-    }
-
-    return ret;
-}
-
-static object_t op_div(object_t op1, object_t op2)
-{
-    object_t ret;
-
-    if (op1.type == object_type_number && op2.type == object_type_number)
-    {
-        ret.type = object_type_number;
-        ret.value.number = op1.value.number / op2.value.number;
-    }
-    else
-    {
-        add_error_msg(error_code_type_mismatch);
-    }
-
-    return ret;
-}
-
-static object_t op_mod(object_t op1, object_t op2)
-{
-    object_t ret;
-
-    if (op1.type == object_type_number && op2.type == object_type_number)
-    {
-        ret.type = object_type_number;
-        ret.value.number = (uint64_t)op1.value.number % (uint64_t)op2.value.number;
-    }
-    else
-    {
-        add_error_msg(error_code_type_mismatch);
-    }
-
-    return ret;
-}
-
-static object_t op_con(object_t op1, object_t op2)
-{
-    object_t op1_str = Obj_to_string(op1);
-    object_t op2_str = Obj_to_string(op2);
-
-    object_t ret = Obj_conc_string(op1_str, op2_str);
-
-    if (ret.type == object_type_null)
-    {
-        add_error_msg(error_code_type_mismatch);
-    }
-
-    return ret;
-}
-
-static object_t op_lt(object_t op1, object_t op2)
-{
-    object_t ret;
-
-    if (op1.type == object_type_number && op2.type == object_type_number)
-    {
-        ret.type = object_type_boolean;
-        ret.value.boolean = op1.value.number < op2.value.number;
-    }
-    else
-    {
-        add_error_msg(error_code_type_mismatch);
-    }
-
-    return ret;
-}
-
-static object_t op_gt(object_t op1, object_t op2)
-{
-    object_t ret;
-
-    if (op1.type == object_type_number && op2.type == object_type_number)
-    {
-        ret.type = object_type_boolean;
-        ret.value.boolean = op1.value.number > op2.value.number;
-    }
-    else
-    {
-        add_error_msg(error_code_type_mismatch);
-    }
-
-    return ret;
-}
-
-static object_t op_le(object_t op1, object_t op2)
-{
-    object_t ret;
-
-    if (op1.type == object_type_number && op2.type == object_type_number)
-    {
-        ret.type = object_type_boolean;
-        ret.value.boolean = op1.value.number <= op2.value.number;
-    }
-    else
-    {
-        add_error_msg(error_code_type_mismatch);
-    }
-    
-    return ret;
-}
-
-static object_t op_ge(object_t op1, object_t op2)
-{
-    object_t ret;
-
-    if (op1.type == object_type_number && op2.type == object_type_number)
-    {
-        ret.type = object_type_boolean;
-        ret.value.boolean = op1.value.number >= op2.value.number;
-    }
-    else
-    {
-        add_error_msg(error_code_type_mismatch);
-    }
-    
-    return ret;
-}
-
-static object_t op_eq(object_t op1, object_t op2)
-{
-    object_t ret;
-
-    if (op1.type == object_type_number && op2.type == object_type_number)
-    {
-        ret.type = object_type_boolean;
-        ret.value.boolean = op1.value.number == op2.value.number;
-    }
-    else
-    {
-        add_error_msg(error_code_type_mismatch);
-    }
-    
-    return ret;
-}
-
-static object_t op_ne(object_t op1, object_t op2)
-{
-    object_t ret;
-
-    if (op1.type == object_type_number && op2.type == object_type_number)
-    {
-        ret.type = object_type_boolean;
-        ret.value.boolean = op1.value.number != op2.value.number;
-    }
-    else
-    {
-        add_error_msg(error_code_type_mismatch);
-    }
-    
-    return ret;
 }
 
 static bool execute_code(void)
@@ -426,48 +201,7 @@ static bool execute_code(void)
         {
             object_t op2 = pop_stack(); // get value from stack. Pop the 2nd operand first because it is stack.
             object_t op1 = pop_stack(); // get value from stack. Pop the 1st operand.
-            object_t ret = {0};
-            switch (opcode)             // calculation
-            {
-            case opcode_add:
-                ret = op_add(op1, op2);
-                break;
-            case opcode_sub:
-                ret = op_sub(op1, op2);
-                break;
-            case opcode_mul:
-                ret = op_mul(op1, op2);
-                break;
-            case opcode_div:
-                ret = op_div(op1, op2);
-                break;
-            case opcode_mod:
-                ret = op_mod(op1, op2);
-                break;
-            case opcode_con:
-                ret = op_con(op1, op2);
-                break;
-            case opcode_lt:
-                ret = op_lt(op1, op2);
-                break;
-            case opcode_gt:
-                ret = op_gt(op1, op2);
-                break;
-            case opcode_le:
-                ret = op_le(op1, op2);
-                break;
-            case opcode_ge:
-                ret = op_ge(op1, op2);
-                break;
-            case opcode_eq:
-                ret = op_eq(op1, op2);
-                break;
-            case opcode_ne:
-                ret = op_ne(op1, op2);
-                break;
-            default:
-                return check_no_error();
-            }
+            object_t ret = Expr_execute(opcode, op1, op2);
             push_stack(ret);            // result value has been pushed into stack
             pc++;                       // increase pc to execute next code
             break;
