@@ -161,7 +161,8 @@ static void RunTest(void)
             {
                 testUnit.totalCases++;
 
-                testCasePtr->result = testCasePtr->testFunc();
+                testCasePtr->result = true;
+                testCasePtr->testFunc(testCasePtr);
                 if(testCasePtr->result)
                 {
                     printf(" PASS\n");

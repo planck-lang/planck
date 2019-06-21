@@ -5,29 +5,27 @@ REGISTER_SUITE_AUTO(test02, "AUTO REg Test!")
 static uint32_t testVal = 0;
 static char* teststr = "dkaldl slll";
 
-PRE_TEST_BEGIN()
+PRE_TEST_FUNC()
 {
     testVal = strlen(teststr);
     printf("len=%d\n", testVal);
 }
-PRE_TEST_END
 
-POST_TEST_BEGIN()
+POST_TEST_FUNC()
 {
     testVal = 0;
     printf("len=%d\n", testVal);
 }
-POST_TEST_END
 
 TESTCASE(first, "the first test of test02")
 {
     testVal++;
-    return 0;
+    ASSERT((11==testprevalue), ASSERTMSG_NUM_FAIL(11, testprevalue));
 }
 
 TESTCASE(second, "the second test of test02")
 {
     testVal++;
-    return 1;
+    ASSERT((11==testprevalue), ASSERTMSG_NUM_FAIL(11, testprevalue));
 }
 

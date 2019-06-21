@@ -33,8 +33,8 @@ TESTCASE(FOT01, "simple add")
     char* codeline = "3 + 4";
 
 	object_t ret;
-    //bool st = Planck_do(codeline, &ret);
-    Planck_do(codeline, &ret);
+    bool st = Planck_do(codeline, &ret);
 
-    ASSERT((7.0 == ret.value.number), ASSERTMSG_INT_FAIL(7.0, ret.value.number));
+    ASSERT((true == st), ASSERTMSG_NUM_FAIL(1, st));
+    ASSERT((7.0 == ret.value.number), ASSERTMSG_NUM_FAIL(7.0, ret.value.number));
 }

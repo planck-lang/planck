@@ -8,26 +8,23 @@
 #include <stdbool.h>
 #include <string.h>
  
-#define REGISTER_SUITE_FUNC(suiteName, init_func) \
-    __attribute__ ((__constructor__)) \
-    void RegisterSuite ## suiteName(void) \
-    { TestSuite_t* suite = (TestSuite_t*)malloc(sizeof(TestSuite_t)); memset(suite, 0, sizeof(TestSuite_t)); suite->initFunc = init_func; AddTestSuite(suite); }
-
-#define PRE_TEST_BEGIN() static bool preTest(void){
-#define PRE_TEST_END return true;} \
+#define PRE_TEST_FUNC()         \
+    static void preTest(void);  \
     __attribute__ ((__constructor__)) static void regPreTest ## suiteName(void) \
-    {suite.preTestFunc = preTest;}
+    {suite.preTestFunc = preTest;} \
+    static void preTest(void)
 
-#define POST_TEST_BEGIN() static bool postTest(void){
-#define POST_TEST_END return true;} \
+#define POST_TEST_FUNC()        \
+    static void postTest(void); \
     __attribute__ ((__constructor__)) static void regPostTest ## suiteName(void) \
-    {suite.postTestFunc = postTest;}
+    {suite.postTestFunc = postTest;} \
+    static void postTest(void)
 
 #define TESTCASE(idx, desc) \
-    static bool testauto##idx(void); \
+    static void testauto##idx(TestCase_t* tc); \
     __attribute__ ((__constructor__)) static void regTest ## idx(void) \
     {AddTestCase(&suite, testauto##idx, desc);} \
-    static bool testauto##idx(void)
+    static void testauto##idx(TestCase_t* tc)
 
 #define REGISTER_SUITE_AUTO(suiteName, suiteDesc) \
     static TestSuite_t suite = {0};\
@@ -39,16 +36,18 @@
 #define TESTCASEINDENT  "  "
 #define TESTCASEMSGINDENT "    "
 
-#define ASSERTMSG_INT_FAIL(expect, actual)  "FAIL! expect 0x%lx actual 0x%lx\n", (uint64_t)expect, (uint64_t)actual
+#define ASSERTMSG_NUM_FAIL(expect, actual)  "FAIL! expect %f actual %f\n", (double)expect, (double)actual
 #define ASSERTMSG_STR_FAIL(expect, actual)  "FAIL! expect [\"%s\"] actual [\"%s\"]\n", expect, actual
 
 #define ASSERT_CMPSTR(expect, actual) ((strncmp(expect, actual, strlen(actual)) == 0) && (strlen(expect) == strlen(actual)))
 
-#define ASSERT(cond, msgfmt) if(!(cond)){printf("\n" TESTCASEMSGINDENT msgfmt);} return (cond);
+#define ASSERT(cond, msgfmt) if(!(cond)){printf("\n" TESTCASEMSGINDENT msgfmt); tc->result = false; return;} else {tc->result = true;}
 
 struct _test_suite_t_;
+struct _test_case_t_;
 typedef void (*InitSuite_t)(struct _test_suite_t_ *);
-typedef bool (*TestCaseFunc_t)(void);
+typedef void (*TestCaseFunc_t)(struct _test_case_t_ *);
+typedef void (*PrePostFunc_t)(void);
 
 typedef struct _test_case_t_
 {
@@ -61,8 +60,8 @@ typedef struct _test_case_t_
 typedef struct _test_suite_t_
 {
     InitSuite_t     initFunc;
-    TestCaseFunc_t  preTestFunc;
-    TestCaseFunc_t  postTestFunc;
+    PrePostFunc_t   preTestFunc;
+    PrePostFunc_t   postTestFunc;
     TestCase_t*     testCaseList;
     char*           name;
     uint32_t        totalTestCaseNum;
