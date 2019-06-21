@@ -30,7 +30,6 @@ SOFTWARE.
 #include <readline/readline.h>
 #include <readline/history.h>
 
-#include "object.h"
 #include "planck.h"
 
 int main(int argc, char* argv[])
