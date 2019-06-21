@@ -34,7 +34,7 @@ void SortTestSuite(void)
 
 	while(true)
 	{
-		bool doChange;
+		bool doChange = false;
 		testSuitePtr = testUnit.testSuitsList;
 
 		TestSuite_t* preSuitePtr = NULL;
@@ -133,7 +133,7 @@ static void InitTestUnit(void)
 
 static void RunTest(void)
 {
-   TestSuite_t* testSuitePtr;
+    TestSuite_t* testSuitePtr;
     for(testSuitePtr = testUnit.testSuitsList; testSuitePtr != NULL; testSuitePtr = testSuitePtr->next)
     {
         uint32_t caseCount = 0;
