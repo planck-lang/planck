@@ -36,12 +36,18 @@
 #define TESTCASEINDENT  "  "
 #define TESTCASEMSGINDENT "    "
 
-#define ASSERTMSG_NUM_FAIL(expect, actual)  "FAIL! expect %f actual %f\n", (double)expect, (double)actual
-#define ASSERTMSG_STR_FAIL(expect, actual)  "FAIL! expect [\"%s\"] actual [\"%s\"]\n", expect, actual
+#define ASSERTMSG_NUM_EQ_FAIL(expect, actual)  "FAIL! expect %f actual %f\n", (double)expect, (double)actual
+#define ASSERTMSG_NUM_NEQ_FAIL(expect, actual)  "FAIL! expect %f should NOT same as %f\n", (double)expect, (double)actual
+#define ASSERTMSG_STR_EQ_FAIL(expect, actual)  "FAIL! expect [\"%s\"] actual [\"%s\"]\n", expect, actual
+#define ASSERTMSG_STR_NEQ_FAIL(expect, actual)  "FAIL! expect [\"%s\"] should NOT same as [\"%s\"]\n", expect, actual
 
 #define ASSERT_CMPSTR(expect, actual) ((strncmp(expect, actual, strlen(actual)) == 0) && (strlen(expect) == strlen(actual)))
 
 #define ASSERT(cond, msgfmt) if(!(cond)){printf("\n" TESTCASEMSGINDENT msgfmt); tc->result = false; return;} else {tc->result = true;}
+#define ASSERT_EQ_NUM(expect, actual) ASSERT((expect == actual), ASSERTMSG_NUM_EQ_FAIL(expect, actual))
+#define ASEERT_NEQ_NUM(expect, actual) ASSERT((expect != actual), ASSERTMSG_NUM_NEQ_FAIL(expect, actual))
+#define ASSERT_EQ_STR(expect, actual) ASSERT(ASSERT_CMPSTR(expect,actual), ASSERTMSG_STR_EQ_FAIL(expect, actual))
+#define ASEERT_NEQ_STR(expect, actual) ASSERT((strncmp(expect, actual, strlen(actual)) != 0), ASSERTMSG_STR_NEQ_FAIL(expect, actual))
 
 struct _test_suite_t_;
 struct _test_case_t_;

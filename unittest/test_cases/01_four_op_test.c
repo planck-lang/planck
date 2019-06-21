@@ -35,6 +35,6 @@ TESTCASE(FOT01, "simple add")
 	object_t ret;
     bool st = Planck_do(codeline, &ret);
 
-    ASSERT((true == st), ASSERTMSG_NUM_FAIL(1, st));
-    ASSERT((7.0 == ret.value.number), ASSERTMSG_NUM_FAIL(7.0, ret.value.number));
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(7.0, ret.value.number);
 }
