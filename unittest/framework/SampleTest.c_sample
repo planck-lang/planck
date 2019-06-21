@@ -1,0 +1,60 @@
+#include "TestMain.h"
+ 
+static char* suiteName = "this is test1";
+static int testprevalue = 0;
+
+ 
+static bool preTest(void)
+{
+    testprevalue = 10;
+    printf("pre val = %d\n", testprevalue);
+
+    return true;
+}
+
+static bool test01(void)
+{
+    testprevalue++;
+    ASSERT((11==testprevalue), ASSERTMSG_INT_FAIL(11, testprevalue));
+}
+
+static bool test02(void)
+{
+    testprevalue++;
+    ASSERT((10==testprevalue), ASSERTMSG_INT_FAIL(10, testprevalue));
+}
+
+static bool test03(void)
+{
+    testprevalue--;
+    ASSERT((10==testprevalue), ASSERTMSG_INT_FAIL(10, testprevalue));
+}
+
+static bool test04(void)
+{
+    testprevalue--;
+    ASSERT((10==testprevalue), ASSERTMSG_INT_FAIL(10, testprevalue));
+}
+
+static bool postTest(void)
+{
+    testprevalue = 0;
+    printf("post %d\n", testprevalue);
+
+    return true;
+}
+
+static void Init(TestSuite_t* suite)
+{
+    suite->name = suiteName;
+
+    suite->preTestFunc = preTest;
+    suite->postTestFunc = postTest;
+
+    AddTestCase(suite, test01, "first test");
+    AddTestCase(suite, test02, "second test");
+    AddTestCase(suite, test03, "third test");
+    AddTestCase(suite, test04, "forth test");
+}
+
+REGISTER_SUITE_FUNC(test01, Init)
