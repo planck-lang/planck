@@ -34,6 +34,7 @@ int yyerror(const char* str)
 %left EQ NE '>' '<' LE GE
 %left STRCON
 %left '+' '-'
+%left '^'
 %left '*' '/' '%'
 
 %%
@@ -51,6 +52,7 @@ expr : NUMBER               {CodeGen_add_number($1); $$ = 0;}
      | expr '*' expr        {CodeGen_add_opcode(opcode_mul); $$ = 0;}
      | expr '/' expr        {CodeGen_add_opcode(opcode_div); $$ = 0;}
      | expr '%' expr        {CodeGen_add_opcode(opcode_mod); $$ = 0;}
+     | expr '^' expr        {CodeGen_add_opcode(opcode_xor); $$ = 0;}
      | expr STRCON expr     {CodeGen_add_opcode(opcode_con); $$ = 0;}
      ;
 %%

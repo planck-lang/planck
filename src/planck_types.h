@@ -67,6 +67,7 @@ typedef enum _opcode_t_ {
     opcode_push,
     opcode_add,
     opcode_sub,
+    opcode_xor,
     opcode_mul,
     opcode_div,
     opcode_mod,

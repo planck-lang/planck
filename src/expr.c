@@ -32,6 +32,7 @@ SOFTWARE.
 
 static object_t op_add(object_t op1, object_t op2);
 static object_t op_sub(object_t op1, object_t op2);
+static object_t op_xor(object_t op1, object_t op2);
 static object_t op_mul(object_t op1, object_t op2);
 static object_t op_div(object_t op1, object_t op2);
 static object_t op_mod(object_t op1, object_t op2);
@@ -84,6 +85,9 @@ object_t Expr_execute(opcode_t opcode, object_t op1, object_t op2)
         break;
     case opcode_ne:
         ret = op_ne(op1, op2);
+        break;
+    case opcode_xor:
+        ret = op_xor(op1, op2);
         break;
     default:
         break;
@@ -327,6 +331,24 @@ static object_t op_ne(object_t op1, object_t op2)
     else if (op1.type == object_type_string && op2.type == object_type_string)
     {
         ret.value.boolean = Obj_comp_string(op1, op2) != 0 ? true : false;
+    }
+    else
+    {
+        VirtualMachine_add_error_msg(error_code_type_mismatch);
+    }
+    
+    return ret;
+}
+
+static object_t op_xor(object_t op1, object_t op2)
+{
+    object_t ret;
+
+    ret.type = object_type_number;
+
+    if (op1.type == object_type_number && op2.type == object_type_number)
+    {
+        ret.value.number = (uint64_t)op1.value.number ^ (uint64_t)op2.value.number;
     }
     else
     {
