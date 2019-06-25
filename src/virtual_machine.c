@@ -57,7 +57,7 @@ static struct _vm_error_status_t_ {
     char*           msg;
     error_code_t    error_code;
 } s_vm_error, s_predefined_error[] = {
-        {"Two ops are not allowed this operator.", error_code_type_mismatch},
+        {"Type mismatch error on this operator.", error_code_type_mismatch},
         {"No error", error_code_no_error}
 };
 

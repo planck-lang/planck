@@ -210,7 +210,7 @@ static object_t op_lt(object_t op1, object_t op2)
     {
         ret.value.boolean = op1.value.number < op2.value.number;
     }
-    else if (op1.type == object_type_string || op2.type == object_type_string)  // one of operand is string type
+    else if (op1.type == object_type_string && op2.type == object_type_string)
     {
         ret.value.boolean = Obj_comp_string(op1, op2) < 0 ? true : false;
     }
@@ -232,7 +232,7 @@ static object_t op_gt(object_t op1, object_t op2)
     {
         ret.value.boolean = op1.value.number > op2.value.number;
     }
-    else if (op1.type == object_type_string || op2.type == object_type_string)  // one of operand is string type
+    else if (op1.type == object_type_string && op2.type == object_type_string)
     {
         ret.value.boolean = Obj_comp_string(op1, op2) > 0 ? true : false;
     }
@@ -254,7 +254,7 @@ static object_t op_le(object_t op1, object_t op2)
     {
         ret.value.boolean = op1.value.number <= op2.value.number;
     }
-    else if (op1.type == object_type_string || op2.type == object_type_string)  // one of operand is string type
+    else if (op1.type == object_type_string && op2.type == object_type_string)
     {
         ret.value.boolean = Obj_comp_string(op1, op2) <= 0 ? true : false;
     }
@@ -276,7 +276,7 @@ static object_t op_ge(object_t op1, object_t op2)
     {
         ret.value.boolean = op1.value.number >= op2.value.number;
     }
-    else if (op1.type == object_type_string || op2.type == object_type_string)  // one of operand is string type
+    else if (op1.type == object_type_string && op2.type == object_type_string)
     {
         ret.value.boolean = Obj_comp_string(op1, op2) >= 0 ? true : false;
     }
@@ -298,7 +298,7 @@ static object_t op_eq(object_t op1, object_t op2)
     {
         ret.value.boolean = op1.value.number == op2.value.number;
     }
-    else if (op1.type == object_type_string || op2.type == object_type_string)  // one of operand is string type
+    else if (op1.type == object_type_string && op2.type == object_type_string)
     {
         ret.value.boolean = Obj_comp_string(op1, op2) == 0 ? true : false;
         if (ret.value.boolean)
@@ -324,7 +324,7 @@ static object_t op_ne(object_t op1, object_t op2)
     {
         ret.value.boolean = op1.value.number != op2.value.number;
     }
-    else if (op1.type == object_type_string || op2.type == object_type_string)  // one of operand is string type
+    else if (op1.type == object_type_string && op2.type == object_type_string)
     {
         ret.value.boolean = Obj_comp_string(op1, op2) != 0 ? true : false;
     }

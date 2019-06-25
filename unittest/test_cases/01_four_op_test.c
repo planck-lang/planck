@@ -38,3 +38,21 @@ TESTCASE(FOT01, "simple add")
     ASSERT_EQ_NUM(true, st);
     ASSERT_EQ_NUM(7.0, ret.value.number);
 }
+
+// complex add
+
+// simple sub
+
+// mixed add, sub
+
+// simple mul
+
+// mixed add, sub, mul
+
+// simple div
+
+// mixed add, sub, mul, div
+
+// simple mod
+
+// mixed add, sub, mul, div, mod
