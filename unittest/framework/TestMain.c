@@ -28,49 +28,50 @@ void AddTestSuite(TestSuite_t* testSuite)
     testUnit.testSuitsList = testSuite;
 }
 
+/*
+Swap only data; It should keep the next link for each of params
+ */
+static void swap(TestSuite_t* a, TestSuite_t* b) 
+{ 
+    TestSuite_t* temp_a_next = a->next; 
+    TestSuite_t* temp_b_next = b->next;
+
+    TestSuite_t temp = {0};
+    temp = *a;
+    *a = *b;
+    *b = temp;
+
+    a->next = temp_a_next;
+    b->next = temp_b_next;
+} 
+
 void SortTestSuite(void)
 {
-	TestSuite_t* testSuitePtr;
+    bool swapped; 
+    TestSuite_t* ptr1; 
+    TestSuite_t* lptr = NULL; 
+  
+    /* Checking for empty list */
+    if (testUnit.testSuitsList->next == NULL) 
+        return; 
 
-	while(true)
-	{
-		bool doChange = false;
-		testSuitePtr = testUnit.testSuitsList;
-
-		TestSuite_t* preSuitePtr = NULL;
-		while(testSuitePtr->next)
-		{
-			doChange = false;
-
-			if(strncmp(testSuitePtr->name, testSuitePtr->next->name, 2) > 0)
-			{
-				doChange = true;
-
-				TestSuite_t* tA = testSuitePtr;
-				TestSuite_t* tB = testSuitePtr->next;
-
-				if(preSuitePtr == NULL)
-				{
-					testUnit.testSuitsList = tB;
-				}
-				else
-				{
-					preSuitePtr->next = tB;
-				}
-				tA->next = tB->next;
-				tB->next = tA;
-			}
-
-			preSuitePtr = testSuitePtr;
-			testSuitePtr = testSuitePtr->next;
-		}
-
-
-		if(doChange == false)
-		{
-			break;
-		}
-	}
+    do
+    { 
+        swapped = false; 
+        ptr1 = testUnit.testSuitsList; 
+  
+        while (ptr1->next != lptr) 
+        { 
+            if (strncmp(ptr1->name, ptr1->next->name, 2) > 0) 
+            {  
+                swap(ptr1, ptr1->next); 
+                swapped = true; 
+            } 
+            ptr1 = ptr1->next; 
+        } 
+        lptr = ptr1; 
+    } 
+    while (swapped); 
 }
 
 TestCase_t* MakeTestCase(TestCaseFunc_t testFunc, char* name)
