@@ -36,10 +36,10 @@
 #define TESTCASEINDENT  "  "
 #define TESTCASEMSGINDENT "    "
 
-#define ASSERTMSG_NUM_EQ_FAIL(expect, actual)  "FAIL! expect %f actual %f\n", (double)expect, (double)actual
-#define ASSERTMSG_NUM_NEQ_FAIL(expect, actual)  "FAIL! expect %f should NOT same as %f\n", (double)expect, (double)actual
-#define ASSERTMSG_STR_EQ_FAIL(expect, actual)  "FAIL! expect [\"%s\"] actual [\"%s\"]\n", expect, actual
-#define ASSERTMSG_STR_NEQ_FAIL(expect, actual)  "FAIL! expect [\"%s\"] should NOT same as [\"%s\"]\n", expect, actual
+#define ASSERTMSG_NUM_EQ_FAIL(expect, actual)  "FAIL! expect %f actual %f (at Line %d)\n", (double)expect, (double)actual, __LINE__
+#define ASSERTMSG_NUM_NEQ_FAIL(expect, actual)  "FAIL! expect %f should NOT same as %f (at Line %d)\n", (double)expect, (double)actual, __LINE__
+#define ASSERTMSG_STR_EQ_FAIL(expect, actual)  "FAIL! expect [\"%s\"] actual [\"%s\"] (at Line %d)\n", expect, actual, __LINE__
+#define ASSERTMSG_STR_NEQ_FAIL(expect, actual)  "FAIL! expect [\"%s\"] should NOT same as [\"%s\"] (at Line %d)\n", expect, actual, __LINE__
 
 #define ASSERT_CMPSTR(expect, actual) ((strncmp(expect, actual, strlen(actual)) == 0) && (strlen(expect) == strlen(actual)))
 

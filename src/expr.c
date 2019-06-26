@@ -43,6 +43,8 @@ static object_t op_le(object_t op1, object_t op2);
 static object_t op_ge(object_t op1, object_t op2);
 static object_t op_eq(object_t op1, object_t op2);
 static object_t op_ne(object_t op1, object_t op2);
+static object_t op_rshift(object_t op1, object_t op2);
+static object_t op_lshift(object_t op1, object_t op2);
 
 object_t Expr_execute(opcode_t opcode, object_t op1, object_t op2)
 {   
@@ -88,6 +90,12 @@ object_t Expr_execute(opcode_t opcode, object_t op1, object_t op2)
         break;
     case opcode_xor:
         ret = op_xor(op1, op2);
+        break;
+    case opcode_lshift:
+        ret = op_lshift(op1, op2);
+        break;
+    case opcode_rshift:
+        ret = op_rshift(op1, op2);
         break;
     default:
         break;
@@ -349,6 +357,42 @@ static object_t op_xor(object_t op1, object_t op2)
     if (op1.type == object_type_number && op2.type == object_type_number)
     {
         ret.value.number = (uint64_t)op1.value.number ^ (uint64_t)op2.value.number;
+    }
+    else
+    {
+        VirtualMachine_add_error_msg(error_code_type_mismatch);
+    }
+    
+    return ret;
+}
+
+static object_t op_rshift(object_t op1, object_t op2)
+{
+    object_t ret;
+
+    ret.type = object_type_number;
+
+    if (op1.type == object_type_number && op2.type == object_type_number)
+    {
+        ret.value.number = (uint64_t)op1.value.number >> (uint64_t)op2.value.number;
+    }
+    else
+    {
+        VirtualMachine_add_error_msg(error_code_type_mismatch);
+    }
+    
+    return ret;
+}
+
+static object_t op_lshift(object_t op1, object_t op2)
+{
+    object_t ret;
+
+    ret.type = object_type_number;
+
+    if (op1.type == object_type_number && op2.type == object_type_number)
+    {
+        ret.value.number = (uint64_t)op1.value.number << (uint64_t)op2.value.number;
     }
     else
     {

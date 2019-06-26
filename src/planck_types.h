@@ -78,6 +78,8 @@ typedef enum _opcode_t_ {
     opcode_ge,
     opcode_eq,
     opcode_ne,
+    opcode_rshift,
+    opcode_lshift,
     opcode_halt,
     opcode_MAXNUM
 } opcode_t;

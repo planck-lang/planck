@@ -38,3 +38,35 @@ TESTCASE(BOT01, "xor")
     ASSERT_EQ_NUM(true, st);
     ASSERT_EQ_NUM(2.0, ret.value.number);
 }
+
+TESTCASE(BOT02, "shift right")
+{
+    char* codeline = "3 >> 1";
+
+	object_t ret;
+    bool st = Planck_do(codeline, &ret);
+
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(1, ret.value.number);
+
+    codeline = "3290 >> 3";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(411, ret.value.number);
+}
+
+TESTCASE(BOT03, "shift left")
+{
+    char* codeline = "3 << 1";
+
+	object_t ret;
+    bool st = Planck_do(codeline, &ret);
+
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(6, ret.value.number);
+
+    codeline = "3290 << 3";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(26320, ret.value.number);
+}

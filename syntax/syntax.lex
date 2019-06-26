@@ -19,6 +19,8 @@ int yywrap(void)
 "!="        return NE;
 "<="        return LE;
 ">="        return GE;
+">>"        return RSHFT;
+"<<"        return LSHFT;
 
 [0-9]+("."[0-9]*)? {
     char* ptr;
