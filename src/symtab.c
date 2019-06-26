@@ -76,19 +76,22 @@ static string_literal_tab_t* insert_string_literal(const char* string_literal)
 {
     string_literal_tab_t* new_node = (string_literal_tab_t*)malloc(sizeof(string_literal_tab_t));
 
-    new_node->string_literal_buffer = (char*)malloc(strlen(string_literal) + 1);    // '+1' is for NULL
+    size_t buf_len = strlen(string_literal) + 1; // '+1' is for NULL
+    new_node->string_literal_buffer = (char*)malloc(buf_len);
+    memset(new_node->string_literal_buffer, 0, buf_len);
     strncpy(new_node->string_literal_buffer, string_literal, strlen(string_literal));
     new_node->next = NULL;
 
     if (s_string_literal_tab_linkedlist.head == NULL)
     {
         s_string_literal_tab_linkedlist.head = new_node;
-        s_string_literal_tab_linkedlist.tail = s_string_literal_tab_linkedlist.head;
     }
     else
     {
         s_string_literal_tab_linkedlist.tail->next = new_node;
     }
+    
+    s_string_literal_tab_linkedlist.tail = new_node;
 
     return new_node;
 }
