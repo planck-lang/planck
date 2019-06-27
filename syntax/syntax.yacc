@@ -11,7 +11,7 @@ extern int yylex (void);
 
 int yyerror(const char* str)
 {
-    printf("[Error] %s\n", str);
+    printf("[Parse Error] %s\n", str);
     return 0;
 }
 %}
@@ -34,6 +34,7 @@ int yyerror(const char* str)
 
 %left EQ NE '>' '<' LE GE
 %left STRCON
+%left '|' '&'
 %left RSHFT LSHFT
 %left '+' '-'
 %left '^'
@@ -58,5 +59,7 @@ expr : NUMBER               {CodeGen_add_number($1); $$ = 0;}
      | expr STRCON expr     {CodeGen_add_opcode(opcode_con); $$ = 0;}
      | expr RSHFT expr      {CodeGen_add_opcode(opcode_rshift); $$ = 0;}
      | expr LSHFT expr      {CodeGen_add_opcode(opcode_lshift); $$ = 0;}
+     | expr '|' expr        {CodeGen_add_opcode(opcode_bit_or); $$ = 0;}
+     | expr '&' expr        {CodeGen_add_opcode(opcode_bit_and); $$ = 0;}
      ;
 %%
