@@ -137,3 +137,25 @@ TESTCASE(FOT10, "mixed add, sub, mul, div, mod")
     ASSERT_EQ_NUM(true, st);
     ASSERT_EQ_NUM((23424% 323 + 3.0 / (3.0 + 4.0) * 3 - 223 + 3992), ret.value.number);
 }
+
+TESTCASE(FOT11, "string concatenation")
+{
+    char* codeline = "'abcd' ## 'efg' ## 23 ## 'deff'";
+
+    object_t ret;
+    bool st = Planck_do(codeline, &ret);
+
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_STR("abcdefg23deff", ret.value.string_ptr);
+}
+
+TESTCASE(FOT12, "string conc with op")
+{
+    char* codeline = "'abcd' ## 'efg' ## 20 + 3 ## 'deff'";
+
+    object_t ret;
+    bool st = Planck_do(codeline, &ret);
+
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_STR("abcdefg23deff", ret.value.string_ptr);
+}
