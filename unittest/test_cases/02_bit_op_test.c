@@ -32,7 +32,7 @@ TESTCASE(BOT01, "xor")
 {
     char* codeline = "4 ^ 6";
 
-	object_t ret;
+    object_t ret;
     bool st = Planck_do(codeline, &ret);
 
     ASSERT_EQ_NUM(true, st);
@@ -43,7 +43,7 @@ TESTCASE(BOT02, "shift right")
 {
     char* codeline = "3 >> 1";
 
-	object_t ret;
+    object_t ret;
     bool st = Planck_do(codeline, &ret);
 
     ASSERT_EQ_NUM(true, st);
@@ -59,7 +59,7 @@ TESTCASE(BOT03, "shift left")
 {
     char* codeline = "3 << 1";
 
-	object_t ret;
+    object_t ret;
     bool st = Planck_do(codeline, &ret);
 
     ASSERT_EQ_NUM(true, st);
@@ -75,7 +75,7 @@ TESTCASE(BOT04, "bit or")
 {
     char* codeline = "100 | 3";
 
-	object_t ret;
+    object_t ret;
     bool st = Planck_do(codeline, &ret);
 
     ASSERT_EQ_NUM(true, st);
@@ -91,7 +91,7 @@ TESTCASE(BOT05, "bit and")
 {
     char* codeline = "100 & 3";
 
-	object_t ret;
+    object_t ret;
     bool st = Planck_do(codeline, &ret);
 
     ASSERT_EQ_NUM(true, st);
@@ -107,7 +107,7 @@ TESTCASE(BOT06, "bit op mixed")
 {
     char* codeline = "3 + 2 | 3";
 
-	object_t ret;
+    object_t ret;
     bool st = Planck_do(codeline, &ret);
 
     ASSERT_EQ_NUM(true, st);

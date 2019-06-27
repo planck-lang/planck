@@ -32,27 +32,108 @@ TESTCASE(FOT01, "simple add")
 {
     char* codeline = "3 + 4";
 
-	object_t ret;
+    object_t ret;
     bool st = Planck_do(codeline, &ret);
 
     ASSERT_EQ_NUM(true, st);
     ASSERT_EQ_NUM(7.0, ret.value.number);
 }
 
-// complex add
+TESTCASE(FOT02, "complex add")
+{
+    char* codeline = "3 + 4 + (7 + 4) + 382+(392+4+498)+2023+993";
 
-// simple sub
+    object_t ret;
+    bool st = Planck_do(codeline, &ret);
 
-// mixed add, sub
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM((3 + 4 + (7 + 4) + 382+(392+4+498)+2023+993), ret.value.number);
+}
 
-// simple mul
+TESTCASE(FOT03, "simple sub")
+{
+    char* codeline = "3 - 4";
 
-// mixed add, sub, mul
+    object_t ret;
+    bool st = Planck_do(codeline, &ret);
 
-// simple div
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM((3 - 4), ret.value.number);
+}
 
-// mixed add, sub, mul, div
+TESTCASE(FOT04, "mixed add, sub")
+{
+    char* codeline = "3 - 4 + 3290 - (39-4+48) + 3902+332";
 
-// simple mod
+    object_t ret;
+    bool st = Planck_do(codeline, &ret);
 
-// mixed add, sub, mul, div, mod
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM((3 - 4 + 3290 - (39-4+48) + 3902+332), ret.value.number);
+}
+
+TESTCASE(FOT05, "simple mul")
+{
+    char* codeline = "23*455";
+
+    object_t ret;
+    bool st = Planck_do(codeline, &ret);
+
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM((23*455), ret.value.number);
+}
+
+TESTCASE(FOT06, "mixed add, sub, mul")
+{
+    char* codeline = "23*455 + 32 + 323 - (325-33) * 43 - 32 +883";
+
+    object_t ret;
+    bool st = Planck_do(codeline, &ret);
+
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM((23*455 + 32 + 323 - (325-33) * 43 - 32 +883), ret.value.number);
+}
+
+TESTCASE(FOT07, "simple div")
+{
+    char* codeline = "4 / 2";
+
+    object_t ret;
+    bool st = Planck_do(codeline, &ret);
+
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM((4 / 2), ret.value.number);
+}
+
+TESTCASE(FOT08, "mixed add, sub, mul, div")
+{
+    char* codeline = "4 / 2 + 2 * 3 + (3 + 2) / 2 * 3";
+
+    object_t ret;
+    bool st = Planck_do(codeline, &ret);
+
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM((4.0 / 2.0 + 2 * 3 + (3 + 2) / 2.0 * 3), ret.value.number);
+}
+
+TESTCASE(FOT09, "simple mod")
+{
+    char* codeline = "23424% 323";
+
+    object_t ret;
+    bool st = Planck_do(codeline, &ret);
+
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM((23424% 323), ret.value.number);
+}
+
+TESTCASE(FOT10, "mixed add, sub, mul, div, mod")
+{
+    char* codeline = "23424% 323 + 3 / (3 + 4) * 3 - 223 + 3992";
+
+    object_t ret;
+    bool st = Planck_do(codeline, &ret);
+
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM((23424% 323 + 3.0 / (3.0 + 4.0) * 3 - 223 + 3992), ret.value.number);
+}
