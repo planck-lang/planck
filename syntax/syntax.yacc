@@ -25,6 +25,7 @@ int yyerror(const char* str)
 %start expr
 
 %token                  STRCON
+%token                  COMAND COMOR
 %token                  EQ NE LE GE
 %token                  RSHFT LSHFT
 %token<double_value>    NUMBER
@@ -32,6 +33,7 @@ int yyerror(const char* str)
 
 %type<int_value> expr
 
+%left COMAND COMOR
 %left EQ NE '>' '<' LE GE
 %left STRCON
 %left '|' '&'
@@ -61,5 +63,7 @@ expr : NUMBER               {CodeGen_add_number($1); $$ = 0;}
      | expr LSHFT expr      {CodeGen_add_opcode(opcode_lshift); $$ = 0;}
      | expr '|' expr        {CodeGen_add_opcode(opcode_bit_or); $$ = 0;}
      | expr '&' expr        {CodeGen_add_opcode(opcode_bit_and); $$ = 0;}
+     | expr COMAND expr     {CodeGen_add_opcode(opcode_com_and); $$ = 0;}
+     | expr COMOR expr      {CodeGen_add_opcode(opcode_com_or); $$ = 0;}
      ;
 %%

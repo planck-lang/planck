@@ -22,6 +22,8 @@ int yywrap(void)
 ">="        return GE;
 ">>"        return RSHFT;
 "<<"        return LSHFT;
+" AND "     return COMAND;
+" OR "      return COMOR;
 
 [0-9]+("."[0-9]*)? {
     char* ptr;
