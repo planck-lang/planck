@@ -164,3 +164,71 @@ TESTCASE(COT07, "string comparison")
     ASSERT_EQ_NUM(true, st);
     ASSERT_EQ_NUM(true, ret.value.boolean);
 }
+
+TESTCASE(COT08, "and comparison")
+{
+    char* codeline = "3> 2 AND 4 > 3";
+
+    object_t ret;
+    bool st = Planck_do(codeline, &ret);
+
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(true, ret.value.boolean);
+
+    codeline = "3> 2 AND 4 < 3";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(false, ret.value.boolean);
+
+    codeline = "3 < 2 AND 4 > 3";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(false, ret.value.boolean);
+}
+
+TESTCASE(COT09, "or comparison")
+{
+    char* codeline = "3> 2 OR 4 > 3";
+
+    object_t ret;
+    bool st = Planck_do(codeline, &ret);
+
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(true, ret.value.boolean);
+
+    codeline = "3> 2 OR 4 < 3";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(true, ret.value.boolean);
+
+    codeline = "3 < 2 OR 4 > 3";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(true, ret.value.boolean);
+
+    codeline = "3 < 2 OR 4 < 3";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(false, ret.value.boolean);
+}
+
+TESTCASE(COT10, "mixed and or")
+{
+    char* codeline = "3+ 4 == 7 AND 4+2==6";
+
+    object_t ret;
+    bool st = Planck_do(codeline, &ret);
+
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(true, ret.value.boolean);
+
+    codeline = "3+ 4 == 7 AND 4+3==6";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(false, ret.value.boolean);
+
+    codeline = "3+ 4 == 7 OR 4+3==6";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(true, ret.value.boolean);
+}
