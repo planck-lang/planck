@@ -155,7 +155,7 @@ static void RunTest(void)
 
         for(testCasePtr = testSuitePtr->testCaseList ; testCasePtr != NULL ; testCasePtr = testCasePtr->next)
         {
-            printf(TESTCASEINDENT "Case %03d [%s] ", caseCount++, testCasePtr->name);
+            printf(TESTCASEINDENT "Case %03d [%s] ", (caseCount++) + 1, testCasePtr->name);
             BeautiPrint_GetCurrentPadLen(testCasePtr->name, beautiprintMaxLen);
 
             if(testCasePtr->testFunc != NULL)
