@@ -33,7 +33,6 @@ int yyerror(const char* str)
 %token<string_ptr>      STRING
 %token<string_ptr>      IDENTIFIER            
 
-%type<int_value>    expr
 %type<string_ptr>   type
 
 %left COMAND COMOR
@@ -53,28 +52,28 @@ prog : expr
 stmt_with_semiconlon : stmt ';'
                      ;
 
-expr : NUMBER               {CodeGen_add_number($1); $$ = 0;}
-     | STRING               {CodeGen_add_string($1); $$ = 0;}
-     | '(' expr ')'         {$$ = $2;}
-     | expr '<' expr        {CodeGen_add_opcode(opcode_lt); $$ = 0;}
-     | expr '>' expr        {CodeGen_add_opcode(opcode_gt); $$ = 0;}
-     | expr LE expr         {CodeGen_add_opcode(opcode_le); $$ = 0;}
-     | expr GE expr         {CodeGen_add_opcode(opcode_ge); $$ = 0;}
-     | expr EQ expr         {CodeGen_add_opcode(opcode_eq); $$ = 0;}
-     | expr NE expr         {CodeGen_add_opcode(opcode_ne); $$ = 0;}
-     | expr '+' expr        {CodeGen_add_opcode(opcode_add); $$ = 0;}
-     | expr '-' expr        {CodeGen_add_opcode(opcode_sub); $$ = 0;}
-     | expr '*' expr        {CodeGen_add_opcode(opcode_mul); $$ = 0;}
-     | expr '/' expr        {CodeGen_add_opcode(opcode_div); $$ = 0;}
-     | expr '%' expr        {CodeGen_add_opcode(opcode_mod); $$ = 0;}
-     | expr '^' expr        {CodeGen_add_opcode(opcode_xor); $$ = 0;}
-     | expr STRCON expr     {CodeGen_add_opcode(opcode_con); $$ = 0;}
-     | expr RSHFT expr      {CodeGen_add_opcode(opcode_rshift); $$ = 0;}
-     | expr LSHFT expr      {CodeGen_add_opcode(opcode_lshift); $$ = 0;}
-     | expr '|' expr        {CodeGen_add_opcode(opcode_bit_or); $$ = 0;}
-     | expr '&' expr        {CodeGen_add_opcode(opcode_bit_and); $$ = 0;}
-     | expr COMAND expr     {CodeGen_add_opcode(opcode_com_and); $$ = 0;}
-     | expr COMOR expr      {CodeGen_add_opcode(opcode_com_or); $$ = 0;}
+expr : NUMBER               {CodeGen_add_number($1);}
+     | STRING               {CodeGen_add_string($1);}
+     | expr '<' expr        {CodeGen_add_opcode(opcode_lt);}
+     | expr '>' expr        {CodeGen_add_opcode(opcode_gt);}
+     | expr LE expr         {CodeGen_add_opcode(opcode_le);}
+     | expr GE expr         {CodeGen_add_opcode(opcode_ge);}
+     | expr EQ expr         {CodeGen_add_opcode(opcode_eq);}
+     | expr NE expr         {CodeGen_add_opcode(opcode_ne);}
+     | expr '+' expr        {CodeGen_add_opcode(opcode_add);}
+     | expr '-' expr        {CodeGen_add_opcode(opcode_sub);}
+     | expr '*' expr        {CodeGen_add_opcode(opcode_mul);}
+     | expr '/' expr        {CodeGen_add_opcode(opcode_div);}
+     | expr '%' expr        {CodeGen_add_opcode(opcode_mod);}
+     | expr '^' expr        {CodeGen_add_opcode(opcode_xor);}
+     | expr STRCON expr     {CodeGen_add_opcode(opcode_con);}
+     | expr RSHFT expr      {CodeGen_add_opcode(opcode_rshift);}
+     | expr LSHFT expr      {CodeGen_add_opcode(opcode_lshift);}
+     | expr '|' expr        {CodeGen_add_opcode(opcode_bit_or);}
+     | expr '&' expr        {CodeGen_add_opcode(opcode_bit_and);}
+     | expr COMAND expr     {CodeGen_add_opcode(opcode_com_and);}
+     | expr COMOR expr      {CodeGen_add_opcode(opcode_com_or);}
+     | '(' expr ')'         
      ;
 
 stmt : /* empty */
