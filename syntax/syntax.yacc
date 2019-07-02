@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>
 
 #include "object.h"
 #include "virtual_machine.h"
@@ -22,7 +23,7 @@ int yyerror(const char* str)
     char*       string_ptr;
 }
 
-%start expr
+%start prog
 
 %token                  STRCON
 %token                  COMAND COMOR
@@ -30,8 +31,10 @@ int yyerror(const char* str)
 %token                  RSHFT LSHFT
 %token<double_value>    NUMBER
 %token<string_ptr>      STRING
+%token<string_ptr>      IDENTIFIER            
 
-%type<int_value> expr
+%type<int_value>    expr
+%type<string_ptr>   type
 
 %left COMAND COMOR
 %left EQ NE '>' '<' LE GE
@@ -43,6 +46,13 @@ int yyerror(const char* str)
 %left '*' '/' '%'
 
 %%
+prog : expr
+     | stmt_with_semiconlon
+     ;
+
+stmt_with_semiconlon : stmt ';'
+                     ;
+
 expr : NUMBER               {CodeGen_add_number($1); $$ = 0;}
      | STRING               {CodeGen_add_string($1); $$ = 0;}
      | '(' expr ')'         {$$ = $2;}
@@ -66,4 +76,15 @@ expr : NUMBER               {CodeGen_add_number($1); $$ = 0;}
      | expr COMAND expr     {CodeGen_add_opcode(opcode_com_and); $$ = 0;}
      | expr COMOR expr      {CodeGen_add_opcode(opcode_com_or); $$ = 0;}
      ;
+
+stmt : /* empty */
+     | decl
+     ;
+
+decl : type IDENTIFIER '=' expr   {/*CodeGen_add_variable($1, $2); CodeGen_add_opcode(opcode_store); free($1); free($2);*/}
+     ;
+
+type : IDENTIFIER
+     ;
+
 %%

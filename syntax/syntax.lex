@@ -2,6 +2,7 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "y.tab.h"
 
@@ -35,6 +36,11 @@ int yywrap(void)
 \'[^\']*\'  {
     yylval.string_ptr = yytext;
     return STRING;
+}
+
+[a-zA-Z_][0-9a-zA-Z_]* {
+    yylval.string_ptr = strndup(yytext, strlen(yytext));
+    return IDENTIFIER;
 }
 
 .           {       // It must be the last rule because it can match ANY characters
