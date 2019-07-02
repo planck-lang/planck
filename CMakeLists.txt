@@ -115,7 +115,7 @@ SET(SRCS
 	src/virtual_machine.c)
 ADD_LIBRARY(modplanck OBJECT ${SRCS})
 TARGET_COMPILE_OPTIONS(modplanck PRIVATE
-	-std=c11 -fPIC)
+	-std=gnu11 -fPIC)
 
 add_fake_cppcheck(modplanck)
 
@@ -136,13 +136,13 @@ INSTALL(TARGETS libplanck_static ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR})
 
 # planck exeutable with shared and static library
 ADD_EXECUTABLE(planck src/main.c)
-TARGET_COMPILE_OPTIONS(planck PRIVATE -std=c11)
+TARGET_COMPILE_OPTIONS(planck PRIVATE -std=gnu11)
 TARGET_LINK_LIBRARIES(planck -L${CMAKE_BINARY_DIR} -lreadline -lplanck )
 ADD_DEPENDENCIES(planck libplanck_shared)
 INSTALL(TARGETS planck RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 ADD_EXECUTABLE(planck_static src/main.c)
-TARGET_COMPILE_OPTIONS(planck_static PRIVATE -std=c11)
+TARGET_COMPILE_OPTIONS(planck_static PRIVATE -std=gnu11)
 TARGET_LINK_LIBRARIES(planck_static ${CMAKE_BINARY_DIR}/libplanck.a -lreadline)
 ADD_DEPENDENCIES(planck_static libplanck_static)
 INSTALL(TARGETS planck_static RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

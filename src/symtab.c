@@ -76,10 +76,7 @@ static string_literal_tab_t* insert_string_literal(const char* string_literal)
 {
     string_literal_tab_t* new_node = (string_literal_tab_t*)malloc(sizeof(string_literal_tab_t));
 
-    size_t buf_len = strlen(string_literal) + 1; // '+1' is for NULL
-    new_node->string_literal_buffer = (char*)malloc(buf_len);
-    memset(new_node->string_literal_buffer, 0, buf_len);
-    strncpy(new_node->string_literal_buffer, string_literal, strlen(string_literal));
+    new_node->string_literal_buffer = strndup(string_literal, strlen(string_literal));
     new_node->next = NULL;
 
     if (s_string_literal_tab_linkedlist.head == NULL)

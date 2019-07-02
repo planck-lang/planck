@@ -1,6 +1,6 @@
 project('planck', 'c', version: '0.1.0')
 
-cflags = [  '-g', '-Os', '-std=c11',
+cflags = [  '-g', '-Os', '-std=gnu11',
             # Turn on all warnings and treat all warnings as errors.
             '-Werror', '-Wall', '-Wextra',
             # Additional warnings
@@ -44,9 +44,11 @@ executable('planck_static', 'src/main.c',
             c_args:cflags, dependencies:readline_dep)
 
 # unit test
-unit_test_src = ['unittest/test_cases/01_four_op_test.c',
+unit_test_src = ['unittest/test_cases/00_white_box_test.c',
+                 'unittest/test_cases/01_four_op_test.c',
                  'unittest/test_cases/02_bit_op_test.c',
                  'unittest/test_cases/03_comp_op_test.c',
+                 'unittest/test_cases/04_variable_test.c',
                  'unittest/framework/TestMain.c']
 
 test_incdir = include_directories(['src', 'unittest/framework'])
