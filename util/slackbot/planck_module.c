@@ -22,9 +22,11 @@ static PyObject* planck_exe(PyObject* self, PyObject* args)
         case object_type_number:
             return Py_BuildValue("id", (int)st, ret.value.number);
         case object_type_string:
-            return Py_BuildValue("is", (int)st, ret.value.string_ptr);
+            return Py_BuildValue("is", (int)st, ret.value.str.ptr);
         case object_type_boolean:
             return Py_BuildValue("ii", 3, ret.value.boolean);
+        case object_type_null:
+            return Py_BuildValue("ii", 4, (int)st);
         default:
             printf("[Type Error]\n");
         }

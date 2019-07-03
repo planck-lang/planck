@@ -62,6 +62,8 @@ int main(int argc, char* argv[])
                 case object_type_boolean:
                     printf("%s\n", ret.value.boolean ? "true" : "false");
                     break;
+                case object_type_null:
+                    break;
                 default:
                     printf("[Type Error]\n");
                 }

@@ -45,6 +45,8 @@ def message_receiver(**payload):
                 else:
                     if st == 3:
                         ret_text = "True" if planck_result == 1 else "False"
+                    elif st == 4:
+                        ret_text = "OK"
                     else:
                         ret_text = str(planck_result)
 
