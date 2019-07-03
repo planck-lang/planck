@@ -146,7 +146,7 @@ TESTCASE(FOT11, "string concatenation")
     bool st = Planck_do(codeline, &ret);
 
     ASSERT_EQ_NUM(true, st);
-    ASSERT_EQ_STR("abcdefg23deff", ret.value.string_ptr);
+    ASSERT_EQ_STR("abcdefg23deff", ret.value.str.ptr);
 }
 
 TESTCASE(FOT12, "string conc with op")
@@ -157,5 +157,5 @@ TESTCASE(FOT12, "string conc with op")
     bool st = Planck_do(codeline, &ret);
 
     ASSERT_EQ_NUM(true, st);
-    ASSERT_EQ_STR("abcdefg23deff", ret.value.string_ptr);
+    ASSERT_EQ_STR("abcdefg23deff", ret.value.str.ptr);
 }

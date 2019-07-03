@@ -331,7 +331,7 @@ static object_t op_eq(object_t op1, object_t op2)
         ret.value.boolean = Obj_comp_string(op1, op2) == 0 ? true : false;
         if (ret.value.boolean)
         {
-            ret.value.boolean = strlen(op1.value.string_ptr) == strlen(op2.value.string_ptr) ? true : false;
+            ret.value.boolean = strlen(op1.value.str.ptr) == strlen(op2.value.str.ptr) ? true : false;
         }
     }
     else

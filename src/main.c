@@ -57,7 +57,7 @@ int main(int argc, char* argv[])
                     printf("%f\n", ret.value.number);
                     break;
                 case object_type_string:
-                    printf("\"%s\"\n", ret.value.string_ptr);
+                    printf("\"%s\"\n", ret.value.str.ptr);
                     break;
                 case object_type_boolean:
                     printf("%s\n", ret.value.boolean ? "true" : "false");

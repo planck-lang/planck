@@ -31,7 +31,7 @@ int yyerror(const char* str)
 %token                  RSHFT LSHFT
 %token<double_value>    NUMBER
 %token<string_ptr>      STRING
-%token<string_ptr>      IDENTIFIER            
+%token<string_ptr>      IDENTIFIER
 
 %type<string_ptr>   type
 

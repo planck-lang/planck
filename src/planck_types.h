@@ -53,8 +53,11 @@ typedef struct _object_t_ {
 
     union _value_t_ {
         double  number;
-        char*   string_ptr;
         bool    boolean;
+        union _str_t_ {
+            char*    ptr;
+            uint32_t table_idx;
+        } str;
     } value;
 } object_t;
 

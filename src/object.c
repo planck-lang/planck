@@ -53,7 +53,7 @@ object_t Obj_to_string(object_t obj)
             sprintf(temp_buffer, "%f", obj.value.number);
         }
 
-        ret.value.string_ptr = Symtab_add_string_literal(temp_buffer);
+        ret.value.str.ptr = Symtab_add_string_literal(temp_buffer);
         ret.type = object_type_string;
     }
 
@@ -66,11 +66,11 @@ object_t Obj_conc_string(object_t str_obj1, object_t str_obj2)
 
     if (str_obj1.type == object_type_string && str_obj2.type == object_type_string)
     {
-        size_t temp_con_str_len = strlen(str_obj1.value.string_ptr) + strlen(str_obj2.value.string_ptr) + 1;  // '+1' is for null space
+        size_t temp_con_str_len = strlen(str_obj1.value.str.ptr) + strlen(str_obj2.value.str.ptr) + 1;  // '+1' is for null space
         char*  temp_con_str_buffer = (char*)malloc(temp_con_str_len);
 
-        sprintf(temp_con_str_buffer, "%s%s", str_obj1.value.string_ptr, str_obj2.value.string_ptr);
-        ret.value.string_ptr = Symtab_add_string_literal(temp_con_str_buffer);
+        sprintf(temp_con_str_buffer, "%s%s", str_obj1.value.str.ptr, str_obj2.value.str.ptr);
+        ret.value.str.ptr = Symtab_add_string_literal(temp_con_str_buffer);
         ret.type = object_type_string;
 
         free(temp_con_str_buffer);
@@ -85,16 +85,16 @@ object_t Obj_rept_string(object_t str_obj, object_t num_obj)
 
     if (str_obj.type == object_type_string && num_obj.type == object_type_number)
     {
-        size_t temp_con_str_len = (strlen(str_obj.value.string_ptr) * num_obj.value.number) + 1;  // '+1' is for null space
+        size_t temp_con_str_len = (strlen(str_obj.value.str.ptr) * num_obj.value.number) + 1;  // '+1' is for null space
         char*  temp_con_str_buffer = (char*)malloc(temp_con_str_len);
 
         *temp_con_str_buffer = 0;
         for(uint64_t i = 0 ; i < (uint64_t)num_obj.value.number ; i++)
         {
-            strncat(temp_con_str_buffer, str_obj.value.string_ptr, strlen(str_obj.value.string_ptr));
+            strncat(temp_con_str_buffer, str_obj.value.str.ptr, strlen(str_obj.value.str.ptr));
         }
 
-        ret.value.string_ptr = Symtab_add_string_literal(temp_con_str_buffer);
+        ret.value.str.ptr = Symtab_add_string_literal(temp_con_str_buffer);
         ret.type = object_type_string;
 
         free(temp_con_str_buffer);
@@ -109,7 +109,7 @@ int Obj_comp_string(object_t str_obj1, object_t str_obj2)
     
     if (str_obj1.type == object_type_string && str_obj2.type == object_type_string)
     {
-        ret = strncmp(str_obj1.value.string_ptr, str_obj2.value.string_ptr, strlen(str_obj1.value.string_ptr));
+        ret = strncmp(str_obj1.value.str.ptr, str_obj2.value.str.ptr, strlen(str_obj1.value.str.ptr));
     }
 
     return ret;
