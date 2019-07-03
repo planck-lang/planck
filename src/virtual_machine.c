@@ -59,6 +59,7 @@ static struct _vm_error_status_t_ {
     error_code_t    error_code;
 } s_vm_error, s_predefined_error[] = {
         {"Type mismatch error on this operator.", error_code_type_mismatch},
+        {"Symbol not found from symtab", error_code_not_found_symbol},
         {"No error", error_code_no_error}
 };
 
@@ -151,8 +152,15 @@ static void push_stack(object_t value)
 
 static object_t pop_stack(void)
 {
+    object_t value = {0};
+    
+    if (s_vm_registers.sp == 0)
+    {
+        return value;
+    }
+
     s_vm_registers.sp--;
-    object_t value = s_vm_stack.stack[s_vm_registers.sp];
+    value = s_vm_stack.stack[s_vm_registers.sp];
 
     DEBUG_MSG("pop sp[%d], t=%d v=%f\n", s_vm_registers.sp, value.type, value.value.number);
 
@@ -178,6 +186,7 @@ static bool execute_code(void)
     while(true)
     {
         opcode_t opcode = pc->opcode;
+
         switch(opcode)
         {
         case opcode_nop:
@@ -189,6 +198,24 @@ static bool execute_code(void)
         {
             pc++;                       // next code has value which will be pushed into stack
             push_stack(pc->value);      // value has been pushed into stack and increase pc to execute next code
+            pc++;
+            break;
+        }
+        case opcode_store:
+        {
+            pc++;
+            object_t symtab_idx = pc->value;
+            object_t value = pop_stack();
+            Symtab_store_value_to_symtab(symtab_idx.value.general, value);
+            pc++;
+            break;
+        }
+        case opcode_load:
+        {
+            pc++;
+            object_t symtab_idx = pc->value;
+            object_t value = Symtab_load_value_from_symtab(symtab_idx.value.general);
+            push_stack(value);
             pc++;
             break;
         }
@@ -208,6 +235,9 @@ static bool execute_code(void)
         case opcode_halt:
         case opcode_MAXNUM:
             return check_no_error();
+
+        default:
+            printf("Critical Error %d\n", opcode);
         }
 
         if (check_no_error() == false)

@@ -54,6 +54,7 @@ stmt_with_semiconlon : stmt ';'
 
 expr : NUMBER               {CodeGen_add_number($1);}
      | STRING               {CodeGen_add_string($1);}
+     | IDENTIFIER           {CodeGen_add_opcode(opcode_load); CodeGen_add_variable(NULL, $1); free($1);}
      | expr '<' expr        {CodeGen_add_opcode(opcode_lt);}
      | expr '>' expr        {CodeGen_add_opcode(opcode_gt);}
      | expr LE expr         {CodeGen_add_opcode(opcode_le);}
@@ -80,10 +81,9 @@ stmt : /* empty */
      | decl
      ;
 
-decl : type IDENTIFIER '=' expr   {/*CodeGen_add_variable($1, $2); CodeGen_add_opcode(opcode_store); free($1); free($2);*/}
+decl : type IDENTIFIER '=' expr   {CodeGen_add_opcode(opcode_store); CodeGen_add_variable($1, $2); free($1); free($2);}
      ;
 
 type : IDENTIFIER
      ;
-
 %%

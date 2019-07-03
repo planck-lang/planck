@@ -33,6 +33,7 @@ SOFTWARE.
 typedef enum _error_code_t_ {
     error_code_no_error = 0,
     error_code_type_mismatch,
+    error_code_not_found_symbol,
     error_code_NUM
 } error_code_t;
 
@@ -42,22 +43,26 @@ typedef enum _error_code_t_ {
  */
 typedef enum _object_type_t_ {
     object_type_null = 0,
+    object_type_general,
     object_type_number,
     object_type_string,
     object_type_boolean,
     object_type_MAXNUM
 } object_type_t;
 
+typedef struct _str_t_ {
+    char*    ptr;
+    uint32_t table_idx;
+} str_t;
+
 typedef struct _object_t_ {
     object_type_t type;
 
     union _value_t_ {
-        double  number;
-        bool    boolean;
-        struct _str_t_ {
-            char*    ptr;
-            uint32_t table_idx;
-        } str;
+        uint64_t general;
+        double   number;
+        str_t    str;
+        bool     boolean;
     } value;
 } object_t;
 
@@ -68,6 +73,8 @@ typedef struct _object_t_ {
 typedef enum _opcode_t_ {
     opcode_nop = 0,
     opcode_push,
+    opcode_store,
+    opcode_load,
     opcode_add,
     opcode_sub,
     opcode_xor,

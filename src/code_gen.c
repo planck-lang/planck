@@ -86,6 +86,20 @@ void CodeGen_add_string(char* str_ptr)
     s_generated_code.buffer[s_generated_code.len++].value = string_obj;
 }
 
+// cppcheck-suppress unusedFunction
+void CodeGen_add_variable(const char* type_str, const char* ident_str)
+{
+    uint32_t type_tab_idx = Symtab_get_size_of_type(type_str);
+    uint32_t variable_symtab_index = Symtab_add_variable(type_tab_idx, ident_str);
+
+    object_t general_obj = {0};
+    general_obj.type = object_type_general;
+    general_obj.value.general = variable_symtab_index;
+
+    check_code_buffer();
+    s_generated_code.buffer[s_generated_code.len++].value = general_obj;
+}
+
 static void check_code_buffer(void)
 {
     const uint32_t one_time_buffer_uint = 4096;
