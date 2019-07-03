@@ -53,7 +53,7 @@ object_t Obj_to_string(object_t obj)
             sprintf(temp_buffer, "%f", obj.value.number);
         }
 
-        ret.value.str.ptr = Symtab_add_string_literal(temp_buffer);
+        ret.value.str.ptr = Symtab_add_string_literal(temp_buffer, &ret.value.str.table_idx);
         ret.type = object_type_string;
     }
 
@@ -70,7 +70,7 @@ object_t Obj_conc_string(object_t str_obj1, object_t str_obj2)
         char*  temp_con_str_buffer = (char*)malloc(temp_con_str_len);
 
         sprintf(temp_con_str_buffer, "%s%s", str_obj1.value.str.ptr, str_obj2.value.str.ptr);
-        ret.value.str.ptr = Symtab_add_string_literal(temp_con_str_buffer);
+        ret.value.str.ptr = Symtab_add_string_literal(temp_con_str_buffer, &ret.value.str.table_idx);
         ret.type = object_type_string;
 
         free(temp_con_str_buffer);
@@ -94,7 +94,7 @@ object_t Obj_rept_string(object_t str_obj, object_t num_obj)
             strncat(temp_con_str_buffer, str_obj.value.str.ptr, strlen(str_obj.value.str.ptr));
         }
 
-        ret.value.str.ptr = Symtab_add_string_literal(temp_con_str_buffer);
+        ret.value.str.ptr = Symtab_add_string_literal(temp_con_str_buffer, &ret.value.str.table_idx);
         ret.type = object_type_string;
 
         free(temp_con_str_buffer);

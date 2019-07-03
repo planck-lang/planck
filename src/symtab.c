@@ -22,26 +22,28 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
+#include <stdint.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>
 
 typedef struct _string_literal_tab_t_ {
-    char* string_literal_buffer;
+    uint32_t idx;
+    char*    string_literal_buffer;
     struct _string_literal_tab_t_   *next;
 } string_literal_tab_t;
 
 static struct _string_literal_tab_linkedlist_t_ {
     string_literal_tab_t*    head;
     string_literal_tab_t*    tail;
+    uint32_t                 count;
 } s_string_literal_tab_linkedlist = {0};
 
 
 static string_literal_tab_t* find_string_literal(const char* string_literal);
 static string_literal_tab_t* insert_string_literal(const char* string_literal);
 
-
-char* Symtab_add_string_literal(const char* parser_str_ptr)
+char* Symtab_add_string_literal(const char* parser_str_ptr, uint32_t* out_idx)
 {
     string_literal_tab_t* string_literal_node = find_string_literal(parser_str_ptr);
 
@@ -50,7 +52,24 @@ char* Symtab_add_string_literal(const char* parser_str_ptr)
         string_literal_node = insert_string_literal(parser_str_ptr);
     }
 
+    *out_idx = string_literal_node->idx;
     return string_literal_node->string_literal_buffer;
+}
+
+char* Symtab_get_string_literal_by_idx(uint32_t idx)
+{
+    string_literal_tab_t* iter = s_string_literal_tab_linkedlist.head;
+
+    while (iter != NULL)
+    {
+        if (iter->idx == idx)
+        {
+            return iter->string_literal_buffer;
+        }
+        iter = iter->next;
+    }
+
+    return NULL;  
 }
 
 static string_literal_tab_t* find_string_literal(const char* string_literal)
@@ -76,6 +95,7 @@ static string_literal_tab_t* insert_string_literal(const char* string_literal)
 {
     string_literal_tab_t* new_node = (string_literal_tab_t*)malloc(sizeof(string_literal_tab_t));
 
+    new_node->idx = ++s_string_literal_tab_linkedlist.count;
     new_node->string_literal_buffer = strndup(string_literal, strlen(string_literal));
     new_node->next = NULL;
 

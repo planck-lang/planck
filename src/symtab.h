@@ -27,6 +27,7 @@ SOFTWARE.
 
 #include "planck_types.h"
 
-char* Symtab_add_string_literal(const char* parser_str_ptr);
+char* Symtab_add_string_literal(const char* parser_str_ptr, uint32_t* out_idx);
+char* Symtab_get_string_literal_by_idx(uint32_t idx);
 
 #endif /* SRC_SYMTAB_H_ */

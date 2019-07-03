@@ -32,6 +32,7 @@ SOFTWARE.
 #include "virtual_machine.h"
 #include "code_gen.h"
 #include "expr.h"
+#include "symtab.h"
 
 #define DEBUG_VM    0
 #if DEBUG_VM
@@ -139,6 +140,11 @@ static void check_stack(void)
 static void push_stack(object_t value)
 {
     check_stack();
+
+    if (value.type == object_type_string)
+    {
+        value.value.str.ptr = Symtab_get_string_literal_by_idx(value.value.str.table_idx);
+    }
     s_vm_stack.stack[s_vm_registers.sp++] = value;
     DEBUG_MSG("push sp[%d], t=%d v=%f\n", s_vm_registers.sp, value.type, value.value.number);
 }

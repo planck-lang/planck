@@ -30,16 +30,25 @@ REGISTER_SUITE_AUTO(WhiteBox_Test, "00 White Box Test")
 
 TESTCASE(WBT01, "literal table pointer")
 {
-    char* ab_ptr = Symtab_add_string_literal("ab");
-    char* bc_ptr = Symtab_add_string_literal("bc");
+    uint32_t table_idx_a;
+    uint32_t table_idx_b;
+
+    char* ab_ptr = Symtab_add_string_literal("ab", &table_idx_a);
+    char* bc_ptr = Symtab_add_string_literal("bc", &table_idx_b);
     ASEERT_NEQ_UINT(ab_ptr, bc_ptr);
+    ASEERT_NEQ_UINT(table_idx_a, table_idx_b);
 
-    char* ab_again_ptr = Symtab_add_string_literal("ab");
+    char* ab_again_ptr = Symtab_add_string_literal("ab", &table_idx_b);
     ASSERT_EQ_UINT(ab_ptr, ab_again_ptr);
+    ASSERT_EQ_UINT(table_idx_a, table_idx_b);
 
-    char* cd_ptr = Symtab_add_string_literal("cd");
-    char* cd_again_ptr = Symtab_add_string_literal("cd");
+    table_idx_a = 1;
+    table_idx_b = 2;
+
+    char* cd_ptr = Symtab_add_string_literal("cd", &table_idx_a);
+    char* cd_again_ptr = Symtab_add_string_literal("cd", &table_idx_b);
 
     ASEERT_NEQ_UINT(bc_ptr, cd_ptr);
     ASSERT_EQ_UINT(cd_ptr, cd_again_ptr);
+    ASSERT_EQ_UINT(table_idx_a, table_idx_b);
 }

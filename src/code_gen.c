@@ -79,7 +79,7 @@ void CodeGen_add_string(char* str_ptr)
     str_ptr = trim_quote_in_memory(str_ptr);    
 
     string_obj.type = object_type_string;
-    string_obj.value.str.ptr = Symtab_add_string_literal(str_ptr);
+    string_obj.value.str.ptr = Symtab_add_string_literal(str_ptr, &string_obj.value.str.table_idx);
 
     check_code_buffer();
     CodeGen_add_opcode(opcode_push);
