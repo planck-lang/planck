@@ -29,9 +29,12 @@ SOFTWARE.
 
 char* Symtab_add_string_literal(const char* parser_str_ptr, uint32_t* out_idx);
 char* Symtab_get_string_literal_by_idx(uint32_t idx);
+
 uint32_t Symtab_get_size_of_type(const char* type_str_ptr);
 uint32_t Symtab_add_variable(uint32_t type_idx, const char* ident_str_ptr);
+uint32_t Symtab_get_idx_variable_by_identifier(const char* ident_str_ptr);
+bool     Symtab_is_exist_variable(const char* ident_str_ptr);
 void     Symtab_store_value_to_symtab(uint32_t symtab_idx, object_t value);
-object_t  Symtab_load_value_from_symtab(uint32_t symtab_idx);
+object_t Symtab_load_value_from_symtab(uint32_t symtab_idx);
 
 #endif /* SRC_SYMTAB_H_ */

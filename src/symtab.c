@@ -130,6 +130,24 @@ uint32_t Symtab_add_variable(uint32_t type_idx, const char* ident_str_ptr)
     return symtab_item->idx;
 }
 
+uint32_t Symtab_get_idx_variable_by_identifier(const char* ident_str_ptr)
+{
+    symtab_t* symtab_item = find_symtab(ident_str_ptr);
+
+    if (symtab_item != NULL)
+    {
+        return symtab_item->idx;
+    }
+
+    return 0;
+}
+
+bool Symtab_is_exist_variable(const char* ident_str_ptr)
+{
+    symtab_t* symtab_item = find_symtab(ident_str_ptr);
+    return (symtab_item != NULL);
+}
+
 void Symtab_store_value_to_symtab(uint32_t symtab_idx, object_t value)
 {
     symtab_t* symtab_item = find_symtab_by_idx(symtab_idx);

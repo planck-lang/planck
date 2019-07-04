@@ -44,3 +44,18 @@ TESTCASE(01, "basic assign")
     ASSERT_EQ_NUM(object_type_number, ret.type);
     ASSERT_EQ_NUM(3, ret.value.number);
 }
+
+TESTCASE(02, "declaration duplication")
+{
+    char* codeline = "num_t b = 3;";
+
+    object_t ret;
+    bool st = Planck_do(codeline, &ret);
+
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_null, ret.type);
+
+    codeline = "num_t b = 10;";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(false, st);
+}

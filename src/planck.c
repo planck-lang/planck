@@ -47,6 +47,15 @@ bool Planck_do(const char* buf, object_t* out_ret)
 
     if (!parse_result)  // ok
     {
+        char* msg = NULL;
+        error_code_t error_code = VirtualMachine_get_error_msg(&msg);
+
+        if (error_code != error_code_no_error)
+        {
+            printf("Compile Error [0x%04X] %s\n", error_code, msg);
+            return false;
+        }
+
         CodeGen_add_opcode(opcode_halt);
         if (VirtualMachine_run_vm(CodeGen_get_bytecodes()))
         {
@@ -55,8 +64,7 @@ bool Planck_do(const char* buf, object_t* out_ret)
         }
         else
         {
-            char* msg = NULL;
-            error_code_t error_code = VirtualMachine_get_error_msg(&msg);
+            error_code = VirtualMachine_get_error_msg(&msg);
             printf("Runtime Error [0x%04X] %s\n", error_code, msg);
             return false;
         }

@@ -34,6 +34,7 @@ typedef enum _error_code_t_ {
     error_code_no_error = 0,
     error_code_type_mismatch,
     error_code_not_found_symbol,
+    error_code_redefinition,
     error_code_NUM
 } error_code_t;
 

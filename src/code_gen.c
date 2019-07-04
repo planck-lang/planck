@@ -89,9 +89,33 @@ void CodeGen_add_string(char* str_ptr)
 // cppcheck-suppress unusedFunction
 void CodeGen_add_variable(const char* type_str, const char* ident_str)
 {
+    if (Symtab_is_exist_variable(ident_str))
+    {
+        VirtualMachine_add_error_msg(error_code_redefinition);
+        return;
+    }
+
     uint32_t type_tab_idx = Symtab_get_size_of_type(type_str);
     uint32_t variable_symtab_index = Symtab_add_variable(type_tab_idx, ident_str);
 
+    object_t general_obj = {0};
+    general_obj.type = object_type_general;
+    general_obj.value.general = variable_symtab_index;
+
+    check_code_buffer();
+    s_generated_code.buffer[s_generated_code.len++].value = general_obj;
+}
+
+void CodeGen_read_symtab_variable(const char* ident_str)
+{
+    if (Symtab_is_exist_variable(ident_str) == false)
+    {
+        VirtualMachine_add_error_msg(error_code_not_found_symbol);
+        return;
+    }
+
+    uint32_t variable_symtab_index = Symtab_get_idx_variable_by_identifier(ident_str);
+    
     object_t general_obj = {0};
     general_obj.type = object_type_general;
     general_obj.value.general = variable_symtab_index;

@@ -60,6 +60,7 @@ static struct _vm_error_status_t_ {
 } s_vm_error, s_predefined_error[] = {
         {"Type mismatch error on this operator.", error_code_type_mismatch},
         {"Symbol not found from symtab", error_code_not_found_symbol},
+        {"Redefined of variable", error_code_redefinition},
         {"No error", error_code_no_error}
 };
 
