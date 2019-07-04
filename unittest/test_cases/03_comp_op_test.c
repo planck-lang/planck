@@ -28,7 +28,7 @@ SOFTWARE.
 
 REGISTER_SUITE_AUTO(Comp_OP_Test, "03 Comparison Operation Test")
 
-TESTCASE(COT01, "less than")
+TESTCASE(01, "less than")
 {
     char* codeline = "3 < 4";
 
@@ -44,7 +44,7 @@ TESTCASE(COT01, "less than")
     ASSERT_EQ_NUM(false, ret.value.boolean);
 }
 
-TESTCASE(COT02, "grater than")
+TESTCASE(02, "grater than")
 {
     char* codeline = "3 > 4";
 
@@ -60,7 +60,7 @@ TESTCASE(COT02, "grater than")
     ASSERT_EQ_NUM(true, ret.value.boolean);
 }
 
-TESTCASE(COT03, "less equal")
+TESTCASE(03, "less equal")
 {
     char* codeline = "3 <= 3";
 
@@ -76,7 +76,7 @@ TESTCASE(COT03, "less equal")
     ASSERT_EQ_NUM(false, ret.value.boolean);
 }
 
-TESTCASE(COT04, "grater equal")
+TESTCASE(04, "grater equal")
 {
     char* codeline = "3 >= 3";
 
@@ -92,7 +92,7 @@ TESTCASE(COT04, "grater equal")
     ASSERT_EQ_NUM(true, ret.value.boolean);
 }
 
-TESTCASE(COT05, "equal")
+TESTCASE(05, "equal")
 {
     char* codeline = "3 == 1 + 2";
 
@@ -108,7 +108,7 @@ TESTCASE(COT05, "equal")
     ASSERT_EQ_NUM(false, ret.value.boolean);
 }
 
-TESTCASE(COT06, "not equal")
+TESTCASE(06, "not equal")
 {
     char* codeline = "3 != 1 + 2";
 
@@ -124,7 +124,7 @@ TESTCASE(COT06, "not equal")
     ASSERT_EQ_NUM(true, ret.value.boolean);
 }
 
-TESTCASE(COT07, "string comparison")
+TESTCASE(07, "string comparison")
 {
     char* codeline = "'ab' > 'bc'";
 
@@ -165,7 +165,7 @@ TESTCASE(COT07, "string comparison")
     ASSERT_EQ_NUM(true, ret.value.boolean);
 }
 
-TESTCASE(COT08, "and comparison")
+TESTCASE(08, "and comparison")
 {
     char* codeline = "3> 2 AND 4 > 3";
 
@@ -186,7 +186,7 @@ TESTCASE(COT08, "and comparison")
     ASSERT_EQ_NUM(false, ret.value.boolean);
 }
 
-TESTCASE(COT09, "or comparison")
+TESTCASE(09, "or comparison")
 {
     char* codeline = "3> 2 OR 4 > 3";
 
@@ -212,7 +212,7 @@ TESTCASE(COT09, "or comparison")
     ASSERT_EQ_NUM(false, ret.value.boolean);
 }
 
-TESTCASE(COT10, "mixed and or")
+TESTCASE(10, "mixed and or")
 {
     char* codeline = "3+ 4 == 7 AND 4+2==6";
 

@@ -28,7 +28,7 @@ SOFTWARE.
 
 REGISTER_SUITE_AUTO(Variable_Test, "04 Variable Test")
 
-TESTCASE(VART01, "basic assign")
+TESTCASE(01, "basic assign")
 {
     char* codeline = "num_t a = 3;";
 

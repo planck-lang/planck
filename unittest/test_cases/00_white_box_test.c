@@ -28,7 +28,7 @@ SOFTWARE.
 
 REGISTER_SUITE_AUTO(WhiteBox_Test, "00 White Box Test")
 
-TESTCASE(WBT01, "literal table pointer")
+TESTCASE(01, "literal table pointer")
 {
     uint32_t table_idx_a;
     uint32_t table_idx_b;

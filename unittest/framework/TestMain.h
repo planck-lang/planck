@@ -22,7 +22,7 @@
 
 #define TESTCASE(idx, desc) \
     static void testauto##idx(TestCase_t* tc); \
-    __attribute__ ((__constructor__)) static void regTest ## idx(void) \
+    __attribute__ ((__constructor__(1 ## idx))) static void regTest ## idx(void) \
     {AddTestCase(&suite, testauto##idx, desc);} \
     static void testauto##idx(TestCase_t* tc)
 

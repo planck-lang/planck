@@ -28,7 +28,7 @@ SOFTWARE.
 
 REGISTER_SUITE_AUTO(Four_OP_Test, "01 Four Operation Test")
 
-TESTCASE(FOT01, "simple add")
+TESTCASE(01, "simple add")
 {
     char* codeline = "3 + 4";
 
@@ -39,7 +39,7 @@ TESTCASE(FOT01, "simple add")
     ASSERT_EQ_NUM(7.0, ret.value.number);
 }
 
-TESTCASE(FOT02, "complex add")
+TESTCASE(02, "complex add")
 {
     char* codeline = "3 + 4 + (7 + 4) + 382+(392+4+498)+2023+993";
 
@@ -50,7 +50,7 @@ TESTCASE(FOT02, "complex add")
     ASSERT_EQ_NUM((3 + 4 + (7 + 4) + 382+(392+4+498)+2023+993), ret.value.number);
 }
 
-TESTCASE(FOT03, "simple sub")
+TESTCASE(03, "simple sub")
 {
     char* codeline = "3 - 4";
 
@@ -61,7 +61,7 @@ TESTCASE(FOT03, "simple sub")
     ASSERT_EQ_NUM((3 - 4), ret.value.number);
 }
 
-TESTCASE(FOT04, "mixed add, sub")
+TESTCASE(04, "mixed add, sub")
 {
     char* codeline = "3 - 4 + 3290 - (39-4+48) + 3902+332";
 
@@ -72,7 +72,7 @@ TESTCASE(FOT04, "mixed add, sub")
     ASSERT_EQ_NUM((3 - 4 + 3290 - (39-4+48) + 3902+332), ret.value.number);
 }
 
-TESTCASE(FOT05, "simple mul")
+TESTCASE(05, "simple mul")
 {
     char* codeline = "23*455";
 
@@ -83,7 +83,7 @@ TESTCASE(FOT05, "simple mul")
     ASSERT_EQ_NUM((23*455), ret.value.number);
 }
 
-TESTCASE(FOT06, "mixed add, sub, mul")
+TESTCASE(06, "mixed add, sub, mul")
 {
     char* codeline = "23*455 + 32 + 323 - (325-33) * 43 - 32 +883";
 
@@ -94,7 +94,7 @@ TESTCASE(FOT06, "mixed add, sub, mul")
     ASSERT_EQ_NUM((23*455 + 32 + 323 - (325-33) * 43 - 32 +883), ret.value.number);
 }
 
-TESTCASE(FOT07, "simple div")
+TESTCASE(07, "simple div")
 {
     char* codeline = "4 / 2";
 
@@ -105,7 +105,7 @@ TESTCASE(FOT07, "simple div")
     ASSERT_EQ_NUM((4 / 2), ret.value.number);
 }
 
-TESTCASE(FOT08, "mixed add, sub, mul, div")
+TESTCASE(08, "mixed add, sub, mul, div")
 {
     char* codeline = "4 / 2 + 2 * 3 + (3 + 2) / 2 * 3";
 
@@ -116,7 +116,7 @@ TESTCASE(FOT08, "mixed add, sub, mul, div")
     ASSERT_EQ_NUM((4.0 / 2.0 + 2 * 3 + (3 + 2) / 2.0 * 3), ret.value.number);
 }
 
-TESTCASE(FOT09, "simple mod")
+TESTCASE(09, "simple mod")
 {
     char* codeline = "23424% 323";
 
@@ -127,7 +127,7 @@ TESTCASE(FOT09, "simple mod")
     ASSERT_EQ_NUM((23424% 323), ret.value.number);
 }
 
-TESTCASE(FOT10, "mixed add, sub, mul, div, mod")
+TESTCASE(10, "mixed add, sub, mul, div, mod")
 {
     char* codeline = "23424% 323 + 3 / (3 + 4) * 3 - 223 + 3992";
 
@@ -138,7 +138,7 @@ TESTCASE(FOT10, "mixed add, sub, mul, div, mod")
     ASSERT_EQ_NUM((23424% 323 + 3.0 / (3.0 + 4.0) * 3 - 223 + 3992), ret.value.number);
 }
 
-TESTCASE(FOT11, "string concatenation")
+TESTCASE(11, "string concatenation")
 {
     char* codeline = "'abcd' ## 'efg' ## 23 ## 'deff'";
 
@@ -149,7 +149,7 @@ TESTCASE(FOT11, "string concatenation")
     ASSERT_EQ_STR("abcdefg23deff", ret.value.str.ptr);
 }
 
-TESTCASE(FOT12, "string conc with op")
+TESTCASE(12, "string conc with op")
 {
     char* codeline = "'abcd' ## 'efg' ## 20 + 3 ## 'deff'";
 

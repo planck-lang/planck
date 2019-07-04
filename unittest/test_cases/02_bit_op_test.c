@@ -28,7 +28,7 @@ SOFTWARE.
 
 REGISTER_SUITE_AUTO(Bit_OP_Test, "02 Bit Operation Test")
 
-TESTCASE(BOT01, "xor")
+TESTCASE(01, "xor")
 {
     char* codeline = "4 ^ 6";
 
@@ -39,7 +39,7 @@ TESTCASE(BOT01, "xor")
     ASSERT_EQ_NUM(2.0, ret.value.number);
 }
 
-TESTCASE(BOT02, "shift right")
+TESTCASE(02, "shift right")
 {
     char* codeline = "3 >> 1";
 
@@ -55,7 +55,7 @@ TESTCASE(BOT02, "shift right")
     ASSERT_EQ_NUM(411, ret.value.number);
 }
 
-TESTCASE(BOT03, "shift left")
+TESTCASE(03, "shift left")
 {
     char* codeline = "3 << 1";
 
@@ -71,7 +71,7 @@ TESTCASE(BOT03, "shift left")
     ASSERT_EQ_NUM(26320, ret.value.number);
 }
 
-TESTCASE(BOT04, "bit or")
+TESTCASE(04, "bit or")
 {
     char* codeline = "100 | 3";
 
@@ -87,7 +87,7 @@ TESTCASE(BOT04, "bit or")
     ASSERT_EQ_NUM(3, ret.value.number);
 }
 
-TESTCASE(BOT05, "bit and")
+TESTCASE(05, "bit and")
 {
     char* codeline = "100 & 3";
 
@@ -103,7 +103,7 @@ TESTCASE(BOT05, "bit and")
     ASSERT_EQ_NUM(2, ret.value.number);
 }
 
-TESTCASE(BOT06, "bit op mixed")
+TESTCASE(06, "bit op mixed")
 {
     char* codeline = "3 + 2 | 3";
 
