@@ -12,6 +12,8 @@ static PyObject* planck_exe(PyObject* self, PyObject* args)
         return NULL;
     }
     
+    char runtime_error_buf[1024] = {0};
+
     object_t ret;
     bool st = Planck_do(buf, &ret);
 
@@ -28,11 +30,13 @@ static PyObject* planck_exe(PyObject* self, PyObject* args)
         case object_type_null:
             return Py_BuildValue("ii", 4, (int)st);
         default:
-            printf("[Type Error]\n");
+            sprintf(runtime_error_buf,"[Type Error]\n");
+            return Py_BuildValue("is", (int)st, runtime_error_buf);
         }
     }
 
-    return Py_BuildValue("is", (int)st, "NULL");
+    Planck_get_error(runtime_error_buf);
+    return Py_BuildValue("is", (int)st, runtime_error_buf);
 } 
 
 static PyMethodDef planck_methods[] = { 

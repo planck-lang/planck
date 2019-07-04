@@ -37,6 +37,9 @@ extern int yyparse();
 extern YY_BUFFER_STATE yy_scan_string(const char * str);
 extern void yy_delete_buffer(YY_BUFFER_STATE buffer);
 
+static char* s_error_msg_ptr = NULL;
+static error_code_t s_error_code;
+
 bool Planck_do(const char* buf, object_t* out_ret)
 {
     CodeGen_reset_bytecodes();
@@ -47,12 +50,10 @@ bool Planck_do(const char* buf, object_t* out_ret)
 
     if (!parse_result)  // ok
     {
-        char* msg = NULL;
-        error_code_t error_code = VirtualMachine_get_error_msg(&msg);
+        s_error_code = VirtualMachine_get_error_msg(&s_error_msg_ptr);
 
-        if (error_code != error_code_no_error)
+        if (s_error_code != error_code_no_error)
         {
-            printf("Compile Error [0x%04X] %s\n", error_code, msg);
             return false;
         }
 
@@ -64,12 +65,16 @@ bool Planck_do(const char* buf, object_t* out_ret)
         }
         else
         {
-            error_code = VirtualMachine_get_error_msg(&msg);
-            printf("Runtime Error [0x%04X] %s\n", error_code, msg);
+            s_error_code = VirtualMachine_get_error_msg(&s_error_msg_ptr);
             return false;
         }
 
     }
     // parse error
     return false;
+}
+
+void Planck_get_error(char* out_error)
+{
+    sprintf(out_error, "Runtime Error [0x%04X] %s\n", s_error_code, s_error_msg_ptr);
 }

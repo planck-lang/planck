@@ -38,7 +38,7 @@ def message_receiver(**payload):
 
             ret_text = ""
             if st == 0:
-                ret_text = "[Error!]"
+                ret_text = planck_result
             else:
                 if isinstance(planck_result, str):
                     ret_text = '"' + str(planck_result) + '"'

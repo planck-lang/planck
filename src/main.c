@@ -70,6 +70,9 @@ int main(int argc, char* argv[])
             }
             else
             {
+                char runtime_error_buf[1024] = {0};
+                Planck_get_error(runtime_error_buf);
+                printf("%s", runtime_error_buf);
                 printf("[Error] -> %s\n", buf);
             }
         }
