@@ -47,10 +47,10 @@ bool Planck_do(const char* buf, object_t* out_ret)
     int parse_result = yyparse();
     yy_delete_buffer(yyst);
 
+    s_error_code = VirtualMachine_get_error_msg(&s_error_msg_ptr);
+
     if (!parse_result)  // ok
     {
-        s_error_code = VirtualMachine_get_error_msg(&s_error_msg_ptr);
-
         if (s_error_code != error_code_no_error)
         {
             return false;
