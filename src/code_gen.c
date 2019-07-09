@@ -22,16 +22,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-#include <stdio.h>
 #include <stdint.h>
-#include <stdlib.h>
-#include <string.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "object.h"
 #include "virtual_machine.h"
 #include "code_gen.h"
 #include "symtab.h"
+#include "ported_lib.h"
 
 static struct _generated_code_status_t_ {
     code_buf_t* buffer;
@@ -126,21 +125,13 @@ void CodeGen_read_symtab_variable(const char* ident_str)
 
 static void check_code_buffer(void)
 {
-    const uint32_t one_time_buffer_uint = 4096;
-    const uint32_t margin = 4;
+    const uint32_t one_time_buffer_unit = 4096;
 
-    if (s_generated_code.buffer == 0)
-    {
-        s_generated_code.buffer = (code_buf_t*)malloc(sizeof(code_buf_t) * one_time_buffer_uint);
-        s_generated_code.limit = one_time_buffer_uint;
-    }
-
-    if (s_generated_code.len >= (s_generated_code.limit - margin))
-    {
-        uint32_t new_size = s_generated_code.limit + one_time_buffer_uint;
-        s_generated_code.buffer = (code_buf_t*)realloc(s_generated_code.buffer, (sizeof(code_buf_t) * new_size));
-        s_generated_code.limit = new_size;
-    }
+    s_generated_code.buffer = (code_buf_t*)limited_malloc(s_generated_code.buffer, 
+                                                            sizeof(code_buf_t), 
+                                                            one_time_buffer_unit, 
+                                                            s_generated_code.len, 
+                                                            &s_generated_code.limit);
 }
 
 static char* trim_quote_in_memory(char* orig_str)

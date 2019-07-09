@@ -1,10 +1,10 @@
 %{
 #include <stdint.h>
 #include <stdio.h>
-#include <stdlib.h>
 #include <string.h>
 
 #include "y.tab.h"
+#include "ported_lib.h"
 
 extern int fileno(FILE *stream);
 
@@ -39,7 +39,7 @@ int yywrap(void)
 }
 
 [a-zA-Z_][0-9a-zA-Z_]* {
-    yylval.string_ptr = strndup(yytext, strlen(yytext));
+    yylval.string_ptr = str_dup(yytext, strlen(yytext));
     return IDENTIFIER;
 }
 

@@ -1,6 +1,6 @@
 project('planck', 'c', version: '0.1.0')
 
-cflags = [  '-g', '-Os', '-std=gnu11',
+cflags = [  '-g', '-Os', '-std=c11',
             # Turn on all warnings and treat all warnings as errors.
             '-Werror', '-Wall', '-Wextra',
             # Additional warnings
@@ -27,7 +27,8 @@ src = [ 'src/planck.c',
         'src/code_gen.c',
         'src/symtab.c',
         'src/expr.c',
-        'src/virtual_machine.c']
+        'src/virtual_machine.c',
+        'src/ported_lib.c']
 libplancks = both_libraries('planck', [src, gen_yacc, gen_lex], 
                         version : meson.project_version(), soversion : '0',
                         c_args:cflags, include_directories:incdir, pic:true)

@@ -112,10 +112,11 @@ SET(SRCS
 	src/code_gen.c
 	src/symtab.c
 	src/expr.c
+	src/ported_lib.c
 	src/virtual_machine.c)
 ADD_LIBRARY(modplanck OBJECT ${SRCS})
 TARGET_COMPILE_OPTIONS(modplanck PRIVATE
-	-std=gnu11 -fPIC)
+	-std=c11 -fPIC)
 
 add_fake_cppcheck(modplanck)
 

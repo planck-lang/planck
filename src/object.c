@@ -24,12 +24,12 @@ SOFTWARE.
 
 #include <stdio.h>
 #include <stdint.h>
-#include <string.h>
-#include <stdlib.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "object.h"
 #include "symtab.h"
+#include "ported_lib.h"
 
 object_t Obj_to_string(object_t obj)
 {
@@ -67,13 +67,13 @@ object_t Obj_conc_string(object_t str_obj1, object_t str_obj2)
     if (str_obj1.type == object_type_string && str_obj2.type == object_type_string)
     {
         size_t temp_con_str_len = strlen(str_obj1.value.str.ptr) + strlen(str_obj2.value.str.ptr) + 1;  // '+1' is for null space
-        char*  temp_con_str_buffer = (char*)malloc(temp_con_str_len);
+        char*  temp_con_str_buffer = (char*)new_malloc(temp_con_str_len);
 
         sprintf(temp_con_str_buffer, "%s%s", str_obj1.value.str.ptr, str_obj2.value.str.ptr);
         ret.value.str.ptr = Symtab_add_string_literal(temp_con_str_buffer, &ret.value.str.table_idx);
         ret.type = object_type_string;
 
-        free(temp_con_str_buffer);
+        release_mem(temp_con_str_buffer);
     }
 
     return ret;
@@ -86,7 +86,7 @@ object_t Obj_rept_string(object_t str_obj, object_t num_obj)
     if (str_obj.type == object_type_string && num_obj.type == object_type_number)
     {
         size_t temp_con_str_len = (strlen(str_obj.value.str.ptr) * num_obj.value.number) + 1;  // '+1' is for null space
-        char*  temp_con_str_buffer = (char*)malloc(temp_con_str_len);
+        char*  temp_con_str_buffer = (char*)new_malloc(temp_con_str_len);
 
         *temp_con_str_buffer = 0;
         for(uint64_t i = 0 ; i < (uint64_t)num_obj.value.number ; i++)
@@ -97,7 +97,7 @@ object_t Obj_rept_string(object_t str_obj, object_t num_obj)
         ret.value.str.ptr = Symtab_add_string_literal(temp_con_str_buffer, &ret.value.str.table_idx);
         ret.type = object_type_string;
 
-        free(temp_con_str_buffer);
+        release_mem(temp_con_str_buffer);
     }
 
     return ret;

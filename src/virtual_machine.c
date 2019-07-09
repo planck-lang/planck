@@ -22,17 +22,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
-#include <stdint.h>
-#include <string.h>
-#include <stdbool.h>
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <string.h>
 
 #include "object.h"
 #include "virtual_machine.h"
 #include "code_gen.h"
 #include "expr.h"
 #include "symtab.h"
+#include "ported_lib.h"
 
 #define DEBUG_VM    0
 #if DEBUG_VM
@@ -65,7 +65,6 @@ static struct _vm_error_status_t_ {
 };
 
 static void init_registers(void);
-static void init_stack(void);
 static void check_stack(void);
 
 static void     push_stack(object_t value);
@@ -77,7 +76,7 @@ static bool execute_code(void);
 bool VirtualMachine_run_vm(code_buf_t* codes)
 {
     init_registers();
-    init_stack();
+    check_stack();
 
     s_vm_registers.pc = codes;
     return execute_code();
@@ -113,30 +112,9 @@ static void init_registers(void)
     memset(&s_vm_registers, 0, sizeof(s_vm_registers));
 }
 
-static void init_stack(void)
-{
-    if (s_vm_stack.stack == 0)
-    {
-        s_vm_stack.stack = (object_t*)malloc(sizeof(object_t) * BLOCK_STACK_SIZE);
-    }
-    else
-    {
-        s_vm_stack.stack = (object_t*)realloc(s_vm_stack.stack, (sizeof(object_t) * BLOCK_STACK_SIZE));
-    }
-
-    s_vm_stack.limit = BLOCK_STACK_SIZE;
-}
-
 static void check_stack(void)
 {
-    const uint32_t margin = 4;
-
-    if (s_vm_registers.sp >= (s_vm_stack.limit - margin))
-    {
-        uint32_t new_size = s_vm_stack.limit + (sizeof(object_t) * BLOCK_STACK_SIZE);
-        s_vm_stack.stack = (object_t*)realloc(s_vm_stack.stack, new_size);
-        s_vm_stack.limit = new_size;
-    }
+    s_vm_stack.stack = (object_t*)limited_malloc(s_vm_stack.stack, sizeof(object_t), BLOCK_STACK_SIZE, s_vm_registers.sp, &s_vm_stack.limit);
 }
 
 static void push_stack(object_t value)
