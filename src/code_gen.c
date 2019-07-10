@@ -94,7 +94,7 @@ void CodeGen_add_variable(const char* type_str, const char* ident_str)
         return;
     }
 
-    uint32_t type_tab_idx = Symtab_get_size_of_type(type_str);
+    uint32_t type_tab_idx = Symtab_get_idx_of_type(type_str);
     uint32_t variable_symtab_index = Symtab_add_variable(type_tab_idx, ident_str);
 
     object_t general_obj = {0};

@@ -58,11 +58,15 @@ static struct _symtab_linkedlist_t_ {
 } s_symtab_linkedlist = {0};
 
 #define TYPE_SIZE_LEN (2048)
-static struct _type_size_tab_t_ {
-    char*       type_name;
-    uint32_t    size_byte;
-} s_type_size_table[TYPE_SIZE_LEN] = {
-    {"num_t", 8},
+typedef struct _type_info_tab_t_ {
+    char*         type_name;
+    uint32_t      size_byte;
+    object_type_t obj_type;
+} type_info_tab_t;
+
+static type_info_tab_t s_type_info_table[TYPE_SIZE_LEN] = {
+    {"num_t", 8, object_type_number},
+    {"str_t", 8, object_type_string},
     {0}
 };
 
@@ -72,6 +76,8 @@ static string_literal_tab_t* insert_string_literal(const char* string_literal);
 static symtab_t* find_symtab(const char* symbol);
 static symtab_t* find_symtab_by_idx(uint32_t idx);
 static symtab_t* insert_symtab(const char* symbol, uint32_t type_idx);
+static void remove_symtab_by_sym_node(symtab_t* sym_node);
+static bool check_type_index_valid(uint32_t type_idx);
 
 char* Symtab_add_string_literal(const char* parser_str_ptr, uint32_t* out_idx)
 {
@@ -102,25 +108,31 @@ char* Symtab_get_string_literal_by_idx(uint32_t idx)
     return NULL;  
 }
 
-uint32_t Symtab_get_size_of_type(const char* type_str_ptr)
+uint32_t Symtab_get_idx_of_type(const char* type_str_ptr)
 {
     for(uint32_t i = 0 ; i < TYPE_SIZE_LEN ; i++)
     {
-        if (s_type_size_table[i].type_name != 0)
+        if (s_type_info_table[i].type_name != 0)
         {
-            if (compare_string(s_type_size_table[i].type_name, type_str_ptr))
+            if (compare_string(s_type_info_table[i].type_name, type_str_ptr))
             {
-                return s_type_size_table[i].size_byte;
+                return i;
             }
         }
     }
 
-    return 0;
+    return TYPE_SIZE_LEN;
 }
 
 uint32_t Symtab_add_variable(uint32_t type_idx, const char* ident_str_ptr)
 {
     symtab_t* symtab_item = find_symtab(ident_str_ptr);
+
+    if (check_type_index_valid(type_idx) == false)
+    {
+        VirtualMachine_add_error_msg(error_code_undefined_type);
+        return 0;
+    }
 
     if (symtab_item == NULL)
     {
@@ -148,7 +160,7 @@ bool Symtab_is_exist_variable(const char* ident_str_ptr)
     return (symtab_item != NULL);
 }
 
-void Symtab_store_value_to_symtab(uint32_t symtab_idx, object_t value)
+void Symtab_store_value_to_symtab(uint32_t symtab_idx, object_t value, bool fail_del_sym)
 {
     symtab_t* symtab_item = find_symtab_by_idx(symtab_idx);
     if (symtab_item == NULL)
@@ -156,8 +168,21 @@ void Symtab_store_value_to_symtab(uint32_t symtab_idx, object_t value)
         VirtualMachine_add_error_msg(error_code_not_found_symbol);
     }
 
-    // TODO : check variable size
-    symtab_item->value = value;
+    type_info_tab_t* type_info = &s_type_info_table[symtab_item->type_idx];
+
+    if (type_info->obj_type == value.type)
+    {
+        symtab_item->value = value;
+    }
+    else
+    {
+        if (fail_del_sym)
+        {
+            remove_symtab_by_sym_node(symtab_item);
+        }
+
+        VirtualMachine_add_error_msg(error_code_type_mismatch);
+    }
 }
 
 object_t Symtab_load_value_from_symtab(uint32_t symtab_idx)
@@ -280,4 +305,39 @@ static symtab_t* insert_symtab(const char* symbol, uint32_t type_idx)
     s_symtab_linkedlist.tail = new_node;
 
     return new_node;
+}
+
+static void remove_symtab_by_sym_node(symtab_t* sym_node)
+{
+    symtab_t* iter = s_symtab_linkedlist.head;
+
+    if (s_symtab_linkedlist.head == sym_node)
+    {
+        release_mem(sym_node->name);
+        release_mem(sym_node);
+        s_symtab_linkedlist.head = NULL;
+        return;
+    }
+
+    while (iter != NULL)
+    {
+        if (iter->next == sym_node)
+        {
+            if (s_symtab_linkedlist.tail == sym_node)
+            {
+                s_symtab_linkedlist.tail = iter;
+            }
+
+            iter->next = sym_node->next;
+            release_mem(sym_node->name);
+            release_mem(sym_node);
+            return;
+        }
+        iter = iter->next;
+    }
+}
+
+static bool check_type_index_valid(uint32_t type_idx)
+{
+    return (type_idx < TYPE_SIZE_LEN);
 }
