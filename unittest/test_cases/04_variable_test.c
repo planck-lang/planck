@@ -59,3 +59,24 @@ TESTCASE(02, "declaration duplication")
     st = Planck_do(codeline, &ret);
     ASSERT_EQ_NUM(false, st);
 }
+
+TESTCASE(03, "type miss match")
+{
+    char* codeline;    
+    object_t ret;
+    bool st;
+    
+    codeline = "str_t bs = 3;";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(false, st);
+
+    codeline = "str_t bs = 'fdoksem'";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_null, ret.type);
+
+    codeline = "bs";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_STR("fdoksem", ret.value.str.ptr);
+}
