@@ -46,11 +46,12 @@ int yyerror(const char* str)
 
 %%
 prog : expr
-     | stmt_with_semiconlon
+     | stmt_with_semiconlon_or_not
      ;
 
-stmt_with_semiconlon : stmt ';'
-                     ;
+stmt_with_semiconlon_or_not : stmt ';'
+                            | stmt
+                            ;
 
 expr : NUMBER               {CodeGen_add_number($1);}
      | STRING               {CodeGen_add_string($1);}
