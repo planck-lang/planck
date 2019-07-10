@@ -58,7 +58,8 @@ static struct _vm_error_status_t_ {
     char*           msg;
     error_code_t    error_code;
 } s_vm_error, s_predefined_error[] = {
-        {"Type mismatch error on this operator.", error_code_type_mismatch},
+        {"Type mismatch error on this operator", error_code_type_mismatch},
+        {"Type is not defined (undefined type)", error_code_undefined_type},
         {"Symbol not found from symtab", error_code_not_found_symbol},
         {"Redefined of variable", error_code_redefinition},
         {"No error", error_code_no_error}
@@ -181,11 +182,12 @@ static bool execute_code(void)
             break;
         }
         case opcode_store:
+        case opcode_assign:
         {
             pc++;
             object_t symtab_idx = pc->value;
             object_t value = pop_stack();
-            Symtab_store_value_to_symtab(symtab_idx.value.general, value);
+            Symtab_store_value_to_symtab(symtab_idx.value.general, value, (opcode == opcode_store ? false : true));
             pc++;
             break;
         }

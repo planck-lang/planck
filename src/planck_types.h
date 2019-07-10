@@ -33,6 +33,7 @@ SOFTWARE.
 typedef enum _error_code_t_ {
     error_code_no_error = 0,
     error_code_type_mismatch,
+    error_code_undefined_type,
     error_code_not_found_symbol,
     error_code_redefinition,
     error_code_NUM
@@ -74,6 +75,7 @@ typedef struct _object_t_ {
 typedef enum _opcode_t_ {
     opcode_nop = 0,
     opcode_push,
+    opcode_assign,
     opcode_store,
     opcode_load,
     opcode_add,
