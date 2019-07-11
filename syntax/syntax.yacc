@@ -86,7 +86,7 @@ stmt : /* empty */
 decl : type IDENTIFIER '=' expr   {CodeGen_add_opcode(opcode_decl); CodeGen_add_variable($1, $2); free($1); free($2);}
      ;
 
-assign : IDENTIFIER '=' expr
+assign : IDENTIFIER '=' expr    {CodeGen_add_opcode(opcode_store); CodeGen_read_symtab_variable($1); free($1);}
        ;
 
 type : IDENTIFIER
