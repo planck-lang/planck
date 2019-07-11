@@ -95,3 +95,37 @@ TESTCASE(04, "undefined type")
     error_code_t s_error_code = Planck_get_error(runtime_error_buf);
     ASSERT_EQ_NUM(error_code_undefined_type, s_error_code);
 }
+
+TESTCASE(05, "assignment")
+{
+    char* codeline;    
+    object_t ret;
+    bool st;
+    
+    codeline = "num_t at = 3";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "at";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(3, ret.value.number);
+
+    codeline = "at = 3483";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_null, ret.type);
+
+    codeline = "at";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(3483, ret.value.number);
+}
+
+// TODO:
+// string assignment
+// assignment symbol to symbol
+// assignment type missmatch
+// assignment undefined symbol

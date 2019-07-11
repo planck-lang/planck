@@ -80,10 +80,14 @@ expr : NUMBER               {CodeGen_add_number($1);}
 
 stmt : /* empty */
      | decl
+     | assign
      ;
 
 decl : type IDENTIFIER '=' expr   {CodeGen_add_opcode(opcode_decl); CodeGen_add_variable($1, $2); free($1); free($2);}
      ;
+
+assign : IDENTIFIER '=' expr
+       ;
 
 type : IDENTIFIER
      ;
