@@ -73,7 +73,8 @@ bool Planck_do(const char* buf, object_t* out_ret)
     return false;
 }
 
-void Planck_get_error(char* out_error)
+error_code_t Planck_get_error(char* out_error)
 {
     sprintf(out_error, "Runtime Error [0x%04X] %s\n", s_error_code, s_error_msg_ptr);
+    return s_error_code;
 }

@@ -27,7 +27,7 @@ SOFTWARE.
 
 #include "planck_types.h"
 
-bool Planck_do(const char* buf, object_t* out_ret);
-void Planck_get_error(char* out_error);
+bool         Planck_do(const char* buf, object_t* out_ret);
+error_code_t Planck_get_error(char* out_error);
 
 #endif /* SRC_PLANCK_H_ */

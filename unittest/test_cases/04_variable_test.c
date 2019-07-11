@@ -80,3 +80,18 @@ TESTCASE(03, "type miss match")
     ASSERT_EQ_NUM(true, st);
     ASSERT_EQ_STR("fdoksem", ret.value.str.ptr);
 }
+
+TESTCASE(04, "undefined type")
+{
+    char* codeline;    
+    object_t ret;
+    bool st;
+    
+    codeline = "slgkje_t kls = 3;";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(false, st);
+
+    char runtime_error_buf[1024] = {0};
+    error_code_t s_error_code = Planck_get_error(runtime_error_buf);
+    ASSERT_EQ_NUM(error_code_undefined_type, s_error_code);
+}
