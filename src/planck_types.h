@@ -75,7 +75,7 @@ typedef struct _object_t_ {
 typedef enum _opcode_t_ {
     opcode_nop = 0,
     opcode_push,
-    opcode_assign,
+    opcode_decl,
     opcode_store,
     opcode_load,
     opcode_add,

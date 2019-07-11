@@ -182,7 +182,7 @@ static bool execute_code(void)
             break;
         }
         case opcode_store:
-        case opcode_assign:
+        case opcode_decl:
         {
             pc++;
             object_t symtab_idx = pc->value;
