@@ -15,6 +15,32 @@ int yyerror(const char* str)
     printf("[Parse Error] %s\n", str);
     return 0;
 }
+
+static void Identifier_load(char* var_str)
+{
+    CodeGen_add_opcode(opcode_load);
+    CodeGen_read_symtab_variable(var_str);
+}
+
+static void Variable_declaration(char* type_str, char* var_str)
+{
+    CodeGen_add_opcode(opcode_decl); 
+    CodeGen_add_variable(type_str, var_str);
+}
+
+static void Variable_assignment(char* var_str)
+{
+    CodeGen_add_opcode(opcode_store);
+    CodeGen_read_symtab_variable(var_str);
+}
+
+static void Variable_assignment_with_add(char* var_str)
+{
+    Identifier_load(var_str);
+    CodeGen_add_opcode(opcode_add);
+    CodeGen_add_opcode(opcode_store);
+    CodeGen_read_symtab_variable(var_str);
+}
 %}
 
 %union {
@@ -56,7 +82,7 @@ stmt_with_semiconlon_or_not : stmt ';'
 
 expr : NUMBER               {CodeGen_add_number($1);}
      | STRING               {CodeGen_add_string($1);}
-     | IDENTIFIER           {CodeGen_add_opcode(opcode_load); CodeGen_read_symtab_variable($1); free($1);}
+     | IDENTIFIER           {Identifier_load($1); free($1);}
      | expr '<' expr        {CodeGen_add_opcode(opcode_lt);}
      | expr '>' expr        {CodeGen_add_opcode(opcode_gt);}
      | expr LE expr         {CodeGen_add_opcode(opcode_le);}
@@ -84,11 +110,11 @@ stmt : /* empty */
      | assign
      ;
 
-decl : type IDENTIFIER '=' expr   {CodeGen_add_opcode(opcode_decl); CodeGen_add_variable($1, $2); free($1); free($2);}
+decl : type IDENTIFIER '=' expr   {Variable_declaration($1, $2); free($1); free($2);}
      ;
 
-assign : IDENTIFIER '=' expr        {CodeGen_add_opcode(opcode_store); CodeGen_read_symtab_variable($1); free($1);}
-       | IDENTIFIER ADDASSIGN expr  {CodeGen_add_opcode(opcode_load); CodeGen_read_symtab_variable($1); CodeGen_add_opcode(opcode_add); CodeGen_add_opcode(opcode_store); CodeGen_read_symtab_variable($1); free($1);}
+assign : IDENTIFIER '=' expr        {Variable_assignment($1); free($1);}
+       | IDENTIFIER ADDASSIGN expr  {Variable_assignment_with_add($1); free($1);}
        ;
 
 type : IDENTIFIER
