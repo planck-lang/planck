@@ -124,8 +124,137 @@ TESTCASE(05, "assignment")
     ASSERT_EQ_NUM(3483, ret.value.number);
 }
 
-// TODO:
-// string assignment
-// assignment symbol to symbol
-// assignment type missmatch
-// assignment undefined symbol
+TESTCASE(06, "string assignment")
+{
+    char* codeline;
+    object_t ret;
+    bool st;
+    
+    codeline = "str_t str = 'asdfg'";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "str";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_string, ret.type);
+    ASSERT_EQ_STR("asdfg", ret.value.str.ptr);
+
+    codeline = "str = 'asogkel'";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_null, ret.type);
+
+    codeline = "str";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_string, ret.type);
+    ASSERT_EQ_STR("asogkel", ret.value.str.ptr);
+}
+
+TESTCASE(07, "assignment symbol to symbol")
+{
+    char* codeline;
+    object_t ret;
+    bool st;
+    
+    codeline = "str_t str01 = 'akboekkse'";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "str01";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_string, ret.type);
+    ASSERT_EQ_STR("akboekkse", ret.value.str.ptr);
+    
+    codeline = "str";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_string, ret.type);
+    ASSERT_EQ_STR("asogkel", ret.value.str.ptr);
+
+    codeline = "str = str01";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_null, ret.type);
+
+    codeline = "str";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_string, ret.type);
+    ASSERT_EQ_STR("akboekkse", ret.value.str.ptr);
+    
+    codeline = "num_t atpp = 33829";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "atpp";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(33829, ret.value.number);
+    
+    codeline = "at";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(3483, ret.value.number);
+    
+    codeline = "atpp = at";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_null, ret.type);
+    
+    codeline = "atpp";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(3483, ret.value.number);
+}
+
+TESTCASE(08, "assignment type missmatch")
+{
+    char* codeline;
+    object_t ret;
+    bool st;
+    
+    codeline = "atpp = str";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(false, st);
+    
+    char runtime_error_buf[1024] = {0};
+    error_code_t s_error_code = Planck_get_error(runtime_error_buf);
+    ASSERT_EQ_NUM(error_code_type_mismatch, s_error_code);
+    
+    codeline = "str = at";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(false, st);
+    
+    s_error_code = Planck_get_error(runtime_error_buf);
+    ASSERT_EQ_NUM(error_code_type_mismatch, s_error_code);
+}
+
+TESTCASE(09, "assignment undefined symbol")
+{
+    char* codeline;
+    object_t ret;
+    bool st;
+    
+    char runtime_error_buf[1024] = {0};
+    error_code_t s_error_code;
+    
+    codeline = "str = atk";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(false, st);
+    
+    s_error_code = Planck_get_error(runtime_error_buf);
+    ASSERT_EQ_NUM(error_code_not_found_symbol, s_error_code);
+    
+    codeline = "strk = at";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(false, st);
+    
+    s_error_code = Planck_get_error(runtime_error_buf);
+    ASSERT_EQ_NUM(error_code_not_found_symbol, s_error_code);
+}
