@@ -25,6 +25,7 @@ int yywrap(void)
 "<<"        return LSHFT;
 " AND "     return COMAND;
 " OR "      return COMOR;
+"+="        return ADDASSIGN;
 
 [0-9]+("."[0-9]*)? {
     char* ptr;

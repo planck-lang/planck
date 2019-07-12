@@ -29,6 +29,7 @@ int yyerror(const char* str)
 %token                  COMAND COMOR
 %token                  EQ NE LE GE
 %token                  RSHFT LSHFT
+%token                  ADDASSIGN
 %token<double_value>    NUMBER
 %token<string_ptr>      STRING
 %token<string_ptr>      IDENTIFIER
@@ -86,7 +87,8 @@ stmt : /* empty */
 decl : type IDENTIFIER '=' expr   {CodeGen_add_opcode(opcode_decl); CodeGen_add_variable($1, $2); free($1); free($2);}
      ;
 
-assign : IDENTIFIER '=' expr    {CodeGen_add_opcode(opcode_store); CodeGen_read_symtab_variable($1); free($1);}
+assign : IDENTIFIER '=' expr        {CodeGen_add_opcode(opcode_store); CodeGen_read_symtab_variable($1); free($1);}
+       | IDENTIFIER ADDASSIGN expr  {CodeGen_add_opcode(opcode_load); CodeGen_read_symtab_variable($1); CodeGen_add_opcode(opcode_add); CodeGen_add_opcode(opcode_store); CodeGen_read_symtab_variable($1); free($1);}
        ;
 
 type : IDENTIFIER

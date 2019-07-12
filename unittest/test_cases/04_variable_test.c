@@ -258,3 +258,30 @@ TESTCASE(09, "assignment undefined symbol")
     s_error_code = Planck_get_error(runtime_error_buf);
     ASSERT_EQ_NUM(error_code_not_found_symbol, s_error_code);
 }
+
+TESTCASE(10, "add assign test")
+{
+    char* codeline;
+    object_t ret;
+    bool st;
+
+    codeline = "num_t addassign = 10";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "addassign";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(10, ret.value.number);
+
+    codeline = "addassign += 110";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "addassign";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(120, ret.value.number);
+}
