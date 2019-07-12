@@ -26,6 +26,10 @@ int yywrap(void)
 " AND "     return COMAND;
 " OR "      return COMOR;
 "+="        return ADDASSIGN;
+"-="        return SUBASSIGN;
+"*="        return MULASSIGN;
+"/="        return DIVASSIGN;
+"%="        return MODASSIGN;
 
 [0-9]+("."[0-9]*)? {
     char* ptr;

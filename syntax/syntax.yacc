@@ -34,10 +34,9 @@ static void Variable_assignment(char* var_str)
     CodeGen_read_symtab_variable(var_str);
 }
 
-static void Variable_assignment_with_add(char* var_str)
+static void Variable_assignment_with_op(opcode_t opcode, char* var_str)
 {
-    Identifier_load(var_str);
-    CodeGen_add_opcode(opcode_add);
+    CodeGen_add_opcode(opcode);
     CodeGen_add_opcode(opcode_store);
     CodeGen_read_symtab_variable(var_str);
 }
@@ -55,12 +54,13 @@ static void Variable_assignment_with_add(char* var_str)
 %token                  COMAND COMOR
 %token                  EQ NE LE GE
 %token                  RSHFT LSHFT
-%token                  ADDASSIGN
+%token                  ADDASSIGN SUBASSIGN MULASSIGN DIVASSIGN MODASSIGN
 %token<double_value>    NUMBER
 %token<string_ptr>      STRING
 %token<string_ptr>      IDENTIFIER
 
 %type<string_ptr>   type
+%type<string_ptr>   load_first_var
 
 %left COMAND COMOR
 %left EQ NE '>' '<' LE GE
@@ -113,10 +113,16 @@ stmt : /* empty */
 decl : type IDENTIFIER '=' expr   {Variable_declaration($1, $2); free($1); free($2);}
      ;
 
-assign : IDENTIFIER '=' expr        {Variable_assignment($1); free($1);}
-       | IDENTIFIER ADDASSIGN expr  {Variable_assignment_with_add($1); free($1);}
-       ;
-
 type : IDENTIFIER
      ;
+
+assign : IDENTIFIER '=' expr        {Variable_assignment($1); free($1);}
+       | load_first_var ADDASSIGN expr  {Variable_assignment_with_op(opcode_add, $1); free($1);}
+       | load_first_var SUBASSIGN expr  {Variable_assignment_with_op(opcode_sub, $1); free($1);}
+       | load_first_var MULASSIGN expr  {Variable_assignment_with_op(opcode_mul, $1); free($1);}
+       | load_first_var DIVASSIGN expr  {Variable_assignment_with_op(opcode_div, $1); free($1);}
+       | load_first_var MODASSIGN expr  {Variable_assignment_with_op(opcode_mod, $1); free($1);}
+       ;
+
+load_first_var : IDENTIFIER         {Identifier_load($1);}
 %%

@@ -285,3 +285,75 @@ TESTCASE(10, "add assign test")
     ASSERT_EQ_NUM(object_type_number, ret.type);
     ASSERT_EQ_NUM(120, ret.value.number);
 }
+
+TESTCASE(11, "op assign test")
+{
+    char* codeline;
+    object_t ret;
+    bool st;
+
+    codeline = "num_t opassign = 10";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "opassign";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(10, ret.value.number);
+
+    // add assignment
+    codeline = "opassign += 110";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "opassign";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(120, ret.value.number);
+
+    // sub assignment
+    codeline = "opassign -= 30";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "opassign";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(90, ret.value.number);
+
+    // mul assignment
+    codeline = "opassign *= 4";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "opassign";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(360, ret.value.number);
+
+    // div assignment
+    codeline = "opassign /= 5";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "opassign";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(72, ret.value.number);
+
+    // mod assignment
+    codeline = "opassign %= 7";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "opassign";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(2, ret.value.number);
+}
