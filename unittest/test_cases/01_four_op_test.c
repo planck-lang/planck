@@ -159,3 +159,32 @@ TESTCASE(12, "string conc with op")
     ASSERT_EQ_NUM(true, st);
     ASSERT_EQ_STR("abcdefg23deff", ret.value.str.ptr);
 }
+
+TESTCASE(13, "mixed op with hex")
+{
+    char* codeline;
+    object_t ret;
+    bool st;
+
+    codeline = "num_t hexvar = 0x10AAFF";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "hexvar";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(0x10AAFF, ret.value.number);
+
+    codeline = "0xCAFE + 19";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM((0xCAFE + 19), ret.value.number);
+
+    codeline = "hexvar *3";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM((0x10AAFF * 3), ret.value.number);
+}
