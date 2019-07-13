@@ -37,6 +37,14 @@ int yywrap(void)
     return NUMBER;
 }
 
+"-"?"0"[xX][a-fA-F0-9]+ {
+    char* ptr;
+    int64_t longint = 0;
+    longint = strtol(yytext, &ptr, 16);
+    yylval.double_value = (double)longint;
+    return NUMBER;
+}
+
 \"[^\"]*\"  |
 \'[^\']*\'  {
     yylval.string_ptr = yytext;

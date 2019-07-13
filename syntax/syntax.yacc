@@ -43,7 +43,7 @@ static void Variable_assignment_with_op(opcode_t opcode, char* var_str)
 %}
 
 %union {
-    uint32_t    int_value;
+    int64_t     int_value;
     double      double_value;
     char*       string_ptr;
 }
