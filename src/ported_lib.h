@@ -32,3 +32,5 @@ void  release_mem(void* ptr);
 void* limited_malloc(void* current_ptr, size_t size, uint32_t count, uint32_t current_len, uint32_t* out_limit);
 
 char* str_dup(const char* orig, size_t len);
+
+double str_to_number(const char* strnum, uint32_t base);

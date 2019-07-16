@@ -32,16 +32,12 @@ int yywrap(void)
 "%="        return MODASSIGN;
 
 [0-9]+("."[0-9]*)? {
-    char* ptr;
-    yylval.double_value = strtod(yytext, &ptr);
+    yylval.double_value = str_to_number(yytext, 10);
     return NUMBER;
 }
 
 "-"?"0"[xX][a-fA-F0-9]+ {
-    char* ptr;
-    int64_t longint = 0;
-    longint = strtol(yytext, &ptr, 16);
-    yylval.double_value = (double)longint;
+    yylval.double_value = str_to_number(yytext, 16);
     return NUMBER;
 }
 

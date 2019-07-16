@@ -24,6 +24,7 @@ SOFTWARE.
 
 #include <stdlib.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "ported_lib.h"
 
@@ -65,4 +66,47 @@ char* str_dup(const char* orig, size_t len)
     memset(ret_ptr, 0, len + 1);
     memcpy(ret_ptr, orig, len);
     return ret_ptr;
+}
+
+double str_to_number(const char* strnum, uint32_t base)
+{
+    double ret = 0;
+    const char* targetstr = strnum;
+    char* ptr = NULL;
+    bool negative = false;
+
+    if (strnum[0] == '-')
+    {
+        targetstr = strnum + 1;
+        negative = true;
+    }
+
+    if (base == 10)
+    {
+        ret = strtod(targetstr, &ptr);
+    }
+    else if (base == 16)
+    {
+        if (targetstr[0] == '0')
+        {
+            if (targetstr[1] == 'x' || targetstr[1] == 'X') // "0x" or "0X"
+            {
+                int64_t longint = 0;
+                longint = strtol(targetstr, &ptr, 16);
+                ret = (double)longint;
+            }
+        }
+    }
+    else if (base == 2)
+    {
+
+    }
+    else
+    {
+        ret = 0;
+    }
+
+    ret *= (negative) ? -1 : 1;
+    
+    return ret;
 }
