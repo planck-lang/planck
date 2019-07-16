@@ -188,3 +188,32 @@ TESTCASE(13, "mixed op with hex")
     ASSERT_EQ_NUM(object_type_number, ret.type);
     ASSERT_EQ_NUM((0x10AAFF * 3), ret.value.number);
 }
+
+TESTCASE(14, "mixed op with bin")
+{
+    char* codeline;
+    object_t ret;
+    bool st;
+
+    codeline = "num_t binvar = 0b0100101010110101010100101";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "binvar";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(9792165, ret.value.number);
+
+    codeline = "0b0010010110 + 19";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(169, ret.value.number);
+
+    codeline = "binvar *3";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM((9792165 * 3), ret.value.number);
+}
