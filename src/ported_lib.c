@@ -71,6 +71,7 @@ char* str_dup(const char* orig, size_t len)
 double str_to_number(const char* strnum, uint32_t base)
 {
     double ret = 0;
+    int64_t longint = 0;
     const char* targetstr = strnum;
     char* ptr = NULL;
     bool negative = false;
@@ -91,7 +92,6 @@ double str_to_number(const char* strnum, uint32_t base)
         {
             if (targetstr[1] == 'x' || targetstr[1] == 'X') // "0x" or "0X"
             {
-                int64_t longint = 0;
                 longint = strtol(targetstr, &ptr, 16);
                 ret = (double)longint;
             }
@@ -99,7 +99,26 @@ double str_to_number(const char* strnum, uint32_t base)
     }
     else if (base == 2)
     {
+        if (targetstr[0] == '0')
+        {
+            if (targetstr[1] == 'b' || targetstr[1] == 'B') // "0b" or "0B"
+            {
+                longint = 0;
 
+                const char* binch = &targetstr[2];
+                int shift_count = strlen(binch) - 1;
+                while(*binch)
+                {
+                    if (*binch == '1')
+                    {
+                        longint |= 1 << shift_count;
+                    }
+                    shift_count--;
+                    binch++;
+                }
+                ret = (double)longint;
+            }
+        }
     }
     else
     {

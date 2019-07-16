@@ -41,6 +41,11 @@ int yywrap(void)
     return NUMBER;
 }
 
+"-"?"0"[bB][01]+ {
+    yylval.double_value = str_to_number(yytext, 2);
+    return NUMBER;
+}
+
 \"[^\"]*\"  |
 \'[^\']*\'  {
     yylval.string_ptr = yytext;
