@@ -357,3 +357,97 @@ TESTCASE(11, "op assign test")
     ASSERT_EQ_NUM(object_type_number, ret.type);
     ASSERT_EQ_NUM(2, ret.value.number);
 }
+
+TESTCASE(12, "op assign test extension")
+{
+    char* codeline;
+    object_t ret;
+    bool st;
+
+    // concatenation assign
+    codeline = "str_t cocassign = 'abcd'";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "cocassign";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_string, ret.type);
+    ASSERT_EQ_STR("abcd", ret.value.str.ptr);
+
+    // add assignment
+    codeline = "cocassign ##= 'KKK'";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "cocassign";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_string, ret.type);
+    ASSERT_EQ_STR("abcdKKK", ret.value.str.ptr);
+
+    codeline = "cocassign ##= 123";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "cocassign";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_string, ret.type);
+    ASSERT_EQ_STR("abcdKKK123", ret.value.str.ptr);
+
+    // left shift assign
+    codeline = "opassign <<= 7";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "opassign";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(256, ret.value.number);
+    
+    // right shift assign
+    codeline = "opassign >>= 3";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "opassign";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(32, ret.value.number);
+
+    // or assign
+    codeline = "opassign |= 3";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "opassign";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(35, ret.value.number);
+
+    // and assign
+    codeline = "opassign &= 0xF";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "opassign";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(3, ret.value.number);
+
+    // xor assign
+    codeline = "opassign ^= 0xF";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+
+    codeline = "opassign";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(12, ret.value.number);
+}
