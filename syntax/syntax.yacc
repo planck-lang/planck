@@ -54,7 +54,9 @@ static void Variable_assignment_with_op(opcode_t opcode, char* var_str)
 %token                  COMAND COMOR
 %token                  EQ NE LE GE
 %token                  RSHFT LSHFT
-%token                  ADDASSIGN SUBASSIGN MULASSIGN DIVASSIGN MODASSIGN
+%token                  ADDASSIGN SUBASSIGN MULASSIGN DIVASSIGN MODASSIGN CONCASSIGN
+%token                  RSHTASSIGN LSHTASSIGN
+%token                  ORASSIGN ANDASSIGN XORASSIGN
 %token<double_value>    NUMBER
 %token<string_ptr>      STRING
 %token<string_ptr>      IDENTIFIER
@@ -122,6 +124,12 @@ assign : IDENTIFIER '=' expr        {Variable_assignment($1); free($1);}
        | load_first_var MULASSIGN expr  {Variable_assignment_with_op(opcode_mul, $1); free($1);}
        | load_first_var DIVASSIGN expr  {Variable_assignment_with_op(opcode_div, $1); free($1);}
        | load_first_var MODASSIGN expr  {Variable_assignment_with_op(opcode_mod, $1); free($1);}
+       | load_first_var CONCASSIGN expr {Variable_assignment_with_op(opcode_con, $1); free($1);}
+       | load_first_var RSHTASSIGN expr {Variable_assignment_with_op(opcode_rshift, $1); free($1);}
+       | load_first_var LSHTASSIGN expr {Variable_assignment_with_op(opcode_lshift, $1); free($1);}
+       | load_first_var ORASSIGN expr   {Variable_assignment_with_op(opcode_bit_or, $1); free($1);}
+       | load_first_var ANDASSIGN expr  {Variable_assignment_with_op(opcode_bit_and, $1); free($1);}
+       | load_first_var XORASSIGN expr  {Variable_assignment_with_op(opcode_xor, $1); free($1);}
        ;
 
 load_first_var : IDENTIFIER         {Identifier_load($1);}

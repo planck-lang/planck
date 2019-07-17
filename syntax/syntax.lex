@@ -13,6 +13,7 @@ int yywrap(void)
     return 1;
 }
 %}
+
 %%
 [ \t]*      ;
 
@@ -30,6 +31,12 @@ int yywrap(void)
 "*="        return MULASSIGN;
 "/="        return DIVASSIGN;
 "%="        return MODASSIGN;
+"##="       return CONCASSIGN;
+"<<="       return LSHTASSIGN;
+">>="       return RSHTASSIGN;
+"|="        return ORASSIGN;
+"&="        return ANDASSIGN;
+"^="        return XORASSIGN;
 
 [0-9]+("."[0-9]*)? {
     yylval.double_value = str_to_number(yytext, 10);
