@@ -129,6 +129,4 @@ void Planck_set_block_input(bool isEnter)
             s_block_depth--;
         }
     }
-    
-    printf("block depth - %d\n", s_block_depth);
 }
