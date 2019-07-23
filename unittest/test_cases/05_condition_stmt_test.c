@@ -39,9 +39,9 @@ TESTCASE(01, "grammer test")
     st = Planck_do(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
 
-    codeline = "if ca == 3 {\n \
+    codeline = "if ca == 3 { \
                     ca = 2;\n \
-                    num_t cx = 10; \
+                    num_t cx = 10;\n \
                 }";
     st = Planck_do(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);

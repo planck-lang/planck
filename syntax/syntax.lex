@@ -72,6 +72,10 @@ int yywrap(void)
 }
 
 .           {       // It must be the last rule because it can match ANY characters
+    if (*yytext == '}')
+    {
+        Planck_set_block_input(false);
+    }
     return *yytext;
 }
 %%

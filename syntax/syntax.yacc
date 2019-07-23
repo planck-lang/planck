@@ -118,7 +118,7 @@ stmt : /* empty */
 decl : IDENTIFIER IDENTIFIER '=' expr   {Variable_declaration($1, $2); free($1); free($2);}
      ;
 
-assign : IDENTIFIER '=' expr        {Variable_assignment($1); free($1);}
+assign : IDENTIFIER '=' expr            {Variable_assignment($1); free($1);}
        | load_first_var ADDASSIGN expr  {Variable_assignment_with_op(opcode_add, $1); free($1);}
        | load_first_var SUBASSIGN expr  {Variable_assignment_with_op(opcode_sub, $1); free($1);}
        | load_first_var MULASSIGN expr  {Variable_assignment_with_op(opcode_mul, $1); free($1);}
@@ -138,6 +138,6 @@ load_first_var : IDENTIFIER         {Identifier_load($1);}
 condition_stmt : IF expr block
                ;
       
-block : '{' stmtlist '}'  {printf("parse block\n");}
+block : '{' stmtlist '}'
       ;
 %%
