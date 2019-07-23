@@ -33,9 +33,9 @@ TESTCASE(01, "xor")
     char* codeline = "4 ^ 6";
 
     object_t ret;
-    bool st = Planck_do(codeline, &ret);
+    planck_result_t st = Planck_do(codeline, &ret);
 
-    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(2.0, ret.value.number);
 }
 
@@ -44,14 +44,14 @@ TESTCASE(02, "shift right")
     char* codeline = "3 >> 1";
 
     object_t ret;
-    bool st = Planck_do(codeline, &ret);
+    planck_result_t st = Planck_do(codeline, &ret);
 
-    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(1, ret.value.number);
 
     codeline = "3290 >> 3";
     st = Planck_do(codeline, &ret);
-    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(411, ret.value.number);
 }
 
@@ -60,14 +60,14 @@ TESTCASE(03, "shift left")
     char* codeline = "3 << 1";
 
     object_t ret;
-    bool st = Planck_do(codeline, &ret);
+    planck_result_t st = Planck_do(codeline, &ret);
 
-    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(6, ret.value.number);
 
     codeline = "3290 << 3";
     st = Planck_do(codeline, &ret);
-    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(26320, ret.value.number);
 }
 
@@ -76,14 +76,14 @@ TESTCASE(04, "bit or")
     char* codeline = "100 | 3";
 
     object_t ret;
-    bool st = Planck_do(codeline, &ret);
+    planck_result_t st = Planck_do(codeline, &ret);
 
-    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(103, ret.value.number);
 
     codeline = "3|2";
     st = Planck_do(codeline, &ret);
-    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(3, ret.value.number);
 }
 
@@ -92,14 +92,14 @@ TESTCASE(05, "bit and")
     char* codeline = "100 & 3";
 
     object_t ret;
-    bool st = Planck_do(codeline, &ret);
+    planck_result_t st = Planck_do(codeline, &ret);
 
-    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(0, ret.value.number);
 
     codeline = "3&2";
     st = Planck_do(codeline, &ret);
-    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(2, ret.value.number);
 }
 
@@ -108,23 +108,23 @@ TESTCASE(06, "bit op mixed")
     char* codeline = "3 + 2 | 3";
 
     object_t ret;
-    bool st = Planck_do(codeline, &ret);
+    planck_result_t st = Planck_do(codeline, &ret);
 
-    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(7, ret.value.number);
 
     codeline = "3 + 2 & 3";
     st = Planck_do(codeline, &ret);
-    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(1, ret.value.number);
 
     codeline = "3 << 2 & 4";
     st = Planck_do(codeline, &ret);
-    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(4, ret.value.number);
 
     codeline = "3 << 2 | 4";
     st = Planck_do(codeline, &ret);
-    ASSERT_EQ_NUM(true, st);
+    ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(12, ret.value.number);
 }
