@@ -30,21 +30,53 @@ SOFT
 #include "object.h"
 #include "virtual_machine.h"
 #include "code_gen.h"
+#include "planck.h"
 
 typedef struct yy_buffer_state* YY_BUFFER_STATE;
 extern int yyparse();
 extern YY_BUFFER_STATE yy_scan_string(const char * str);
 extern void yy_delete_buffer(YY_BUFFER_STATE buffer);
+extern int yylex(void);
 
 static char* s_error_msg_ptr = NULL;
 static error_code_t s_error_code;
 
-bool Planck_do(const char* buf, object_t* out_ret)
+static bool s_lock_block_depth;
+static uint32_t s_block_depth = 0;
+
+static void check_block_input_mode(const char* str)
 {
+    s_lock_block_depth = false;
+    
+    YY_BUFFER_STATE buf;
+    buf = yy_scan_string(str);
+    while (true)
+    {
+        /* The Lexical analyzer changes s_block_depth value by calling the Planck_set_block_input() function.
+           Refer the syntax.lex file */
+        if (yylex() == 0)
+        {
+            break;
+        }
+    }
+    yy_delete_buffer(buf);
+    
+    s_lock_block_depth = true;
+}
+
+planck_result_t Planck_do(const char* buf, object_t* out_ret)
+{
+    check_block_input_mode(buf);
+
+    if (s_block_depth > 0)
+    {
+        return planck_result_block_input;
+    }
+    
     CodeGen_reset_bytecodes();
 
     YY_BUFFER_STATE yyst = yy_scan_string(buf);
-    int parse_result = yyparse();
+    int parse_result = yyparse();    
     yy_delete_buffer(yyst);
 
     s_error_code = VirtualMachine_get_error_msg(&s_error_msg_ptr);
@@ -53,28 +85,50 @@ bool Planck_do(const char* buf, object_t* out_ret)
     {
         if (s_error_code != error_code_no_error)
         {
-            return false;
+            return planck_result_fail;
         }
 
         CodeGen_add_opcode(opcode_halt);
         if (VirtualMachine_run_vm(CodeGen_get_bytecodes()))
         {
             *out_ret = VirtualMachine_get_result();
-            return true;
+            return planck_result_ok;
         }
         else
         {
             s_error_code = VirtualMachine_get_error_msg(&s_error_msg_ptr);
-            return false;
+            return planck_result_fail;
         }
 
     }
     // parse error
-    return false;
+    return planck_result_fail;
 }
 
 error_code_t Planck_get_error(char* out_error)
 {
     sprintf(out_error, "Runtime Error [0x%04X] %s\n", s_error_code, s_error_msg_ptr);
     return s_error_code;
+}
+
+void Planck_set_block_input(bool isEnter)
+{
+    if (s_lock_block_depth == true)
+    {
+        return;
+    }
+    
+    if (isEnter)
+    {
+        s_block_depth++;
+    }
+    else
+    {
+        if (s_block_depth > 0)
+        {
+            s_block_depth--;
+        }
+    }
+    
+    printf("block depth - %d\n", s_block_depth);
 }

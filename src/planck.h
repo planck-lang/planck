@@ -27,7 +27,15 @@ SOFTWARE.
 
 #include "planck_types.h"
 
-bool         Planck_do(const char* buf, object_t* out_ret);
-error_code_t Planck_get_error(char* out_error);
+typedef enum _planck_result_t_ {
+    planck_result_fail = 0,
+    planck_result_ok = 1,
+    planck_result_block_input,
+    planck_result_MAXNUM
+} planck_result_t;
+
+planck_result_t Planck_do(const char* buf, object_t* out_ret);
+error_code_t    Planck_get_error(char* out_error);
+void            Planck_set_block_input(bool isEnter);
 
 #endif /* SRC_PLANCK_H_ */

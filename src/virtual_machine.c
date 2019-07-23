@@ -90,7 +90,7 @@ object_t VirtualMachine_get_result(void)
 
 void VirtualMachine_add_error_msg(error_code_t error_code)
 {
-    for(uint32_t i = 0 ; i < error_code_NUM; i++)
+    for(uint32_t i = 0 ; i < error_code_MAXNUM; i++)
     {
         if (s_predefined_error[i].error_code == error_code)
         {

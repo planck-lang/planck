@@ -32,24 +32,32 @@ SOFTWARE.
 
 #include "planck.h"
 
+static char* normal_prompt = ">> ";
+static char* block_prompt = ".. ";
+static char* prompt_ptr;
+
 int main(int argc, char* argv[])
 {
+    prompt_ptr = normal_prompt;
+    
     while (true)
     {
-        char* buf = readline(">> ");
+        char* buf = readline(prompt_ptr);
         if (buf == NULL)
         {
             puts("\nAnnyuonghi Gaseyo.\n");
             break;
         }
+        
+        prompt_ptr = normal_prompt;
 
         if (strlen(buf) > 0)
         {
             add_history(buf);
 
             object_t ret;
-            bool st = Planck_do(buf, &ret);
-            if (st)
+            planck_result_t st = Planck_do(buf, &ret);
+            if (st == planck_result_ok)
             {
                 switch(ret.type)
                 {
@@ -68,12 +76,16 @@ int main(int argc, char* argv[])
                     printf("[Type Error]\n");
                 }
             }
-            else
+            else if (st == planck_result_fail)
             {
                 char runtime_error_buf[1024] = {0};
                 Planck_get_error(runtime_error_buf);
                 printf("%s", runtime_error_buf);
                 printf("[Error] -> %s\n", buf);
+            }
+            else
+            {
+                prompt_ptr = block_prompt;
             }
         }
 

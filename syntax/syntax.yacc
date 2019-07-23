@@ -61,7 +61,8 @@ static void Variable_assignment_with_op(opcode_t opcode, char* var_str)
 %token<string_ptr>      STRING
 %token<string_ptr>      IDENTIFIER
 
-%type<string_ptr>   type
+%token                  IF
+
 %type<string_ptr>   load_first_var
 
 %left COMAND COMOR
@@ -75,12 +76,13 @@ static void Variable_assignment_with_op(opcode_t opcode, char* var_str)
 
 %%
 prog : expr
-     | stmt_with_semiconlon_or_not
+     | stmtlist
      ;
 
-stmt_with_semiconlon_or_not : stmt ';'
-                            | stmt
-                            ;
+stmtlist : stmt
+         | stmt ';' stmtlist
+         | stmt '\n' stmtlist
+         ;
 
 expr : NUMBER               {CodeGen_add_number($1);}
      | STRING               {CodeGen_add_string($1);}
@@ -110,12 +112,10 @@ expr : NUMBER               {CodeGen_add_number($1);}
 stmt : /* empty */
      | decl
      | assign
+     | condition_stmt
      ;
 
-decl : type IDENTIFIER '=' expr   {Variable_declaration($1, $2); free($1); free($2);}
-     ;
-
-type : IDENTIFIER
+decl : IDENTIFIER IDENTIFIER '=' expr   {Variable_declaration($1, $2); free($1); free($2);}
      ;
 
 assign : IDENTIFIER '=' expr        {Variable_assignment($1); free($1);}
@@ -133,4 +133,11 @@ assign : IDENTIFIER '=' expr        {Variable_assignment($1); free($1);}
        ;
 
 load_first_var : IDENTIFIER         {Identifier_load($1);}
+               ;
+
+condition_stmt : IF expr block
+               ;
+      
+block : '{' stmtlist '}'  {printf("parse block\n");}
+      ;
 %%

@@ -2,9 +2,11 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "y.tab.h"
 #include "ported_lib.h"
+#include "planck.h"
 
 extern int fileno(FILE *stream);
 
@@ -37,6 +39,11 @@ int yywrap(void)
 "|="        return ORASSIGN;
 "&="        return ANDASSIGN;
 "^="        return XORASSIGN;
+
+"if "       {
+    Planck_set_block_input(true);
+    return IF;
+}
 
 [0-9]+("."[0-9]*)? {
     yylval.double_value = str_to_number(yytext, 10);
