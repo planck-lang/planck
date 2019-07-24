@@ -38,10 +38,38 @@ TESTCASE(01, "grammer test")
     st = Planck_do(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
 
-    codeline = "if ca == 3 { \
-                    ca = 2;\n \
-                    num_t cx = 10;\n \
-                }";
+    codeline = "if ca == 3 {\n\tca = 2;\n\tnum_t cx = 10;\n}";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+}
+
+TESTCASE(02, "separated input line")
+{
+    char* codeline;
+    object_t ret;
+    planck_result_t st;
+
+    codeline = "if ca == 4";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_block_input, st);
+
+    codeline = "{";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_block_input, st);
+
+    codeline = "   ca = 5";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_block_input, st);
+
+    codeline = "   ca = 7;";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_block_input, st);
+
+    codeline = "   str_t k3lxi='kk3kxl';";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_block_input, st);
+
+    codeline = "}";
     st = Planck_do(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
 }
