@@ -17,7 +17,7 @@ int yywrap(void)
 %}
 
 %%
-[ \t]*      ;
+[ \t\n]*      ;
 
 "##"        return STRCON;
 "=="        return EQ;

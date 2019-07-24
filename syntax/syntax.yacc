@@ -79,9 +79,8 @@ prog : expr
      | stmtlist
      ;
 
-stmtlist : stmt
+stmtlist : stmt	
          | stmt ';' stmtlist
-         | stmt '\n' stmtlist
          ;
 
 expr : NUMBER               {CodeGen_add_number($1);}

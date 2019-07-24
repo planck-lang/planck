@@ -34,7 +34,6 @@ TESTCASE(01, "grammer test")
     object_t ret;
     planck_result_t st;
 
-    // concatenation assign
     codeline = "num_t ca = 3";
     st = Planck_do(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
