@@ -25,6 +25,8 @@ SOFTWARE.
 #include "TestMain.h"
 
 #include "symtab.h"
+#include "code_gen.h"
+#include "planck.h"
 
 REGISTER_SUITE_AUTO(WhiteBox_Test, "00 White Box Test")
 
@@ -51,4 +53,56 @@ TESTCASE(01, "literal table pointer")
     ASEERT_NEQ_UINT(bc_ptr, cd_ptr);
     ASSERT_EQ_UINT(cd_ptr, cd_again_ptr);
     ASSERT_EQ_UINT(table_idx_a, table_idx_b);
+}
+
+TESTCASE(02, "if statement bytecode validation")
+{
+    char* codeline;
+    object_t ret;
+    planck_result_t st;
+
+    codeline = "num_t cab = 3";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    codeline = "if cab == 3 {\n\tcab = 2;\n\tnum_t cxb = 10;\n\tcxb += 1;\n}";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    code_buf_t* pc = CodeGen_get_bytecodes();
+    
+    // cab == 3
+    ASSERT_EQ_NUM(opcode_load, pc->opcode); pc++;
+    ASSERT_EQ_NUM(1, pc->value.value.general); pc++;
+    ASSERT_EQ_NUM(opcode_push, pc->opcode); pc++;
+    ASSERT_EQ_NUM(3, pc->value.value.number); pc++;
+    ASSERT_EQ_NUM(opcode_eq, pc->opcode); pc++;
+
+    // if
+    ASSERT_EQ_NUM(opcode_cmp, pc->opcode); pc++;
+    code_buf_t* jmp_addr = pc; pc++;
+
+    // cab = 2
+    ASSERT_EQ_NUM(opcode_push, pc->opcode); pc++;
+    ASSERT_EQ_NUM(2, pc->value.value.number); pc++;
+    ASSERT_EQ_NUM(opcode_store, pc->opcode); pc++;
+    ASSERT_EQ_NUM(1, pc->value.value.general); pc++;
+    
+    // num_t cxb = 10
+    ASSERT_EQ_NUM(opcode_push, pc->opcode); pc++;
+    ASSERT_EQ_NUM(10, pc->value.value.number); pc++;
+    ASSERT_EQ_NUM(opcode_decl, pc->opcode); pc++;
+    ASSERT_EQ_NUM(2, pc->value.value.general); pc++;
+
+    // cxb += 1
+    ASSERT_EQ_NUM(opcode_load, pc->opcode); pc++;
+    ASSERT_EQ_NUM(2, pc->value.value.general); pc++;
+    ASSERT_EQ_NUM(opcode_push, pc->opcode); pc++;
+    ASSERT_EQ_NUM(1, pc->value.value.number); pc++;
+    ASSERT_EQ_NUM(opcode_add, pc->opcode); pc++;
+    ASSERT_EQ_NUM(opcode_store, pc->opcode); pc++;
+    ASSERT_EQ_NUM(2, pc->value.value.general); pc++;
+
+    // validate jumping address
+    ASSERT_EQ_NUM((uint64_t)jmp_addr, (uint64_t)pc);
 }
