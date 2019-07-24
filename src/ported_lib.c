@@ -30,7 +30,9 @@ SOFTWARE.
 
 void* new_malloc(size_t size)
 {
-    return malloc(size);
+    void* ptr = malloc(size);
+    memset(ptr, 0, size);
+    return ptr;
 }
 
 void release_mem(void* ptr)
@@ -44,7 +46,7 @@ void* limited_malloc(void* current_ptr, size_t size, uint32_t count, uint32_t cu
 
     if (current_ptr == NULL)
     {
-        ret_ptr = malloc(size * count);
+        ret_ptr = new_malloc(size * count);
         *out_limit = count;
         return ret_ptr;
     }

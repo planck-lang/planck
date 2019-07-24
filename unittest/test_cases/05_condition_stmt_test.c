@@ -57,7 +57,7 @@ TESTCASE(02, "separated input line")
     st = Planck_do(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_block_input, st);
 
-    codeline = "   ca = 5";
+    codeline = "   ca = 5;";
     st = Planck_do(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_block_input, st);
 

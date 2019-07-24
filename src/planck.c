@@ -31,6 +31,7 @@ SOFT
 #include "virtual_machine.h"
 #include "code_gen.h"
 #include "planck.h"
+#include "ported_lib.h"
 
 typedef struct yy_buffer_state* YY_BUFFER_STATE;
 extern int yyparse();
@@ -41,8 +42,12 @@ extern int yylex(void);
 static char* s_error_msg_ptr = NULL;
 static error_code_t s_error_code;
 
+#define BLOCK_BUF_DEF_LEN (8 * 1024)     // 8KB
+
 static bool s_lock_block_depth;
 static uint32_t s_block_depth = 0;
+static char* s_block_buf = NULL;
+static uint32_t s_block_buf_limit = BLOCK_BUF_DEF_LEN;
 
 static void check_block_input_mode(const char* str)
 {
@@ -68,16 +73,43 @@ planck_result_t Planck_do(const char* buf, object_t* out_ret)
 {
     check_block_input_mode(buf);
 
+    const char* input_code_buf = buf;
+
     if (s_block_depth > 0)
     {
+        if (s_block_buf == NULL)
+        {
+            s_block_buf = (char*)new_malloc(s_block_buf_limit);
+        }
+
+        size_t expected_len = strlen(s_block_buf) + strlen(buf);
+        if (expected_len > s_block_buf_limit)
+        {
+            s_block_buf = (char*)limited_malloc(s_block_buf, 1, BLOCK_BUF_DEF_LEN, expected_len, &s_block_buf_limit);
+        }
+        
+        strncat(s_block_buf, buf, strlen(buf));
+
         return planck_result_block_input;
     }
-    
+
+    if (s_block_buf != NULL)
+    {
+        strncat(s_block_buf, buf, strlen(buf));
+        input_code_buf = s_block_buf;
+    }
+
     CodeGen_reset_bytecodes();
 
-    YY_BUFFER_STATE yyst = yy_scan_string(buf);
+    YY_BUFFER_STATE yyst = yy_scan_string(input_code_buf);
     int parse_result = yyparse();    
     yy_delete_buffer(yyst);
+
+    if (s_block_buf != NULL)
+    {
+        release_mem(s_block_buf);
+        s_block_buf = NULL;
+    }
 
     s_error_code = VirtualMachine_get_error_msg(&s_error_msg_ptr);
 
