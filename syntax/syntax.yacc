@@ -86,27 +86,36 @@ stmtlist : stmt
 expr : NUMBER               {CodeGen_add_number($1);}
      | STRING               {CodeGen_add_string($1);}
      | IDENTIFIER           {Identifier_load($1); free($1);}
-     | expr '<' expr        {CodeGen_add_opcode(opcode_lt);}
-     | expr '>' expr        {CodeGen_add_opcode(opcode_gt);}
-     | expr LE expr         {CodeGen_add_opcode(opcode_le);}
-     | expr GE expr         {CodeGen_add_opcode(opcode_ge);}
-     | expr EQ expr         {CodeGen_add_opcode(opcode_eq);}
-     | expr NE expr         {CodeGen_add_opcode(opcode_ne);}
-     | expr '+' expr        {CodeGen_add_opcode(opcode_add);}
-     | expr '-' expr        {CodeGen_add_opcode(opcode_sub);}
-     | expr '*' expr        {CodeGen_add_opcode(opcode_mul);}
-     | expr '/' expr        {CodeGen_add_opcode(opcode_div);}
-     | expr '%' expr        {CodeGen_add_opcode(opcode_mod);}
-     | expr '^' expr        {CodeGen_add_opcode(opcode_xor);}
-     | expr STRCON expr     {CodeGen_add_opcode(opcode_con);}
-     | expr RSHFT expr      {CodeGen_add_opcode(opcode_rshift);}
-     | expr LSHFT expr      {CodeGen_add_opcode(opcode_lshift);}
-     | expr '|' expr        {CodeGen_add_opcode(opcode_bit_or);}
-     | expr '&' expr        {CodeGen_add_opcode(opcode_bit_and);}
-     | expr COMAND expr     {CodeGen_add_opcode(opcode_com_and);}
-     | expr COMOR expr      {CodeGen_add_opcode(opcode_com_or);}
+     | comparison_expr
+     | basic_op_expr
+     | bit_op_expr
      | '(' expr ')'         
      ;
+
+basic_op_expr : expr '+' expr        {CodeGen_add_opcode(opcode_add);}
+              | expr '-' expr        {CodeGen_add_opcode(opcode_sub);}
+              | expr '*' expr        {CodeGen_add_opcode(opcode_mul);}
+              | expr '/' expr        {CodeGen_add_opcode(opcode_div);}
+              | expr '%' expr        {CodeGen_add_opcode(opcode_mod);}
+              | expr '^' expr        {CodeGen_add_opcode(opcode_xor);}
+              | expr STRCON expr     {CodeGen_add_opcode(opcode_con);}
+              ;
+
+bit_op_expr : expr RSHFT expr      {CodeGen_add_opcode(opcode_rshift);}
+            | expr LSHFT expr      {CodeGen_add_opcode(opcode_lshift);}
+            | expr '|' expr        {CodeGen_add_opcode(opcode_bit_or);}
+            | expr '&' expr        {CodeGen_add_opcode(opcode_bit_and);}
+            ;
+
+comparison_expr : expr '<' expr        {CodeGen_add_opcode(opcode_lt);}
+                | expr '>' expr        {CodeGen_add_opcode(opcode_gt);}
+                | expr LE expr         {CodeGen_add_opcode(opcode_le);}
+                | expr GE expr         {CodeGen_add_opcode(opcode_ge);}
+                | expr EQ expr         {CodeGen_add_opcode(opcode_eq);}
+                | expr NE expr         {CodeGen_add_opcode(opcode_ne);}
+                | expr COMAND expr     {CodeGen_add_opcode(opcode_com_and);}
+                | expr COMOR expr      {CodeGen_add_opcode(opcode_com_or);}
+                ;
 
 stmt : /* empty */
      | decl
