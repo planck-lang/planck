@@ -213,6 +213,14 @@ static bool execute_code(void)
             pc++;                       // increase pc to execute next code
             break;
         }
+        case opcode_cmp:
+        {
+            pc++;
+            printf("OPCODE CMP -> %lx\n", pc->value.value.general);
+            pc++;
+            break;
+        }
+
         case opcode_halt:
         case opcode_MAXNUM:
             return check_no_error();

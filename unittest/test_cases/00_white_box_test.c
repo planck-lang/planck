@@ -104,5 +104,5 @@ TESTCASE(02, "if statement bytecode validation")
     ASSERT_EQ_NUM(2, pc->value.value.general); pc++;
 
     // validate jumping address
-    ASSERT_EQ_NUM((uint64_t)jmp_addr, (uint64_t)pc);
+    ASSERT_EQ_NUM(jmp_addr->value.value.general, (uint64_t)pc);
 }

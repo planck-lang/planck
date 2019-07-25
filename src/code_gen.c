@@ -51,6 +51,16 @@ code_buf_t* CodeGen_get_bytecodes(void)
     return s_generated_code.buffer;
 }
 
+code_buf_t* CodeGen_current_bytecode_ptr(void)
+{
+    return &s_generated_code.buffer[s_generated_code.len];
+}
+
+void CodeGen_skip_bytecode_count(uint32_t count)
+{
+    s_generated_code.len += count;
+}
+
 void CodeGen_add_opcode(opcode_t opcode)
 {
     check_code_buffer();
@@ -121,6 +131,11 @@ void CodeGen_read_symtab_variable(const char* ident_str)
 
     check_code_buffer();
     s_generated_code.buffer[s_generated_code.len++].value = general_obj;
+}
+
+void CodeGen_modify_codebuf(code_buf_t* dst, code_buf_t src)
+{
+    *dst = src;
 }
 
 static void check_code_buffer(void)
