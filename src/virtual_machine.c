@@ -62,6 +62,7 @@ static struct _vm_error_status_t_ {
         {"Type is not defined (undefined type)", error_code_undefined_type},
         {"Symbol not found from symtab", error_code_not_found_symbol},
         {"Redefined of variable", error_code_redefinition},
+        {"Condition statement expects boolean expression", error_code_must_be_bool},
         {"No error", error_code_no_error}
 };
 
@@ -71,6 +72,8 @@ static void check_stack(void);
 static void     push_stack(object_t value);
 static object_t pop_stack(void);
 static bool     check_no_error(void);
+
+static code_buf_t* Stmt_if(code_buf_t* pc, object_t result, uint64_t offset);
 
 static bool execute_code(void);
 
@@ -159,6 +162,24 @@ static bool check_no_error(void)
     return no_error;
 }
 
+static code_buf_t* Stmt_if(code_buf_t* pc, object_t result, uint64_t offset)
+{
+    if (result.type == object_type_boolean)
+    {
+        if (result.value.boolean == true)
+        {
+            return (pc + 1);
+        }
+        else
+        {
+            return (pc + offset);
+        }
+    }
+
+    VirtualMachine_add_error_msg(error_code_must_be_bool);
+    return NULL;
+}
+
 static bool execute_code(void)
 {
     code_buf_t* pc = s_vm_registers.pc;
@@ -215,9 +236,11 @@ static bool execute_code(void)
         }
         case opcode_cmp:
         {
+            object_t result = pop_stack();
+            
             pc++;
-            printf("OPCODE CMP -> %lx\n", pc->value.value.general);
-            pc++;
+            uint64_t offset = pc->value.value.general;
+            pc = Stmt_if(pc, result, offset);
             break;
         }
 
@@ -227,6 +250,8 @@ static bool execute_code(void)
 
         default:
             printf("Critical Error %d\n", opcode);
+            printf("%lx %lx %lx\n", (uint64_t)(*(uint64_t*)(pc - 2)), (uint64_t)(*(uint64_t*)(pc - 1)), (uint64_t)(*(uint64_t*)pc));
+            return false;
         }
 
         if (check_no_error() == false)

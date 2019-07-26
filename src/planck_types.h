@@ -36,6 +36,7 @@ typedef enum _error_code_t_ {
     error_code_undefined_type,
     error_code_not_found_symbol,
     error_code_redefinition,
+    error_code_must_be_bool,
     error_code_MAXNUM
 } error_code_t;
 

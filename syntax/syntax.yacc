@@ -41,7 +41,7 @@ static void Variable_assignment_with_op(opcode_t opcode, char* var_str)
     CodeGen_read_symtab_variable(var_str);
 }
 
-static void Modify_jump_addr_with_op(opcode_t opcode, code_buf_t* dst, uint64_t jmp)
+static void Modify_jump_addr_with_op(opcode_t opcode, code_buf_t* dst, code_buf_t* jmp)
 {
     code_buf_t opcode_bytecode;
     code_buf_t jmp_addr_bytecode;
@@ -50,8 +50,10 @@ static void Modify_jump_addr_with_op(opcode_t opcode, code_buf_t* dst, uint64_t 
     CodeGen_modify_codebuf(dst, opcode_bytecode);
     dst++;
 
+    uint64_t offset = jmp - dst;
+
     jmp_addr_bytecode.value.type = object_type_general;
-    jmp_addr_bytecode.value.value.general = jmp;
+    jmp_addr_bytecode.value.value.general = offset;
     CodeGen_modify_codebuf(dst, jmp_addr_bytecode);
     dst++;
 }
@@ -163,7 +165,7 @@ load_first_var : IDENTIFIER         {Identifier_load($1);}
 jump_index_expr : comparison_expr   {$$ = CodeGen_current_bytecode_ptr(); CodeGen_skip_bytecode_count(2);}
                 ;
 
-condition_stmt : IF jump_index_expr block  {Modify_jump_addr_with_op(opcode_cmp, $2, CodeGen_current_bytecode_offset());}
+condition_stmt : IF jump_index_expr block  {Modify_jump_addr_with_op(opcode_cmp, $2, CodeGen_current_bytecode_ptr());}
                ;
       
 block : '{' stmtlist '}'

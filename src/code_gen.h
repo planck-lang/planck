@@ -30,7 +30,6 @@ SOFTWARE.
 void        CodeGen_reset_bytecodes(void);
 code_buf_t* CodeGen_get_bytecodes(void);
 code_buf_t* CodeGen_current_bytecode_ptr(void);
-uint32_t    CodeGen_current_bytecode_offset(void);
 void        CodeGen_skip_bytecode_count(uint32_t count);
 
 void CodeGen_add_opcode(opcode_t opcode);
