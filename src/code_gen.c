@@ -56,6 +56,11 @@ code_buf_t* CodeGen_current_bytecode_ptr(void)
     return &s_generated_code.buffer[s_generated_code.len];
 }
 
+uint32_t    CodeGen_current_bytecode_offset(void)
+{
+    return s_generated_code.len;
+}
+
 void CodeGen_skip_bytecode_count(uint32_t count)
 {
     s_generated_code.len += count;

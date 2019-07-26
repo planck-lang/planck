@@ -70,6 +70,7 @@ TESTCASE(02, "if statement bytecode validation")
     ASSERT_EQ_NUM(planck_result_ok, st);
 
     code_buf_t* pc = CodeGen_get_bytecodes();
+    code_buf_t* base_addr = pc;
     
     // cab == 3
     ASSERT_EQ_NUM(opcode_load, pc->opcode); pc++;
@@ -104,5 +105,6 @@ TESTCASE(02, "if statement bytecode validation")
     ASSERT_EQ_NUM(2, pc->value.value.general); pc++;
 
     // validate jumping address
-    ASSERT_EQ_NUM(jmp_addr->value.value.general, (uint64_t)pc);
+    uint64_t offset = pc - base_addr;
+    ASSERT_EQ_NUM(jmp_addr->value.value.general, offset);
 }

@@ -163,7 +163,7 @@ load_first_var : IDENTIFIER         {Identifier_load($1);}
 jump_index_expr : comparison_expr   {$$ = CodeGen_current_bytecode_ptr(); CodeGen_skip_bytecode_count(2);}
                 ;
 
-condition_stmt : IF jump_index_expr block  {Modify_jump_addr_with_op(opcode_cmp, $2, (uint64_t)CodeGen_current_bytecode_ptr());}
+condition_stmt : IF jump_index_expr block  {Modify_jump_addr_with_op(opcode_cmp, $2, CodeGen_current_bytecode_offset());}
                ;
       
 block : '{' stmtlist '}'
