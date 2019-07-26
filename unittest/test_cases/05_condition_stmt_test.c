@@ -73,3 +73,16 @@ TESTCASE(02, "separated input line")
     st = Planck_do(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
 }
+
+TESTCASE(03, "if block result")
+{
+    char* codeline;
+    object_t ret;
+    planck_result_t st;
+
+    codeline = "ca";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(2, ret.value.number);
+}
