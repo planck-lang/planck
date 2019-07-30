@@ -70,6 +70,11 @@ static type_info_tab_t s_type_info_table[TYPE_SIZE_LEN] = {
     {0}
 };
 
+static struct _block_depth_t_ {
+    bool     lock;
+    uint32_t depth;
+} s_block_depth = {0};
+
 static bool compare_string(const char* str1, const char* str2);
 static string_literal_tab_t* find_string_literal(const char* string_literal);
 static string_literal_tab_t* insert_string_literal(const char* string_literal);
@@ -194,6 +199,41 @@ object_t Symtab_load_value_from_symtab(uint32_t symtab_idx)
     }
 
     return symtab_item->value;
+}
+
+void Symtab_start_counting_depth(void)
+{
+    s_block_depth.lock = false;     // release lock
+}
+
+void Symtab_end_counting_depth(void)
+{
+    s_block_depth.lock = true;      // lock
+}
+
+void Symtab_set_block_input(bool enterBlock)
+{
+    if (s_block_depth.lock == true)     // if locked, doesn't count depth
+    {
+        return;
+    }
+    
+    if (enterBlock)
+    {
+        s_block_depth.depth++;
+    }
+    else
+    {
+        if (s_block_depth.depth > 0)
+        {
+            s_block_depth.depth--;
+        }
+    }
+}
+
+uint32_t Symtab_get_block_depth_count(void)
+{
+    return s_block_depth.depth;
 }
 
 static bool compare_string(const char* str1, const char* str2)

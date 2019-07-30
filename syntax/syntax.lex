@@ -6,7 +6,7 @@
 
 #include "y.tab.h"
 #include "ported_lib.h"
-#include "planck.h"
+#include "symtab.h"
 
 extern int fileno(FILE *stream);
 
@@ -41,7 +41,7 @@ int yywrap(void)
 "^="        return XORASSIGN;
 
 "if "       {
-    Planck_set_block_input(true);
+    Symtab_set_block_input(true);
     return IF;
 }
 
@@ -74,7 +74,7 @@ int yywrap(void)
 .           {       // It must be the last rule because it can match ANY characters
     if (*yytext == '}')
     {
-        Planck_set_block_input(false);
+        Symtab_set_block_input(false);
     }
     return *yytext;
 }

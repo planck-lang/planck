@@ -36,6 +36,5 @@ typedef enum _planck_result_t_ {
 
 planck_result_t Planck_do(const char* buf, object_t* out_ret);
 error_code_t    Planck_get_error(char* out_error);
-void            Planck_set_block_input(bool isEnter);
 
 #endif /* SRC_PLANCK_H_ */

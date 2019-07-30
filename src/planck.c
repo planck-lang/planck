@@ -32,6 +32,7 @@ SOFT
 #include "code_gen.h"
 #include "planck.h"
 #include "ported_lib.h"
+#include "symtab.h"
 
 typedef struct yy_buffer_state* YY_BUFFER_STATE;
 extern int yyparse();
@@ -44,30 +45,11 @@ static error_code_t s_error_code;
 
 #define BLOCK_BUF_DEF_LEN (8 * 1024)     // 8KB
 
-static bool s_lock_block_depth;
-static uint32_t s_block_depth = 0;
 static char* s_block_buf = NULL;
 static uint32_t s_block_buf_limit = BLOCK_BUF_DEF_LEN;
 
-static void check_block_input_mode(const char* str)
-{
-    s_lock_block_depth = false;
-    
-    YY_BUFFER_STATE buf;
-    buf = yy_scan_string(str);
-    while (true)
-    {
-        /* The Lexical analyzer changes s_block_depth value by calling the Planck_set_block_input() function.
-           Refer the syntax.lex file */
-        if (yylex() == 0)
-        {
-            break;
-        }
-    }
-    yy_delete_buffer(buf);
-    
-    s_lock_block_depth = true;
-}
+static void check_block_input_mode(const char* str);
+
 
 planck_result_t Planck_do(const char* buf, object_t* out_ret)
 {
@@ -75,7 +57,7 @@ planck_result_t Planck_do(const char* buf, object_t* out_ret)
 
     const char* input_code_buf = buf;
 
-    if (s_block_depth > 0)
+    if (Symtab_get_block_depth_count() > 0)
     {
         if (s_block_buf == NULL)
         {
@@ -143,22 +125,22 @@ error_code_t Planck_get_error(char* out_error)
     return s_error_code;
 }
 
-void Planck_set_block_input(bool isEnter)
+static void check_block_input_mode(const char* str)
 {
-    if (s_lock_block_depth == true)
-    {
-        return;
-    }
+    Symtab_start_counting_depth();
     
-    if (isEnter)
+    YY_BUFFER_STATE buf;
+    buf = yy_scan_string(str);
+    while (true)
     {
-        s_block_depth++;
-    }
-    else
-    {
-        if (s_block_depth > 0)
+        /* The Lexical analyzer changes s_block_depth value by calling the Planck_set_block_input() function.
+           Refer the syntax.lex file */
+        if (yylex() == 0)
         {
-            s_block_depth--;
+            break;
         }
     }
+    yy_delete_buffer(buf);
+    
+    Symtab_end_counting_depth();
 }
