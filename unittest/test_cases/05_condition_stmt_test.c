@@ -94,3 +94,53 @@ TESTCASE(03, "if block result")
     ASSERT_EQ_NUM(object_type_number, ret.type);
     ASSERT_EQ_NUM(2, ret.value.number);
 }
+
+TESTCASE(04, "scope test")
+{
+    char* codeline;
+    object_t ret;
+    planck_result_t st;
+
+    codeline = "k3lxi";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_fail, st);
+
+    codeline = "str_t k3lxi='tttake'";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+}
+
+TESTCASE(05, "scope test2")
+{
+    char* codeline;
+    object_t ret;
+    planck_result_t st;
+
+    codeline = "num_t can = 3";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    codeline = "if can == 3 {\n\tcan = 2;\n\tnum_t cx = 10;\ncan=cx;}";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    
+    codeline = "can";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(10, ret.value.number);
+    
+    codeline = "cx";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_fail, st);
+    
+    codeline = "num_t cx = 3423";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    
+    codeline = "cx";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(3423, ret.value.number);
+}
