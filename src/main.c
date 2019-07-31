@@ -22,6 +22,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
+/**************************
+ * Include system headers
+ **************************/
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -30,12 +33,22 @@ SOFTWARE.
 #include <readline/readline.h>
 #include <readline/history.h>
 
+/**************************
+ * Include project headers
+ **************************/
 #include "planck.h"
 
+/**************************
+ * Private variables
+ **************************/
 static char* normal_prompt = ">> ";
 static char* block_prompt = ".. ";
 static char* prompt_ptr;
 
+
+/**************************
+ * Public functions
+ **************************/
 int main(int argc, char* argv[])
 {
     prompt_ptr = normal_prompt;

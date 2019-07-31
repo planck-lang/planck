@@ -22,11 +22,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
+/**************************
+ * Include system headers
+ **************************/
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
 
+/**************************
+ * Include project headers
+ **************************/
 #include "object.h"
 #include "virtual_machine.h"
 #include "code_gen.h"
@@ -34,6 +40,9 @@ SOFTWARE.
 #include "symtab.h"
 #include "ported_lib.h"
 
+/**************************
+ * Macro
+ **************************/
 #define DEBUG_VM    0
 #if DEBUG_VM
 #define DEBUG_MSG(_f, ...)  printf((_f), __VA_ARGS__);
@@ -41,23 +50,33 @@ SOFTWARE.
 #define DEBUG_MSG(_f, ...)
 #endif
 
+/**************************
+ * Data types, Constants
+ **************************/
 #define BLOCK_STACK_SIZE     4096
 
-static struct _vm_registers_t_ {
+typedef struct _vm_registers_t_ {
     code_buf_t* pc;
     // code_buf_t* lr; // avoid lint error this member must be used when implement function return feature
     uint32_t    sp;
-} s_vm_registers = {0};
+} vm_registers_t;
 
-static struct _vm_stack_t_ {
+typedef struct _vm_stack_t_ {
     object_t*   stack;
     uint32_t    limit;
-} s_vm_stack = {0};
+} vm_stack_t;
 
-static struct _vm_error_status_t_ {
+typedef struct _vm_error_status_t_ {
     char*           msg;
     error_code_t    error_code;
-} s_vm_error, s_predefined_error[] = {
+} vm_error_status_t;
+
+/**************************
+ * Private variables
+ **************************/
+static vm_registers_t s_vm_registers = {0};
+static vm_stack_t s_vm_stack = {0};
+static vm_error_status_t s_vm_error, s_predefined_error[] = {
         {"Type mismatch error on this operator", error_code_type_mismatch},
         {"Type is not defined (undefined type)", error_code_undefined_type},
         {"Symbol not found from symtab", error_code_not_found_symbol},
@@ -66,6 +85,9 @@ static struct _vm_error_status_t_ {
         {"No error", error_code_no_error}
 };
 
+/**************************
+ * Private function prototypes
+ **************************/
 static void init_registers(void);
 static void check_stack(void);
 
@@ -77,6 +99,9 @@ static code_buf_t* Stmt_if(code_buf_t* pc, object_t result, uint64_t offset);
 
 static bool execute_code(void);
 
+/**************************
+ * Public functions
+ **************************/
 bool VirtualMachine_run_vm(code_buf_t* codes)
 {
     init_registers();
@@ -111,6 +136,9 @@ error_code_t VirtualMachine_get_error_msg(char** out_msg_ptr)
     return ret;
 }
 
+/**************************
+ * Private functions
+ **************************/
 static void init_registers(void)
 {
     memset(&s_vm_registers, 0, sizeof(s_vm_registers));

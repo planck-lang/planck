@@ -22,15 +22,24 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
+/**************************
+ * Include system headers
+ **************************/
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
 
+/**************************
+ * Include project headers
+ **************************/
 #include "object.h"
 #include "symtab.h"
 #include "ported_lib.h"
 
+/**************************
+ * Public functions
+ **************************/
 object_t Obj_to_string(object_t obj)
 {
     if (obj.type == object_type_string)

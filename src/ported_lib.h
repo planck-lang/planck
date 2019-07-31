@@ -24,9 +24,15 @@ SOFTWARE.
  
  #pragma once
  
+/**************************
+ * Includes
+ **************************/
  #include <stddef.h>
  #include <stdint.h>
 
+/**************************
+ * Public function prototypes
+ **************************/
 void* new_malloc(size_t size);
 void  release_mem(void* ptr);
 void* limited_malloc(void* current_ptr, size_t size, uint32_t count, uint32_t current_len, uint32_t* out_limit);

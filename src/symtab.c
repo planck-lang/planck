@@ -22,26 +22,35 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
+/**************************
+ * Include system headers
+ **************************/
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
 
+/**************************
+ * Include project headers
+ **************************/
 #include "symtab.h"
 #include "virtual_machine.h"
 #include "ported_lib.h"
 
+/**************************
+ * Data types, Constants
+ **************************/
 typedef struct _string_literal_tab_t_ {
     uint32_t idx;
     char*    string_literal_buffer;
     struct _string_literal_tab_t_   *next;
 } string_literal_tab_t;
 
-static struct _string_literal_tab_linkedlist_t_ {
+typedef struct _string_literal_tab_linkedlist_t_ {
     string_literal_tab_t*    head;
     string_literal_tab_t*    tail;
     uint32_t                 count;
-} s_string_literal_tab_linkedlist = {0};
+} str_literal_tab_linkedlist_t;
 
 typedef struct _symtab_t_ {
     uint32_t    idx;
@@ -51,11 +60,11 @@ typedef struct _symtab_t_ {
     struct _symtab_t_   *next;
 } symtab_t;
 
-static struct _symtab_linkedlist_t_ {
+typedef struct _symtab_linkedlist_t_ {
     symtab_t*   head;
     symtab_t*   tail;
     uint32_t    count;
-} s_symtab_linkedlist = {0};
+} symtab_linkedlist_t;
 
 #define TYPE_SIZE_LEN (2048)
 typedef struct _type_info_tab_t_ {
@@ -64,17 +73,26 @@ typedef struct _type_info_tab_t_ {
     object_type_t obj_type;
 } type_info_tab_t;
 
+typedef struct _block_depth_t_ {
+    bool     lock;
+    uint32_t depth;
+} block_depth_t;
+
+/**************************
+ * Private variables
+ **************************/
+static str_literal_tab_linkedlist_t s_string_literal_tab_linkedlist = {0};
+static symtab_linkedlist_t s_symtab_linkedlist = {0};
 static type_info_tab_t s_type_info_table[TYPE_SIZE_LEN] = {
     {"num_t", 8, object_type_number},
     {"str_t", 8, object_type_string},
     {0}
 };
+static block_depth_t s_block_depth = {0};
 
-static struct _block_depth_t_ {
-    bool     lock;
-    uint32_t depth;
-} s_block_depth = {0};
-
+/**************************
+ * Private function prototypes
+ **************************/
 static bool compare_string(const char* str1, const char* str2);
 static string_literal_tab_t* find_string_literal(const char* string_literal);
 static string_literal_tab_t* insert_string_literal(const char* string_literal);
@@ -84,6 +102,10 @@ static symtab_t* insert_symtab(const char* symbol, uint32_t type_idx);
 static void remove_symtab_by_sym_node(symtab_t* sym_node);
 static bool check_type_index_valid(uint32_t type_idx);
 
+
+/**************************
+ * Public functions
+ **************************/
 char* Symtab_add_string_literal(const char* parser_str_ptr, uint32_t* out_idx)
 {
     string_literal_tab_t* string_literal_node = find_string_literal(parser_str_ptr);
@@ -236,6 +258,9 @@ uint32_t Symtab_get_block_depth_count(void)
     return s_block_depth.depth;
 }
 
+/**************************
+ * Private functions
+ **************************/
 static bool compare_string(const char* str1, const char* str2)
 {
     if (str1 == NULL || str2 == NULL)

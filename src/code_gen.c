@@ -22,25 +22,40 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
+/**************************
+ * Include system headers
+ **************************/
 #include <stdint.h>
 #include <stdbool.h>
 #include <string.h>
 
+/**************************
+ * Include project headers
+ **************************/
 #include "object.h"
 #include "virtual_machine.h"
 #include "code_gen.h"
 #include "symtab.h"
 #include "ported_lib.h"
 
+/**************************
+ * Data types, Constants
+ **************************/
 static struct _generated_code_status_t_ {
     code_buf_t* buffer;
     uint32_t    len;
     uint32_t    limit;
 } s_generated_code = {0};
 
+/**************************
+ * Private function prototypes
+ **************************/
 static void check_code_buffer(void);
 static char* trim_quote_in_memory(char* orig_str);
 
+/**************************
+ * Public functions
+ **************************/
 void CodeGen_reset_bytecodes(void)
 {
     s_generated_code.len = 0;
@@ -138,6 +153,9 @@ void CodeGen_modify_codebuf(code_buf_t* dst, code_buf_t src)
     *dst = src;
 }
 
+/**************************
+ * Private functions
+ **************************/
 static void check_code_buffer(void)
 {
     const uint32_t one_time_buffer_unit = 4096;

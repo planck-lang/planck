@@ -22,6 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
+/**************************
+ * Includes
+ **************************/
 #include "planck_types.h"
 
+/**************************
+ * Public function prototypes
+ **************************/
 object_t Expr_execute(opcode_t opcode, object_t op1, object_t op2);

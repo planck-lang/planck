@@ -25,8 +25,14 @@ SOFTWARE.
 #ifndef SRC_VIRTUAL_MACHINE_H_
 #define SRC_VIRTUAL_MACHINE_H_
 
+/**************************
+ * Includes
+ **************************/
 #include "planck_types.h"
 
+/**************************
+ * Public function prototypes
+ **************************/
 bool         VirtualMachine_run_vm(code_buf_t* codes);
 object_t     VirtualMachine_get_result(void);
 void         VirtualMachine_add_error_msg(error_code_t error_code);

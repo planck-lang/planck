@@ -22,12 +22,21 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
+/**************************
+ * Include system headers
+ **************************/
 #include <stdlib.h>
 #include <string.h>
 #include <stdbool.h>
 
+/**************************
+ * Include project headers
+ **************************/
 #include "ported_lib.h"
 
+/**************************
+ * Public functions
+ **************************/
 void* new_malloc(size_t size)
 {
     void* ptr = malloc(size);

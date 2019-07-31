@@ -25,8 +25,14 @@ SOFTWARE.
 #ifndef SRC_PLANCK_H_
 #define SRC_PLANCK_H_
 
+/**************************
+ * Includes
+ **************************/
 #include "planck_types.h"
 
+/**************************
+ * Data types, Constants
+ **************************/
 typedef enum _planck_result_t_ {
     planck_result_fail = 0,
     planck_result_ok = 1,
@@ -34,6 +40,9 @@ typedef enum _planck_result_t_ {
     planck_result_MAXNUM
 } planck_result_t;
 
+/**************************
+ * Public function prototypes
+ **************************/
 planck_result_t Planck_do(const char* buf, object_t* out_ret);
 error_code_t    Planck_get_error(char* out_error);
 

@@ -25,8 +25,14 @@ SOFTWARE.
 #ifndef SRC_PLANCK_TYPES_H_
 #define SRC_PLANCK_TYPES_H_
 
+/**************************
+ * Includes
+ **************************/
 #include "stdbool.h"
 
+/**************************
+ * Data types, Constants
+ **************************/
 /*
  * common
  */

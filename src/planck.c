@@ -22,11 +22,17 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFT
 */
 
+/**************************
+ * Include system headers
+ **************************/
 #include <stdio.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
 
+/**************************
+ * Include project headers
+ **************************/
 #include "object.h"
 #include "virtual_machine.h"
 #include "code_gen.h"
@@ -34,23 +40,37 @@ SOFT
 #include "ported_lib.h"
 #include "symtab.h"
 
+/**************************
+ * External references
+ **************************/ 
 typedef struct yy_buffer_state* YY_BUFFER_STATE;
 extern int yyparse();
 extern YY_BUFFER_STATE yy_scan_string(const char * str);
 extern void yy_delete_buffer(YY_BUFFER_STATE buffer);
 extern int yylex(void);
 
+/**************************
+ * Data types, Constants
+ **************************/
+#define BLOCK_BUF_DEF_LEN (8 * 1024)     // 8KB
+
+/**************************
+ * Private variables
+ **************************/
 static char* s_error_msg_ptr = NULL;
 static error_code_t s_error_code;
-
-#define BLOCK_BUF_DEF_LEN (8 * 1024)     // 8KB
 
 static char* s_block_buf = NULL;
 static uint32_t s_block_buf_limit = BLOCK_BUF_DEF_LEN;
 
+/**************************
+ * Private function prototypes
+ **************************/
 static void check_block_input_mode(const char* str);
 
-
+/**************************
+ * Public functions
+ **************************/
 planck_result_t Planck_do(const char* buf, object_t* out_ret)
 {
     check_block_input_mode(buf);
@@ -125,6 +145,9 @@ error_code_t Planck_get_error(char* out_error)
     return s_error_code;
 }
 
+/**************************
+ * Private functions
+ **************************/
 static void check_block_input_mode(const char* str)
 {
     Symtab_start_counting_depth();

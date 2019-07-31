@@ -25,8 +25,14 @@ SOFTWARE.
 #ifndef SRC_SYMTAB_H_
 #define SRC_SYMTAB_H_
 
+/**************************
+ * Data types
+ **************************/
 #include "planck_types.h"
 
+/**************************
+ * Public function prototypes
+ **************************/
 char* Symtab_add_string_literal(const char* parser_str_ptr, uint32_t* out_idx);
 char* Symtab_get_string_literal_by_idx(uint32_t idx);
 

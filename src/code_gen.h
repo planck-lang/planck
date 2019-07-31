@@ -25,8 +25,14 @@ SOFTWARE.
 #ifndef SRC_CODE_GEN_H_
 #define SRC_CODE_GEN_H_
 
+/**************************
+ * Includes
+ **************************/
 #include "planck_types.h"
 
+/**************************
+ * Public function prototypes
+ **************************/
 void        CodeGen_reset_bytecodes(void);
 code_buf_t* CodeGen_get_bytecodes(void);
 code_buf_t* CodeGen_current_bytecode_ptr(void);

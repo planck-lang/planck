@@ -22,14 +22,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
 
+/**************************
+ * Include system headers
+ **************************/
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
 
+/**************************
+ * Include project headers
+ **************************/
 #include "object.h"
 #include "expr.h"
 #include "virtual_machine.h"
 
+/**************************
+ * Private function prototypes
+ **************************/
 static object_t op_add(object_t op1, object_t op2);
 static object_t op_sub(object_t op1, object_t op2);
 static object_t op_xor(object_t op1, object_t op2);
@@ -50,6 +59,9 @@ static object_t op_bit_and(object_t op1, object_t op2);
 static object_t op_com_or(object_t op1, object_t op2);
 static object_t op_com_and(object_t op1, object_t op2);
 
+/**************************
+ * Public functions
+ **************************/
 object_t Expr_execute(opcode_t opcode, object_t op1, object_t op2)
 {   
     object_t ret = {0};
@@ -120,6 +132,9 @@ object_t Expr_execute(opcode_t opcode, object_t op1, object_t op2)
     return ret;
 }
 
+/**************************
+ * Private functions
+ **************************/
 static object_t op_add(object_t op1, object_t op2)
 {
     object_t ret;
