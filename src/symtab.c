@@ -102,6 +102,7 @@ static symtab_t* find_symtab_by_idx(uint32_t idx);
 static symtab_t* insert_symtab(const char* symbol, uint32_t type_idx);
 static void remove_symtab_by_sym_node(symtab_t* sym_node);
 static bool check_type_index_valid(uint32_t type_idx);
+static void remove_all_symtab(symtab_t* head);
 
 
 /**************************
@@ -227,11 +228,13 @@ object_t Symtab_load_value_from_symtab(uint32_t symtab_idx)
 void Symtab_start_counting_depth(void)
 {
     s_block_depth.lock = false;     // release lock
+    printf("Start depth\n");
 }
 
 void Symtab_end_counting_depth(void)
 {
     s_block_depth.lock = true;      // lock
+    printf("End depth\n");
 }
 
 void Symtab_set_block_input(bool enterBlock)
@@ -249,6 +252,7 @@ void Symtab_set_block_input(bool enterBlock)
     {
         if (s_block_depth.depth > 0)
         {
+            remove_all_symtab(s_symtab_linkedlist[s_block_depth.depth].head);
             s_block_depth.depth--;
         }
     }
@@ -321,6 +325,8 @@ static string_literal_tab_t* insert_string_literal(const char* string_literal)
 static symtab_t* find_symtab(const char* symbol)
 {
     symtab_t* iter = s_symtab_linkedlist[s_block_depth.depth].head;
+
+    printf("find symtab at depth %d\n", s_block_depth.depth);
 
     while (iter != NULL)
     {
@@ -400,6 +406,19 @@ static void remove_symtab_by_sym_node(symtab_t* sym_node)
             return;
         }
         iter = iter->next;
+    }
+}
+
+static void remove_all_symtab(symtab_t* head)
+{
+    symtab_t* iter = head;
+
+    while (iter != NULL)
+    {
+        symtab_t* next = iter->next;
+        release_mem(iter->name);
+        release_mem(iter);
+        iter = next;
     }
 }
 
