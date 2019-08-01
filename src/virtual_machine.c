@@ -230,25 +230,6 @@ static bool execute_code(void)
             pc++;
             break;
         }
-        case opcode_store:
-        {
-            pc++;
-            object_t literal_idx = pc->value;
-            char* identify_ptr = Symtab_get_string_literal_by_idx(literal_idx.value.general);
-
-            if (Symtab_is_exist_variable(identify_ptr) == false)
-            {
-                VirtualMachine_add_error_msg(error_code_not_found_symbol);
-                return false;
-            }
-
-            uint32_t variable_symtab_index = Symtab_get_idx_variable_by_identifier(identify_ptr);
-            object_t value = pop_stack();
-
-            Symtab_store_value_to_symtab(variable_symtab_index, value, false);
-            pc++;
-            break;
-        }
         case opcode_decl:
         {
             pc++;
@@ -275,6 +256,7 @@ static bool execute_code(void)
             break;
         }
         case opcode_load:
+        case opcode_store:
         {
             pc++;
             object_t literal_idx = pc->value;
@@ -287,8 +269,17 @@ static bool execute_code(void)
             }
 
             uint32_t variable_symtab_index = Symtab_get_idx_variable_by_identifier(identify_ptr);
-            object_t value = Symtab_load_value_from_symtab(variable_symtab_index);
-            push_stack(value);
+            if (opcode == opcode_load)
+            {
+                object_t value = Symtab_load_value_from_symtab(variable_symtab_index);
+                push_stack(value);
+            }
+            else    // opcode_store
+            {
+                object_t value = pop_stack();
+                Symtab_store_value_to_symtab(variable_symtab_index, value, false);
+            }
+            
             pc++;
             break;
         }
