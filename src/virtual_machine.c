@@ -231,20 +231,63 @@ static bool execute_code(void)
             break;
         }
         case opcode_store:
+        {
+            pc++;
+            object_t literal_idx = pc->value;
+            char* identify_ptr = Symtab_get_string_literal_by_idx(literal_idx.value.general);
+
+            if (Symtab_is_exist_variable(identify_ptr) == false)
+            {
+                VirtualMachine_add_error_msg(error_code_not_found_symbol);
+                return false;
+            }
+
+            uint32_t variable_symtab_index = Symtab_get_idx_variable_by_identifier(identify_ptr);
+            object_t value = pop_stack();
+
+            Symtab_store_value_to_symtab(variable_symtab_index, value, false);
+            pc++;
+            break;
+        }
         case opcode_decl:
         {
             pc++;
-            object_t symtab_idx = pc->value;
+            object_t identify_info = pc->value;
+            uint32_t type_idx = identify_info.value.general >> 32;
+            uint32_t literal_idx = identify_info.value.general & 0xFFFFFFFF;
+            
+            char* identify_ptr = Symtab_get_string_literal_by_idx(literal_idx);
+
+            if (Symtab_is_exist_variable(identify_ptr))
+            {
+                VirtualMachine_add_error_msg(error_code_redefinition);
+                return false;
+            }
+
+            uint32_t symtab_idx = Symtab_add_variable(type_idx, identify_ptr);
+            if (symtab_idx == 0)
+            {
+                return false;
+            }
             object_t value = pop_stack();
-            Symtab_store_value_to_symtab(symtab_idx.value.general, value, (opcode == opcode_store ? false : true));
+            Symtab_store_value_to_symtab(symtab_idx, value, true);
             pc++;
             break;
         }
         case opcode_load:
         {
             pc++;
-            object_t symtab_idx = pc->value;
-            object_t value = Symtab_load_value_from_symtab(symtab_idx.value.general);
+            object_t literal_idx = pc->value;
+            char* identify_ptr = Symtab_get_string_literal_by_idx(literal_idx.value.general);
+
+            if (Symtab_is_exist_variable(identify_ptr) == false)
+            {
+                VirtualMachine_add_error_msg(error_code_not_found_symbol);
+                return false;
+            }
+
+            uint32_t variable_symtab_index = Symtab_get_idx_variable_by_identifier(identify_ptr);
+            object_t value = Symtab_load_value_from_symtab(variable_symtab_index);
             push_stack(value);
             pc++;
             break;
@@ -271,7 +314,13 @@ static bool execute_code(void)
             pc = Stmt_if(pc, result, offset);
             break;
         }
-
+        case opcode_begin_scope:
+        case opcode_end_scope:
+        {
+            Symtab_set_block_input(opcode == opcode_begin_scope ? true : false);
+            pc++;
+            break;
+        }
         case opcode_halt:
         case opcode_MAXNUM:
             return check_no_error();

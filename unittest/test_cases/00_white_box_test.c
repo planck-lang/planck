@@ -67,13 +67,21 @@ TESTCASE(02, "if statement bytecode validation")
 
     codeline = "if cab == 4 {\n\tcab = 2;\n\tnum_t cxb = 10;\n\tcxb += 1;\n}";
     st = Planck_do(codeline, &ret);
+
+    if (planck_result_ok != st)
+    {
+        char runtime_error_buf[1024] = {0};
+        Planck_get_error(runtime_error_buf);
+        printf("--> %s", runtime_error_buf);
+    }
+
     ASSERT_EQ_NUM(planck_result_ok, st);
 
     code_buf_t* pc = CodeGen_get_bytecodes();
     
     // cab == 4
     ASSERT_EQ_NUM(opcode_load, pc->opcode); pc++;
-    ASSERT_EQ_NUM(1, pc->value.value.general); pc++;
+    ASSERT_EQ_NUM(4, pc->value.value.general); pc++;
     ASSERT_EQ_NUM(opcode_push, pc->opcode); pc++;
     ASSERT_EQ_NUM(4, pc->value.value.number); pc++;
     ASSERT_EQ_NUM(opcode_eq, pc->opcode); pc++;
@@ -82,26 +90,32 @@ TESTCASE(02, "if statement bytecode validation")
     ASSERT_EQ_NUM(opcode_cmp, pc->opcode); pc++;
     code_buf_t* jmp_addr = pc; pc++;
 
+    // {
+    ASSERT_EQ_NUM(opcode_begin_scope, pc->opcode); pc++;
+    
     // cab = 2
     ASSERT_EQ_NUM(opcode_push, pc->opcode); pc++;
     ASSERT_EQ_NUM(2, pc->value.value.number); pc++;
     ASSERT_EQ_NUM(opcode_store, pc->opcode); pc++;
-    ASSERT_EQ_NUM(1, pc->value.value.general); pc++;
+    ASSERT_EQ_NUM(4, pc->value.value.general); pc++;
     
     // num_t cxb = 10
     ASSERT_EQ_NUM(opcode_push, pc->opcode); pc++;
     ASSERT_EQ_NUM(10, pc->value.value.number); pc++;
     ASSERT_EQ_NUM(opcode_decl, pc->opcode); pc++;
-    ASSERT_EQ_NUM(1, pc->value.value.general); pc++;
+    ASSERT_EQ_NUM(5, pc->value.value.general); pc++;
 
     // cxb += 1
     ASSERT_EQ_NUM(opcode_load, pc->opcode); pc++;
-    ASSERT_EQ_NUM(1, pc->value.value.general); pc++;
+    ASSERT_EQ_NUM(5, pc->value.value.general); pc++;
     ASSERT_EQ_NUM(opcode_push, pc->opcode); pc++;
     ASSERT_EQ_NUM(1, pc->value.value.number); pc++;
     ASSERT_EQ_NUM(opcode_add, pc->opcode); pc++;
     ASSERT_EQ_NUM(opcode_store, pc->opcode); pc++;
-    ASSERT_EQ_NUM(1, pc->value.value.general); pc++;
+    ASSERT_EQ_NUM(5, pc->value.value.general); pc++;
+
+    // }
+    ASSERT_EQ_NUM(opcode_end_scope, pc->opcode); pc++;
 
     // validate jumping address
     uint64_t offset = pc - jmp_addr;

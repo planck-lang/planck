@@ -122,6 +122,12 @@ TESTCASE(05, "scope test2")
 
     codeline = "if can == 3 {\n\tcan = 2;\n\tnum_t cx = 10;\ncan=cx;}";
     st = Planck_do(codeline, &ret);
+    if (planck_result_ok != st)
+    {
+        char runtime_error_buf[1024] = {0};
+        Planck_get_error(runtime_error_buf);
+        printf("--> %s", runtime_error_buf);
+    }
     ASSERT_EQ_NUM(planck_result_ok, st);
     
     codeline = "can";
