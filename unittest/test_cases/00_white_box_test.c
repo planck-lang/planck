@@ -92,16 +92,16 @@ TESTCASE(02, "if statement bytecode validation")
     ASSERT_EQ_NUM(opcode_push, pc->opcode); pc++;
     ASSERT_EQ_NUM(10, pc->value.value.number); pc++;
     ASSERT_EQ_NUM(opcode_decl, pc->opcode); pc++;
-    ASSERT_EQ_NUM(2, pc->value.value.general); pc++;
+    ASSERT_EQ_NUM(1, pc->value.value.general); pc++;
 
     // cxb += 1
     ASSERT_EQ_NUM(opcode_load, pc->opcode); pc++;
-    ASSERT_EQ_NUM(2, pc->value.value.general); pc++;
+    ASSERT_EQ_NUM(1, pc->value.value.general); pc++;
     ASSERT_EQ_NUM(opcode_push, pc->opcode); pc++;
     ASSERT_EQ_NUM(1, pc->value.value.number); pc++;
     ASSERT_EQ_NUM(opcode_add, pc->opcode); pc++;
     ASSERT_EQ_NUM(opcode_store, pc->opcode); pc++;
-    ASSERT_EQ_NUM(2, pc->value.value.general); pc++;
+    ASSERT_EQ_NUM(1, pc->value.value.general); pc++;
 
     // validate jumping address
     uint64_t offset = pc - jmp_addr;

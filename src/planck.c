@@ -150,8 +150,6 @@ error_code_t Planck_get_error(char* out_error)
  **************************/
 static void check_block_input_mode(const char* str)
 {
-    Symtab_start_counting_depth();
-    
     YY_BUFFER_STATE buf;
     buf = yy_scan_string(str);
     while (true)
@@ -164,6 +162,4 @@ static void check_block_input_mode(const char* str)
         }
     }
     yy_delete_buffer(buf);
-    
-    Symtab_end_counting_depth();
 }

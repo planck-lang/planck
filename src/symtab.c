@@ -74,10 +74,6 @@ typedef struct _type_info_tab_t_ {
 } type_info_tab_t;
 
 #define MAX_DEPTH (128)
-typedef struct _block_depth_t_ {
-    bool     lock;
-    uint32_t depth;
-} block_depth_t;
 
 /**************************
  * Private variables
@@ -89,7 +85,7 @@ static type_info_tab_t s_type_info_table[TYPE_SIZE_LEN] = {
     {"str_t", 8, object_type_string},
     {0}
 };
-static block_depth_t s_block_depth = {0};
+static uint32_t s_block_depth = {0};
 
 /**************************
  * Private function prototypes
@@ -225,42 +221,26 @@ object_t Symtab_load_value_from_symtab(uint32_t symtab_idx)
     return symtab_item->value;
 }
 
-void Symtab_start_counting_depth(void)
-{
-    s_block_depth.lock = false;     // release lock
-    printf("Start depth\n");
-}
-
-void Symtab_end_counting_depth(void)
-{
-    s_block_depth.lock = true;      // lock
-    printf("End depth\n");
-}
-
 void Symtab_set_block_input(bool enterBlock)
 {
-    if (s_block_depth.lock == true)     // if locked, doesn't count depth
-    {
-        return;
-    }
-    
     if (enterBlock)
     {
-        s_block_depth.depth++;
+        s_block_depth++;
     }
     else
     {
-        if (s_block_depth.depth > 0)
+        if (s_block_depth > 0)
         {
-            remove_all_symtab(s_symtab_linkedlist[s_block_depth.depth].head);
-            s_block_depth.depth--;
+            remove_all_symtab(s_symtab_linkedlist[s_block_depth].head);
+            memset(&s_symtab_linkedlist[s_block_depth], 0, sizeof(symtab_linkedlist_t));
+            s_block_depth--;
         }
     }
 }
 
 uint32_t Symtab_get_block_depth_count(void)
 {
-    return s_block_depth.depth;
+    return s_block_depth;
 }
 
 /**************************
@@ -324,17 +304,17 @@ static string_literal_tab_t* insert_string_literal(const char* string_literal)
 
 static symtab_t* find_symtab(const char* symbol)
 {
-    symtab_t* iter = s_symtab_linkedlist[s_block_depth.depth].head;
-
-    printf("find symtab at depth %d\n", s_block_depth.depth);
-
-    while (iter != NULL)
+    for (int32_t depth_index = (int32_t)s_block_depth ; depth_index >= 0 ; depth_index--)
     {
-        if (compare_string(iter->name, symbol))
+        symtab_t* iter = s_symtab_linkedlist[depth_index].head;
+        while (iter != NULL)
         {
-            return iter;
+            if (compare_string(iter->name, symbol))
+            {
+                return iter;
+            }
+            iter = iter->next;
         }
-        iter = iter->next;
     }
 
     return NULL;
@@ -342,15 +322,17 @@ static symtab_t* find_symtab(const char* symbol)
 
 static symtab_t* find_symtab_by_idx(uint32_t idx)
 {
-    symtab_t* iter = s_symtab_linkedlist[s_block_depth.depth].head;
-
-    while (iter != NULL)
+    for (int32_t depth_index = (int32_t)s_block_depth ; depth_index >= 0 ; depth_index--)
     {
-        if (iter->idx == idx)
+        symtab_t* iter = s_symtab_linkedlist[depth_index].head;
+        while (iter != NULL)
         {
-            return iter;
+            if (iter->idx == idx)
+            {
+                return iter;
+            }
+            iter = iter->next;
         }
-        iter = iter->next;
     }
 
     return NULL;
@@ -360,34 +342,34 @@ static symtab_t* insert_symtab(const char* symbol, uint32_t type_idx)
 {
     symtab_t* new_node = (symtab_t*)new_malloc(sizeof(symtab_t));
 
-    new_node->idx = ++s_symtab_linkedlist[s_block_depth.depth].count;
+    new_node->idx = ++s_symtab_linkedlist[s_block_depth].count;
     new_node->type_idx = type_idx;
     new_node->name = str_dup(symbol, strlen(symbol));
     new_node->next = NULL;
 
-    if (s_symtab_linkedlist[s_block_depth.depth].head == NULL)
+    if (s_symtab_linkedlist[s_block_depth].head == NULL)
     {
-        s_symtab_linkedlist[s_block_depth.depth].head = new_node;
+        s_symtab_linkedlist[s_block_depth].head = new_node;
     }
     else
     {
-        s_symtab_linkedlist[s_block_depth.depth].tail->next = new_node;
+        s_symtab_linkedlist[s_block_depth].tail->next = new_node;
     }
     
-    s_symtab_linkedlist[s_block_depth.depth].tail = new_node;
+    s_symtab_linkedlist[s_block_depth].tail = new_node;
 
     return new_node;
 }
 
 static void remove_symtab_by_sym_node(symtab_t* sym_node)
 {
-    symtab_t* iter = s_symtab_linkedlist[s_block_depth.depth].head;
+    symtab_t* iter = s_symtab_linkedlist[s_block_depth].head;
 
-    if (s_symtab_linkedlist[s_block_depth.depth].head == sym_node)
+    if (s_symtab_linkedlist[s_block_depth].head == sym_node)
     {
         release_mem(sym_node->name);
         release_mem(sym_node);
-        s_symtab_linkedlist[s_block_depth.depth].head = NULL;
+        s_symtab_linkedlist[s_block_depth].head = NULL;
         return;
     }
 
@@ -395,9 +377,9 @@ static void remove_symtab_by_sym_node(symtab_t* sym_node)
     {
         if (iter->next == sym_node)
         {
-            if (s_symtab_linkedlist[s_block_depth.depth].tail == sym_node)
+            if (s_symtab_linkedlist[s_block_depth].tail == sym_node)
             {
-                s_symtab_linkedlist[s_block_depth.depth].tail = iter;
+                s_symtab_linkedlist[s_block_depth].tail = iter;
             }
 
             iter->next = sym_node->next;

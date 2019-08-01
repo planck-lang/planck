@@ -42,8 +42,6 @@ uint32_t Symtab_get_idx_variable_by_identifier(const char* ident_str_ptr);
 bool     Symtab_is_exist_variable(const char* ident_str_ptr);
 void     Symtab_store_value_to_symtab(uint32_t symtab_idx, object_t value, bool fail_del_sym);
 object_t Symtab_load_value_from_symtab(uint32_t symtab_idx);
-void     Symtab_start_counting_depth(void);
-void     Symtab_end_counting_depth(void);
 void     Symtab_set_block_input(bool enterBlock);
 uint32_t Symtab_get_block_depth_count(void);
 
