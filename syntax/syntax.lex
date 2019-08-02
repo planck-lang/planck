@@ -45,6 +45,11 @@ int yywrap(void)
     return IF;
 }
 
+"else"      {
+    Symtab_set_block_input(true);
+    return ELSE;
+}
+
 [0-9]+("."[0-9]*)? {
     yylval.double_value = str_to_number(yytext, 10);
     return NUMBER;
