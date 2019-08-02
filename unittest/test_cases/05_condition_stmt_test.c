@@ -150,3 +150,56 @@ TESTCASE(05, "scope test2")
     ASSERT_EQ_NUM(object_type_number, ret.type);
     ASSERT_EQ_NUM(3423, ret.value.number);
 }
+
+TESTCASE(06, "else test")
+{
+    char* codeline;
+    object_t ret;
+    planck_result_t st;
+
+    codeline = "num_t eel = 3";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    codeline = "if can == 3 {\n \
+                    eel = 5;\n  \
+                } else {\n      \
+                    eel = 10;\n \
+                }";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    codeline = "eel";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(10, ret.value.number);
+}
+
+TESTCASE(07, "else test2")
+{
+    char* codeline;
+    object_t ret;
+    planck_result_t st;
+
+    codeline = "if can != 3 {\n \
+                    eel = 5;\n  \
+                } else {\n      \
+                    eel = 10;\n \
+                }\n \
+                can = 27;";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    codeline = "can";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(27, ret.value.number);
+
+    codeline = "eel";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(5, ret.value.number);
+}
