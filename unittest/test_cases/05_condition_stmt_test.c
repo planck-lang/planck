@@ -186,16 +186,9 @@ TESTCASE(07, "else test2")
                     eel = 5;\n  \
                 } else {\n      \
                     eel = 10;\n \
-                }\n \
-                can = 27;";
+                }";
     st = Planck_do(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
-
-    codeline = "can";
-    st = Planck_do(codeline, &ret);
-    ASSERT_EQ_NUM(planck_result_ok, st);
-    ASSERT_EQ_NUM(object_type_number, ret.type);
-    ASSERT_EQ_NUM(27, ret.value.number);
 
     codeline = "eel";
     st = Planck_do(codeline, &ret);

@@ -305,6 +305,13 @@ static bool execute_code(void)
             pc = Stmt_if(pc, result, offset);
             break;
         }
+        case opcode_jmp:
+        {
+            pc++;
+            uint64_t offset = pc->value.value.general;
+            pc += offset;
+            break;
+        }
         case opcode_begin_scope:
         case opcode_end_scope:
         {

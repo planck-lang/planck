@@ -105,6 +105,7 @@ typedef enum _opcode_t_ {
     opcode_com_or,
     opcode_com_and,
     opcode_cmp,
+    opcode_jmp,
     opcode_begin_scope,
     opcode_end_scope,
     opcode_halt,

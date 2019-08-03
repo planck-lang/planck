@@ -51,14 +51,9 @@ static void Modify_jump_addr_with_op(opcode_t opcode, code_buf_t* dst, code_buf_
     dst++;
 
     uint64_t offset = jmp - dst;
-
     jmp_addr_bytecode.value.type = object_type_general;
     jmp_addr_bytecode.value.value.general = offset;
     CodeGen_modify_codebuf(dst, jmp_addr_bytecode);
-    dst++;
-
-    opcode_bytecode.opcode = opcode_begin_scope;
-    CodeGen_modify_codebuf(dst, opcode_bytecode);
     dst++;
 }
 %}
@@ -86,7 +81,7 @@ static void Modify_jump_addr_with_op(opcode_t opcode, code_buf_t* dst, code_buf_
 %token                  IF ELSE
 
 %type<string_ptr>   load_first_var
-%type<code_ptr>     jump_index_expr
+%type<code_ptr>     jump_index_expr block else_keyword
 
 %left COMAND COMOR
 %left EQ NE '>' '<' LE GE
@@ -166,13 +161,21 @@ assign : IDENTIFIER '=' expr            {Variable_assignment($1); free($1);}
 load_first_var : IDENTIFIER         {Identifier_load($1);}
                ;
 
-jump_index_expr : comparison_expr   {$$ = CodeGen_current_bytecode_ptr(); CodeGen_skip_bytecode_count(3);}
+jump_index_expr : comparison_expr   {$$ = CodeGen_current_bytecode_ptr(); CodeGen_skip_bytecode_count(2);}
                 ;
 
-condition_stmt : IF jump_index_expr block            {Modify_jump_addr_with_op(opcode_cmp, $2, CodeGen_current_bytecode_ptr());}
-               | IF jump_index_expr block ELSE block {printf("else\n");}   
+condition_stmt : IF jump_index_expr block            {Modify_jump_addr_with_op(opcode_cmp, $2, $3);}
+               | IF jump_index_expr block else_keyword block {Modify_jump_addr_with_op(opcode_cmp, $2, $4); Modify_jump_addr_with_op(opcode_jmp, ((code_buf_t*)$4 - 2), $5);}   
                ;
+
+else_keyword : ELSE {CodeGen_skip_bytecode_count(2); $$ = CodeGen_current_bytecode_ptr();}
+             ;
       
-block : '{' stmtlist '}'            {CodeGen_add_opcode(opcode_end_scope);}
+block : begin_block stmtlist end_block               {$$ = CodeGen_current_bytecode_ptr();}
       ;
+
+begin_block : '{'   {CodeGen_add_opcode(opcode_begin_scope);}
+            ;
+end_block : '}'     {CodeGen_add_opcode(opcode_end_scope);}
+          ;
 %%
