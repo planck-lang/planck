@@ -41,20 +41,28 @@ static void Variable_assignment_with_op(opcode_t opcode, char* var_str)
     CodeGen_read_symtab_variable(var_str);
 }
 
-static void Modify_jump_addr_with_op(opcode_t opcode, code_buf_t* dst, code_buf_t* jmp)
+static void Modify_jump_addr(code_buf_t* dst, code_buf_t* jmp)
 {
-    code_buf_t opcode_bytecode;
     code_buf_t jmp_addr_bytecode;
-
-    opcode_bytecode.opcode = opcode;
-    CodeGen_modify_codebuf(dst, opcode_bytecode);
-    dst++;
-
     uint64_t offset = jmp - dst;
     jmp_addr_bytecode.value.type = object_type_general;
     jmp_addr_bytecode.value.value.general = offset;
     CodeGen_modify_codebuf(dst, jmp_addr_bytecode);
+}
+
+static void Modify_op(code_buf_t* dst, opcode_t opcode)
+{
+    code_buf_t opcode_bytecode;
+    opcode_bytecode.opcode = opcode;
+    CodeGen_modify_codebuf(dst, opcode_bytecode);
+}
+
+static void Modify_jump_addr_with_op(opcode_t opcode, code_buf_t* dst, code_buf_t* jmp)
+{
+    Modify_op(dst, opcode);
     dst++;
+
+    Modify_jump_addr(dst, jmp);
 }
 %}
 
@@ -78,10 +86,10 @@ static void Modify_jump_addr_with_op(opcode_t opcode, code_buf_t* dst, code_buf_
 %token<string_ptr>      STRING
 %token<string_ptr>      IDENTIFIER
 
-%token                  IF ELSE
+%token                  IF ELSE ELIF
 
 %type<string_ptr>   load_first_var
-%type<code_ptr>     jump_index_expr block else_keyword
+%type<code_ptr>     _current_pc_ block elif_list begin_block end_block
 
 %left COMAND COMOR
 %left EQ NE '>' '<' LE GE
@@ -161,21 +169,25 @@ assign : IDENTIFIER '=' expr            {Variable_assignment($1); free($1);}
 load_first_var : IDENTIFIER         {Identifier_load($1);}
                ;
 
-jump_index_expr : comparison_expr   {$$ = CodeGen_current_bytecode_ptr(); CodeGen_skip_bytecode_count(2);}
-                ;
-
-condition_stmt : IF jump_index_expr block            {Modify_jump_addr_with_op(opcode_cmp, $2, $3);}
-               | IF jump_index_expr block else_keyword block {Modify_jump_addr_with_op(opcode_cmp, $2, $4); Modify_jump_addr_with_op(opcode_jmp, ((code_buf_t*)$4 - 2), $5);}   
+condition_stmt : IF comparison_expr block           {Modify_jump_addr_with_op(opcode_cmp, $3, CodeGen_current_bytecode_ptr());}
+               | IF comparison_expr block elif_list {Modify_jump_addr_with_op(opcode_cmp, $3, $4);}
                ;
 
-else_keyword : ELSE {CodeGen_skip_bytecode_count(2); $$ = CodeGen_current_bytecode_ptr();}
+_current_pc_ : {$$ = CodeGen_current_bytecode_ptr();}
              ;
+
+elif_list : ELSE _current_pc_ block                           {$$ = $2; Modify_jump_addr_with_op(opcode_jmp, ((code_buf_t*)$2 - 2), CodeGen_current_bytecode_ptr());}
+          | ELIF _current_pc_ comparison_expr block           {$$ = $2; Modify_jump_addr_with_op(opcode_jmp, ((code_buf_t*)$2 - 2), CodeGen_current_bytecode_ptr());
+                                                                        Modify_jump_addr_with_op(opcode_cmp, $4, CodeGen_current_bytecode_ptr());}
+          | ELIF _current_pc_ comparison_expr block elif_list {$$ = $2; Modify_jump_addr_with_op(opcode_jmp, ((code_buf_t*)$2 - 2), CodeGen_current_bytecode_ptr());
+                                                                        Modify_jump_addr_with_op(opcode_cmp, $4, $5);}     
+          ;
       
-block : begin_block stmtlist end_block               {$$ = CodeGen_current_bytecode_ptr();}
+block : begin_block stmtlist end_block  {$$ = ((code_buf_t*)$1 - 2);}
       ;
 
-begin_block : '{'   {CodeGen_add_opcode(opcode_begin_scope);}
+begin_block : '{'   {CodeGen_skip_bytecode_count(2); $$ = CodeGen_current_bytecode_ptr(); CodeGen_add_opcode(opcode_begin_scope);}
             ;
-end_block : '}'     {CodeGen_add_opcode(opcode_end_scope);}
+end_block : '}'     {CodeGen_add_opcode(opcode_end_scope); CodeGen_skip_bytecode_count(2); $$ = CodeGen_current_bytecode_ptr();}
           ;
 %%

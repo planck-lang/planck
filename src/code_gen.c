@@ -74,7 +74,11 @@ code_buf_t* CodeGen_current_bytecode_ptr(void)
 
 void CodeGen_skip_bytecode_count(uint32_t count)
 {
-    s_generated_code.len += count;
+    while(count--)
+    {
+        check_code_buffer();
+        s_generated_code.buffer[s_generated_code.len++].opcode = opcode_nop;    
+    }
 }
 
 void CodeGen_add_opcode(opcode_t opcode)
