@@ -250,3 +250,58 @@ TESTCASE(08, "if-elif-elif-else")
 
     free(base_test_code);
 }
+
+TESTCASE(09, "if { if - elif - elif - else }")
+{
+    char* base_test_code;
+    char* codeline;
+    object_t ret;
+    planck_result_t st;
+
+    codeline = "num_t ififeeelse = 8283";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    codeline = "if ififeeelse == 29 { \n \
+                    if ielelse == 3 {\n \
+                        can = 51;\n  \
+                    } elif ielelse == 10 {\n      \
+                        can = 101;\n \
+                    } else {\n \
+                        can = 151;\n \
+                    }\n \
+                }";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    base_test_code = (char*)malloc(strlen(codeline) + 1);
+    strncpy(base_test_code, codeline, strlen(codeline));
+
+    codeline = "can";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(10, ret.value.number);
+
+    // Modify the first line to if ififeeelse != 29 {
+    base_test_code[14] = '!';
+    st = Planck_do(base_test_code, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    codeline = "can";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(151, ret.value.number);
+
+    // Modify the second comparison to if ielelse != 3 {
+    base_test_code[55] = '!';
+    st = Planck_do(base_test_code, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    codeline = "can";
+    st = Planck_do(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(51, ret.value.number);
+
+    free(base_test_code);
+}
