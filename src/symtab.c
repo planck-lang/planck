@@ -238,11 +238,6 @@ void Symtab_set_block_input(bool enterBlock)
     }
 }
 
-uint32_t Symtab_get_block_depth_count(void)
-{
-    return s_block_depth;
-}
-
 /**************************
  * Private functions
  **************************/

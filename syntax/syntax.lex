@@ -6,9 +6,15 @@
 
 #include "y.tab.h"
 #include "ported_lib.h"
-#include "symtab.h"
 
 extern int fileno(FILE *stream);
+
+static uint32_t block_depth = 0;
+
+uint32_t yy_get_block_depth(void)
+{
+    return block_depth;
+}
 
 int yywrap(void)
 {
@@ -40,25 +46,10 @@ int yywrap(void)
 "&="        return ANDASSIGN;
 "^="        return XORASSIGN;
 
-"if "       {
-    Symtab_set_block_input(true);
-    return IF;
-}
-
-"else "     {
-    Symtab_set_block_input(true);
-    return ELSE;
-}
-
-"elif "     {
-    Symtab_set_block_input(true);
-    return ELIF;
-}
-
-"while "    {
-    Symtab_set_block_input(true);
-    return WHILE;
-}
+"if "       return IF;
+"else "     return ELSE;
+"elif "     return ELIF;
+"while "    return WHILE;
 
 [0-9]+("."[0-9]*)? {
     yylval.double_value = str_to_number(yytext, 10);
@@ -86,10 +77,14 @@ int yywrap(void)
     return IDENTIFIER;
 }
 
-.           {       // It must be the last rule because it can match ANY characters
+. {       // It must be the last rule because it can match ANY characters
+    if (*yytext == '{')
+    {
+        block_depth++;
+    }
     if (*yytext == '}')
     {
-        Symtab_set_block_input(false);
+        block_depth--;
     }
     return *yytext;
 }

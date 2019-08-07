@@ -38,7 +38,6 @@ SOFT
 #include "code_gen.h"
 #include "planck.h"
 #include "ported_lib.h"
-#include "symtab.h"
 
 /**************************
  * External references
@@ -48,6 +47,7 @@ extern int yyparse();
 extern YY_BUFFER_STATE yy_scan_string(const char * str);
 extern void yy_delete_buffer(YY_BUFFER_STATE buffer);
 extern int yylex(void);
+extern uint32_t yy_get_block_depth(void);
 
 /**************************
  * Data types, Constants
@@ -77,7 +77,7 @@ planck_result_t Planck_do_as_stmt(const char* buf, object_t* out_ret)
 
     const char* input_code_buf = buf;
 
-    if (Symtab_get_block_depth_count() > 0)
+    if (yy_get_block_depth() > 0)
     {
         if (s_block_buf == NULL)
         {

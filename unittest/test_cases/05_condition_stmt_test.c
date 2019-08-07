@@ -49,11 +49,7 @@ TESTCASE(02, "separated input line")
     object_t ret;
     planck_result_t st;
 
-    codeline = "if ca == 4";
-    st = Planck_do_as_stmt(codeline, &ret);
-    ASSERT_EQ_NUM(planck_result_block_input, st);
-
-    codeline = "{";
+    codeline = "if ca == 4 {";
     st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_block_input, st);
 
