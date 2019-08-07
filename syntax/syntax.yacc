@@ -61,9 +61,22 @@ static void Modify_jump_addr_with_op(opcode_t opcode, code_buf_t* dst, code_buf_
 {
     Modify_op(dst, opcode);
     dst++;
-
     Modify_jump_addr(dst, jmp);
 }
+
+static void Jmp_cmp(code_buf_t* jmp_dst, code_buf_t* jmp_offset, code_buf_t* cmp_dst, code_buf_t* cmp_offset)
+{
+    if (jmp_dst != NULL)
+    {
+        Modify_jump_addr_with_op(opcode_jmp, jmp_dst, jmp_offset);
+    }
+
+    if (cmp_dst != NULL)
+    {
+        Modify_jump_addr_with_op(opcode_cmp, cmp_dst, cmp_offset);
+    }
+}
+
 %}
 
 %union {
@@ -169,18 +182,16 @@ assign : IDENTIFIER '=' expr            {Variable_assignment($1); free($1);}
 load_first_var : IDENTIFIER         {Identifier_load($1);}
                ;
 
-condition_stmt : IF comparison_expr block           {Modify_jump_addr_with_op(opcode_cmp, $3, CodeGen_current_bytecode_ptr());}
-               | IF comparison_expr block elif_list {Modify_jump_addr_with_op(opcode_cmp, $3, $4);}
+condition_stmt : IF comparison_expr block           {Jmp_cmp(NULL, NULL, $3, CodeGen_current_bytecode_ptr());}
+               | IF comparison_expr block elif_list {Jmp_cmp(NULL, NULL, $3, $4);}
                ;
 
 _current_pc_ : {$$ = CodeGen_current_bytecode_ptr();}
              ;
 
-elif_list : ELSE _current_pc_ block                           {$$ = $2; Modify_jump_addr_with_op(opcode_jmp, ((code_buf_t*)$2 - 2), CodeGen_current_bytecode_ptr());}
-          | ELIF _current_pc_ comparison_expr block           {$$ = $2; Modify_jump_addr_with_op(opcode_jmp, ((code_buf_t*)$2 - 2), CodeGen_current_bytecode_ptr());
-                                                                        Modify_jump_addr_with_op(opcode_cmp, $4, CodeGen_current_bytecode_ptr());}
-          | ELIF _current_pc_ comparison_expr block elif_list {$$ = $2; Modify_jump_addr_with_op(opcode_jmp, ((code_buf_t*)$2 - 2), CodeGen_current_bytecode_ptr());
-                                                                        Modify_jump_addr_with_op(opcode_cmp, $4, $5);}     
+elif_list : ELSE _current_pc_ block                           {$$ = $2; Jmp_cmp(((code_buf_t*)$2 - 2), CodeGen_current_bytecode_ptr(), NULL, NULL);}
+          | ELIF _current_pc_ comparison_expr block           {$$ = $2; Jmp_cmp(((code_buf_t*)$2 - 2), CodeGen_current_bytecode_ptr(), $4, CodeGen_current_bytecode_ptr());}
+          | ELIF _current_pc_ comparison_expr block elif_list {$$ = $2; Jmp_cmp(((code_buf_t*)$2 - 2), CodeGen_current_bytecode_ptr(), $4, $5);}
           ;
       
 block : begin_block stmtlist end_block  {$$ = ((code_buf_t*)$1 - 2);}
