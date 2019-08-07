@@ -45,14 +45,19 @@ int yywrap(void)
     return IF;
 }
 
-"else"      {
+"else "     {
     Symtab_set_block_input(true);
     return ELSE;
 }
 
-"elif"      {
+"elif "     {
     Symtab_set_block_input(true);
     return ELIF;
+}
+
+"while "    {
+    Symtab_set_block_input(true);
+    return WHILE;
 }
 
 [0-9]+("."[0-9]*)? {

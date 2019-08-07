@@ -99,7 +99,7 @@ static void Jmp_cmp(code_buf_t* jmp_dst, code_buf_t* jmp_offset, code_buf_t* cmp
 %token<string_ptr>      STRING
 %token<string_ptr>      IDENTIFIER
 
-%token                  IF ELSE ELIF
+%token                  IF ELSE ELIF WHILE
 
 %type<string_ptr>   load_first_var
 %type<code_ptr>     _current_pc_ block elif_list begin_block end_block
@@ -160,6 +160,7 @@ stmt : /* empty */
      | decl
      | assign
      | condition_stmt
+     | loop_stmt
      ;
 
 decl : IDENTIFIER IDENTIFIER '=' expr   {Variable_declaration($1, $2); free($1); free($2);}
@@ -185,6 +186,9 @@ load_first_var : IDENTIFIER         {Identifier_load($1);}
 condition_stmt : IF comparison_expr block           {Jmp_cmp(NULL, NULL, $3, CodeGen_current_bytecode_ptr());}
                | IF comparison_expr block elif_list {Jmp_cmp(NULL, NULL, $3, $4);}
                ;
+
+loop_stmt : WHILE comparison_expr block
+          ;
 
 _current_pc_ : {$$ = CodeGen_current_bytecode_ptr();}
              ;
