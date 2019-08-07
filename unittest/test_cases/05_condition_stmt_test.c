@@ -251,7 +251,7 @@ TESTCASE(08, "if-elif-elif-else")
     free(base_test_code);
 }
 
-TESTCASE(09, "if { if - elif - elif - else }")
+TESTCASE(09, "if { if-elif-elif-else }")
 {
     char* base_test_code;
     char* codeline;
@@ -302,6 +302,59 @@ TESTCASE(09, "if { if - elif - elif - else }")
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(object_type_number, ret.type);
     ASSERT_EQ_NUM(51, ret.value.number);
+
+    free(base_test_code);
+}
+
+TESTCASE(10, "if { if-elif-elif-else } -elif")
+{
+    char* base_test_code;
+    char* codeline;
+    object_t ret;
+    planck_result_t st;
+
+    codeline = "can = 2342";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    codeline = "can";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(2342, ret.value.number);
+
+    codeline = "if ififeeelse == 29 { \n \
+                    if ielelse == 3 {\n \
+                        can = 51;\n  \
+                    } elif ielelse == 10 {\n      \
+                        can = 101;\n \
+                    } else {\n \
+                        can = 151;\n \
+                    }\n \
+                } elif ififeeelse != 8283 { \n \
+                    can = 88213; \n \
+                }";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    base_test_code = (char*)malloc(strlen(codeline) + 1);
+    strncpy(base_test_code, codeline, strlen(codeline));
+
+    codeline = "can";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(2342, ret.value.number);
+
+    // Modify the second comparison to elif ififeeelse == 8283 { {
+    base_test_code[307] = '=';
+    st = Planck_do_as_stmt(base_test_code, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    codeline = "can";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(88213, ret.value.number);
 
     free(base_test_code);
 }
