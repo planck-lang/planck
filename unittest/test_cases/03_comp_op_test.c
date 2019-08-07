@@ -33,13 +33,13 @@ TESTCASE(01, "less than")
     char* codeline = "3 < 4";
 
     object_t ret;
-    planck_result_t st = Planck_do(codeline, &ret);
+    planck_result_t st = Planck_do_as_stmt(codeline, &ret);
 
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(true, ret.value.boolean);
 
     codeline = "323 < 3";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(false, ret.value.boolean);
 }
@@ -49,13 +49,13 @@ TESTCASE(02, "grater than")
     char* codeline = "3 > 4";
 
     object_t ret;
-    planck_result_t st = Planck_do(codeline, &ret);
+    planck_result_t st = Planck_do_as_stmt(codeline, &ret);
 
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(false, ret.value.boolean);
 
     codeline = "323 > 3";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(true, ret.value.boolean);
 }
@@ -65,13 +65,13 @@ TESTCASE(03, "less equal")
     char* codeline = "3 <= 3";
 
     object_t ret;
-    planck_result_t st = Planck_do(codeline, &ret);
+    planck_result_t st = Planck_do_as_stmt(codeline, &ret);
 
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(true, ret.value.boolean);
 
     codeline = "323 <= 3";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(false, ret.value.boolean);
 }
@@ -81,13 +81,13 @@ TESTCASE(04, "grater equal")
     char* codeline = "3 >= 3";
 
     object_t ret;
-    planck_result_t st = Planck_do(codeline, &ret);
+    planck_result_t st = Planck_do_as_stmt(codeline, &ret);
 
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(true, ret.value.boolean);
 
     codeline = "323 >= 3";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(true, ret.value.boolean);
 }
@@ -97,13 +97,13 @@ TESTCASE(05, "equal")
     char* codeline = "3 == 1 + 2";
 
     object_t ret;
-    planck_result_t st = Planck_do(codeline, &ret);
+    planck_result_t st = Planck_do_as_stmt(codeline, &ret);
 
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(true, ret.value.boolean);
 
     codeline = "323 == 3";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(false, ret.value.boolean);
 }
@@ -113,13 +113,13 @@ TESTCASE(06, "not equal")
     char* codeline = "3 != 1 + 2";
 
     object_t ret;
-    planck_result_t st = Planck_do(codeline, &ret);
+    planck_result_t st = Planck_do_as_stmt(codeline, &ret);
 
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(false, ret.value.boolean);
 
     codeline = "323 != 3";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(true, ret.value.boolean);
 }
@@ -129,38 +129,38 @@ TESTCASE(07, "string comparison")
     char* codeline = "'ab' > 'bc'";
 
     object_t ret;
-    planck_result_t st = Planck_do(codeline, &ret);
+    planck_result_t st = Planck_do_as_stmt(codeline, &ret);
 
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(false, ret.value.boolean);
 
     codeline = "'ab' < 'bc'";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(true, ret.value.boolean);
 
     codeline = "'ab' <= 'ab'";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(true, ret.value.boolean);
 
     codeline = "'ab' >= 'ab'";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(true, ret.value.boolean);
 
     codeline = "'ab' == 'ab'";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(true, ret.value.boolean);
 
     codeline = "'ab' != 'ab'";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(false, ret.value.boolean);
 
     codeline = "'ab' != 'de'";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(true, ret.value.boolean);
 }
@@ -170,18 +170,18 @@ TESTCASE(08, "and comparison")
     char* codeline = "3> 2 AND 4 > 3";
 
     object_t ret;
-    planck_result_t st = Planck_do(codeline, &ret);
+    planck_result_t st = Planck_do_as_stmt(codeline, &ret);
 
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(true, ret.value.boolean);
 
     codeline = "3> 2 AND 4 < 3";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(false, ret.value.boolean);
 
     codeline = "3 < 2 AND 4 > 3";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(false, ret.value.boolean);
 }
@@ -191,23 +191,23 @@ TESTCASE(09, "or comparison")
     char* codeline = "3> 2 OR 4 > 3";
 
     object_t ret;
-    planck_result_t st = Planck_do(codeline, &ret);
+    planck_result_t st = Planck_do_as_stmt(codeline, &ret);
 
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(true, ret.value.boolean);
 
     codeline = "3> 2 OR 4 < 3";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(true, ret.value.boolean);
 
     codeline = "3 < 2 OR 4 > 3";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(true, ret.value.boolean);
 
     codeline = "3 < 2 OR 4 < 3";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(false, ret.value.boolean);
 }
@@ -217,18 +217,18 @@ TESTCASE(10, "mixed and or")
     char* codeline = "3+ 4 == 7 AND 4+2==6";
 
     object_t ret;
-    planck_result_t st = Planck_do(codeline, &ret);
+    planck_result_t st = Planck_do_as_stmt(codeline, &ret);
 
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(true, ret.value.boolean);
 
     codeline = "3+ 4 == 7 AND 4+3==6";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(false, ret.value.boolean);
 
     codeline = "3+ 4 == 7 OR 4+3==6";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
     ASSERT_EQ_NUM(true, ret.value.boolean);
 }

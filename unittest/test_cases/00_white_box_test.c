@@ -62,11 +62,11 @@ TESTCASE(02, "if statement bytecode validation")
     planck_result_t st;
 
     codeline = "num_t cab = 3";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
 
     codeline = "if cab == 4 {\n\tcab = 2;\n\tnum_t cxb = 10;\n\tcxb += 1;\n}";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
 
     if (planck_result_ok != st)
     {
@@ -136,7 +136,7 @@ TESTCASE(03, "if-else statement bytecode validation")
                 } else {\n      \
                     cab = 10;\n \
                 }";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
 
     code_buf_t* pc = CodeGen_get_bytecodes();
@@ -209,7 +209,7 @@ TESTCASE(04, "if-elif-elif statement bytecode validation")
                 } elif cab == 5 {\n \
                     cab = 20;\n \
                 }";
-    st = Planck_do(codeline, &ret);
+    st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
 
     code_buf_t* pc = CodeGen_get_bytecodes();

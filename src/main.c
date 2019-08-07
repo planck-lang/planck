@@ -69,7 +69,7 @@ int main(int argc, char* argv[])
             add_history(buf);
 
             object_t ret;
-            planck_result_t st = Planck_do(buf, &ret);
+            planck_result_t st = Planck_do_as_stmt(buf, &ret);
             if (st == planck_result_ok)
             {
                 switch(ret.type)

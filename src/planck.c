@@ -71,7 +71,7 @@ static void check_block_input_mode(const char* str);
 /**************************
  * Public functions
  **************************/
-planck_result_t Planck_do(const char* buf, object_t* out_ret)
+planck_result_t Planck_do_as_stmt(const char* buf, object_t* out_ret)
 {
     check_block_input_mode(buf);
 
