@@ -56,7 +56,7 @@ unit_test_src = ['unittest/test_cases/00_white_box_test.c',
 test_incdir = include_directories(['src', 'unittest/framework'])
 
 executable('unittest', unit_test_src,
-            link_with:libplancks.get_static_lib(),
+            link_with:libplancks.get_shared_lib(),
             c_args:cflags, include_directories:test_incdir)
 
 # lint

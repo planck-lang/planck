@@ -358,3 +358,48 @@ TESTCASE(10, "if { if-elif-elif-else } -elif")
 
     free(base_test_code);
 }
+
+TESTCASE(11, "if { if-elif-elif-else } -elif-else")
+{
+    char* base_test_code;
+    char* codeline;
+    object_t ret;
+    planck_result_t st;
+
+    codeline = "can = 2342";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    codeline = "can";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(2342, ret.value.number);
+
+    codeline = "if ififeeelse == 29 { \n \
+                    if ielelse == 3 {\n \
+                        can = 51;\n  \
+                    } elif ielelse == 10 {\n      \
+                        can = 101;\n \
+                    } else {\n \
+                        can = 151;\n \
+                    }\n \
+                } elif ififeeelse != 8283 { \n \
+                    can = 88213; \n \
+                } else {\n \
+                    can = 2221; \n \
+                }";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    base_test_code = (char*)malloc(strlen(codeline) + 1);
+    strncpy(base_test_code, codeline, strlen(codeline));
+
+    codeline = "can";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(2221, ret.value.number);
+
+    free(base_test_code);
+}
