@@ -51,6 +51,7 @@ unit_test_src = ['unittest/test_cases/00_white_box_test.c',
                  'unittest/test_cases/03_comp_op_test.c',
                  'unittest/test_cases/04_variable_test.c',
                  'unittest/test_cases/05_condition_stmt_test.c',
+                 'unittest/test_cases/06_while_test.c',
                  'unittest/framework/TestMain.c']
 
 test_incdir = include_directories(['src', 'unittest/framework'])
