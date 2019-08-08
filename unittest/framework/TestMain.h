@@ -46,10 +46,10 @@
 #define ASSERT_CMPSTR(expect, actual) ((strncmp(expect, actual, strlen(actual)) == 0) && (strlen(expect) == strlen(actual)))
 #define ASSERT(cond, msgfmt) if(!(cond)){printf("\n" TESTCASEMSGINDENT msgfmt); tc->result = false; return;} else {tc->result = true;}
 
-#define ASSERT_EQ_NUM(expect, actual) ASSERT((expect == actual), ASSERTMSG_NUM_EQ_FAIL(expect, actual))
-#define ASEERT_NEQ_NUM(expect, actual) ASSERT((expect != actual), ASSERTMSG_NUM_NEQ_FAIL(expect, actual))
-#define ASSERT_EQ_UINT(expect, actual) ASSERT((expect == actual), ASSERTMSG_UINT_EQ_FAIL(expect, actual))
-#define ASEERT_NEQ_UINT(expect, actual) ASSERT((expect != actual), ASSERTMSG_UINT_NEQ_FAIL(expect, actual))
+#define ASSERT_EQ_NUM(expect, actual) ASSERT(((double)expect == (double)actual), ASSERTMSG_NUM_EQ_FAIL(expect, actual))
+#define ASEERT_NEQ_NUM(expect, actual) ASSERT(((double)expect != (double)actual), ASSERTMSG_NUM_NEQ_FAIL(expect, actual))
+#define ASSERT_EQ_UINT(expect, actual) ASSERT(((uint64_t)expect == (uint64_t)actual), ASSERTMSG_UINT_EQ_FAIL(expect, actual))
+#define ASEERT_NEQ_UINT(expect, actual) ASSERT(((uint64_t)expect != (uint64_t)actual), ASSERTMSG_UINT_NEQ_FAIL(expect, actual))
 #define ASSERT_EQ_STR(expect, actual) ASSERT(ASSERT_CMPSTR(expect,actual), ASSERTMSG_STR_EQ_FAIL(expect, actual))
 #define ASEERT_NEQ_STR(expect, actual) ASSERT((strncmp(expect, actual, strlen(actual)) != 0), ASSERTMSG_STR_NEQ_FAIL(expect, actual))
 

@@ -68,7 +68,7 @@ typedef struct _object_t_ {
     object_type_t type;
 
     union _value_t_ {
-        uint64_t general;
+        int64_t  general;
         double   number;
         str_t    str;
         bool     boolean;

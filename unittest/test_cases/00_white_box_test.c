@@ -312,3 +312,52 @@ TESTCASE(04, "if-elif-elif statement bytecode validation")
     offset = pc - out_addr2;
     ASSERT_EQ_NUM(out_addr2->value.value.general, offset);
 }
+
+TESTCASE(07, "while bytecode")
+{
+    char* codeline;
+    object_t ret;
+    planck_result_t st;
+
+    codeline = "while cab < 100 {\n cab += 1;\n}";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    code_buf_t* pc = CodeGen_get_bytecodes();
+
+    // cab < 100
+    ASSERT_EQ_NUM(opcode_load, pc->opcode); pc++;
+    ASSERT_EQ_NUM(4, pc->value.value.general); pc++;
+    ASSERT_EQ_NUM(opcode_push, pc->opcode); pc++;
+    ASSERT_EQ_NUM(100, pc->value.value.number); pc++;
+    ASSERT_EQ_NUM(opcode_lt, pc->opcode); pc++;
+
+    // while
+    code_buf_t* back_addr = pc;
+    ASSERT_EQ_NUM(opcode_cmp, pc->opcode); pc++;
+    code_buf_t* jmp_addr = pc; pc++;
+
+    // {
+    ASSERT_EQ_NUM(opcode_begin_scope, pc->opcode); pc++;
+
+    // cab += 1
+    ASSERT_EQ_NUM(opcode_load, pc->opcode); pc++;
+    ASSERT_EQ_NUM(4, pc->value.value.general); pc++;
+    ASSERT_EQ_NUM(opcode_push, pc->opcode); pc++;
+    ASSERT_EQ_NUM(1, pc->value.value.number); pc++;
+    ASSERT_EQ_NUM(opcode_add, pc->opcode); pc++;
+    ASSERT_EQ_NUM(opcode_store, pc->opcode); pc++;
+    ASSERT_EQ_NUM(4, pc->value.value.general); pc++;
+
+    // }
+    ASSERT_EQ_NUM(opcode_end_scope, pc->opcode); pc++;
+
+    ASSERT_EQ_NUM(opcode_jmp, pc->opcode); pc++;
+    int64_t back_offset = back_addr - pc;
+    ASSERT_EQ_NUM(-12, back_offset); 
+    pc++;
+
+    // validate jumping address
+    uint64_t offset = pc - jmp_addr;
+    ASSERT_EQ_NUM(jmp_addr->value.value.general, offset);
+}

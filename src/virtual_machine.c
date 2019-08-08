@@ -95,7 +95,7 @@ static void     push_stack(object_t value);
 static object_t pop_stack(void);
 static bool     check_no_error(void);
 
-static code_buf_t* Stmt_if(code_buf_t* pc, object_t result, uint64_t offset);
+static code_buf_t* cmp_false_jmp(code_buf_t* pc, object_t result, uint64_t offset);
 
 static bool execute_code(void);
 
@@ -190,7 +190,7 @@ static bool check_no_error(void)
     return no_error;
 }
 
-static code_buf_t* Stmt_if(code_buf_t* pc, object_t result, uint64_t offset)
+static code_buf_t* cmp_false_jmp(code_buf_t* pc, object_t result, uint64_t offset)
 {
     if (result.type == object_type_boolean)
     {
@@ -302,13 +302,13 @@ static bool execute_code(void)
             
             pc++;
             uint64_t offset = pc->value.value.general;
-            pc = Stmt_if(pc, result, offset);
+            pc = cmp_false_jmp(pc, result, offset);
             break;
         }
         case opcode_jmp:
         {
             pc++;
-            uint64_t offset = pc->value.value.general;
+            int64_t offset = pc->value.value.general;
             pc += offset;
             break;
         }

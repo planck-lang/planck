@@ -187,7 +187,7 @@ condition_stmt : IF comparison_expr block           {Jmp_cmp(NULL, NULL, $3, Cod
                | IF comparison_expr block elif_list {Jmp_cmp(NULL, NULL, $3, $4);}
                ;
 
-loop_stmt : WHILE comparison_expr block
+loop_stmt : WHILE _current_pc_ comparison_expr block {Jmp_cmp((CodeGen_current_bytecode_ptr() - 2), $2, $4, CodeGen_current_bytecode_ptr());}
           ;
 
 _current_pc_ : {$$ = CodeGen_current_bytecode_ptr();}

@@ -42,7 +42,7 @@ TESTCASE(01, "grammer test")
     st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
 
-    codeline = "while idxw < 10 {\n caw += 1;\n}";
+    codeline = "while idxw < 10 {\n caw += 1;\n idxw += 1;\n}";
     st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
 
