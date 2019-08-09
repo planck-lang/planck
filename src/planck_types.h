@@ -108,6 +108,8 @@ typedef enum _opcode_t_ {
     opcode_jmp,
     opcode_begin_scope,
     opcode_end_scope,
+    opcode_begin_loop,
+    opcode_end_loop,
     opcode_halt,
     opcode_MAXNUM
 } opcode_t;

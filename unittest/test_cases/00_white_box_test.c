@@ -325,6 +325,10 @@ TESTCASE(07, "while bytecode")
 
     code_buf_t* pc = CodeGen_get_bytecodes();
 
+    ASSERT_EQ_NUM(opcode_begin_loop, pc->opcode); pc++;
+
+    code_buf_t* loop_back_addr = pc;
+
     // cab < 100
     ASSERT_EQ_NUM(opcode_load, pc->opcode); pc++;
     ASSERT_EQ_NUM(4, pc->value.value.general); pc++;
@@ -333,7 +337,6 @@ TESTCASE(07, "while bytecode")
     ASSERT_EQ_NUM(opcode_lt, pc->opcode); pc++;
 
     // while
-    code_buf_t* back_addr = pc;
     ASSERT_EQ_NUM(opcode_cmp, pc->opcode); pc++;
     code_buf_t* jmp_addr = pc; pc++;
 
@@ -353,11 +356,12 @@ TESTCASE(07, "while bytecode")
     ASSERT_EQ_NUM(opcode_end_scope, pc->opcode); pc++;
 
     ASSERT_EQ_NUM(opcode_jmp, pc->opcode); pc++;
-    int64_t back_offset = back_addr - pc;
-    ASSERT_EQ_NUM(-12, back_offset); 
+    int64_t back_offset = loop_back_addr - pc;
+    ASSERT_EQ_NUM(back_offset, pc->value.value.general); 
     pc++;
 
     // validate jumping address
     uint64_t offset = pc - jmp_addr;
     ASSERT_EQ_NUM(jmp_addr->value.value.general, offset);
+    ASSERT_EQ_NUM(opcode_end_loop, pc->opcode); pc++;
 }

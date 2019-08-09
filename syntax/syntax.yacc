@@ -187,11 +187,16 @@ condition_stmt : IF comparison_expr block           {Jmp_cmp(NULL, NULL, $3, Cod
                | IF comparison_expr block elif_list {Jmp_cmp(NULL, NULL, $3, $4);}
                ;
 
-loop_stmt : WHILE _current_pc_ comparison_expr block {Jmp_cmp((CodeGen_current_bytecode_ptr() - 2), $2, $4, CodeGen_current_bytecode_ptr());}
+loop_stmt : WHILE _begin_loop_ _current_pc_ comparison_expr block _end_loop_ {Jmp_cmp((CodeGen_current_bytecode_ptr() - 3), $3, 
+                                                                                       $5, (CodeGen_current_bytecode_ptr() - 1));}
           ;
 
 _current_pc_ : {$$ = CodeGen_current_bytecode_ptr();}
              ;
+_begin_loop_ : {CodeGen_add_opcode(opcode_begin_loop);}
+             ;
+_end_loop_ :   {CodeGen_add_opcode(opcode_end_loop);}
+           ;
 
 elif_list : ELSE _current_pc_ block                           {$$ = $2; Jmp_cmp(((code_buf_t*)$2 - 2), CodeGen_current_bytecode_ptr(), NULL, NULL);}
           | ELIF _current_pc_ comparison_expr block           {$$ = $2; Jmp_cmp(((code_buf_t*)$2 - 2), CodeGen_current_bytecode_ptr(), $4, CodeGen_current_bytecode_ptr());}

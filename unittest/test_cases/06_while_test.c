@@ -52,3 +52,28 @@ TESTCASE(01, "grammer test")
     ASSERT_EQ_NUM(object_type_number, ret.type);
     ASSERT_EQ_NUM(13, ret.value.number);
 }
+
+TESTCASE(02, "break test")
+{
+    char* codeline;
+    object_t ret;
+    planck_result_t st;
+
+    codeline = "caw = 3";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    codeline = "idxw = 0";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    codeline = "while idxw < 10 {\n caw += 1;\n if idxw == 5 { caw = 8; break; } idxw += 1;\n}";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    codeline = "caw";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    ASSERT_EQ_NUM(object_type_number, ret.type);
+    ASSERT_EQ_NUM(8, ret.value.number);
+}
