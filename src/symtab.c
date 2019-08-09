@@ -40,6 +40,9 @@ SOFTWARE.
 /**************************
  * Data types, Constants
  **************************/
+#define TYPE_SIZE_LEN (2048)
+#define MAX_DEPTH (128)
+
 typedef struct _string_literal_tab_t_ {
     uint32_t idx;
     char*    string_literal_buffer;
@@ -66,27 +69,24 @@ typedef struct _symtab_linkedlist_t_ {
     uint32_t    count;
 } symtab_linkedlist_t;
 
-#define TYPE_SIZE_LEN (2048)
 typedef struct _type_info_tab_t_ {
     char*         type_name;
     uint32_t      size_byte;
     object_type_t obj_type;
 } type_info_tab_t;
 
-#define MAX_DEPTH (128)
-
 /**************************
  * Private variables
  **************************/
 static str_literal_tab_linkedlist_t s_string_literal_tab_linkedlist = {0};
 static symtab_linkedlist_t s_symtab_linkedlist[MAX_DEPTH] = {0};
+static uint32_t s_block_depth = 0;
+
 static type_info_tab_t s_type_info_table[TYPE_SIZE_LEN] = {
     {"num_t", 8, object_type_number},
     {"str_t", 8, object_type_string},
     {0}
 };
-static uint32_t s_block_depth = {0};
-
 /**************************
  * Private function prototypes
  **************************/
