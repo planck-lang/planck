@@ -100,6 +100,7 @@ static void Jmp_cmp(code_buf_t* jmp_dst, code_buf_t* jmp_offset, code_buf_t* cmp
 %token<string_ptr>      IDENTIFIER
 
 %token                  IF ELSE ELIF WHILE
+%token                  BREAK CONTINUE
 
 %type<string_ptr>   load_first_var
 %type<code_ptr>     _current_pc_ block elif_list begin_block end_block
@@ -120,6 +121,8 @@ prog : expr
 
 stmtlist : stmt	
          | stmt ';' stmtlist
+         | condition_stmt stmtlist
+         | loop_stmt stmtlist
          ;
 
 expr : NUMBER               {CodeGen_add_number($1);}
@@ -159,8 +162,8 @@ comparison_expr : expr '<' expr        {CodeGen_add_opcode(opcode_lt);}
 stmt : /* empty */
      | decl
      | assign
-     | condition_stmt
-     | loop_stmt
+     | BREAK
+     | CONTINUE
      ;
 
 decl : IDENTIFIER IDENTIFIER '=' expr   {Variable_declaration($1, $2); free($1); free($2);}

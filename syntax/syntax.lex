@@ -50,6 +50,8 @@ int yywrap(void)
 "else "     return ELSE;
 "elif "     return ELIF;
 "while "    return WHILE;
+"break"     return BREAK;
+"continue"  return CONTINUE;
 
 [0-9]+("."[0-9]*)? {
     yylval.double_value = str_to_number(yytext, 10);
