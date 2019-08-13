@@ -114,13 +114,20 @@ typedef enum _opcode_t_ {
     opcode_MAXNUM
 } opcode_t;
 
+typedef enum _code_buf_type_ {
+    code_buf_opcode,
+    code_buf_value
+} code_buf_type_t;
 
 /*
  * code generator types
  */
-typedef union _code_buf_t_ {
-    opcode_t    opcode;
-    object_t    value;
+typedef struct _code_buf_t_ {
+    code_buf_type_t type;
+    struct {
+        opcode_t    opcode;
+        object_t    value;
+    } bytecode;
 } code_buf_t;
 
 #endif /* SRC_PLANCK_TYPES_H_ */

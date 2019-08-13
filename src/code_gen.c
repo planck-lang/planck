@@ -34,7 +34,6 @@ SOFTWARE.
  * Include project headers
  **************************/
 #include "object.h"
-#include "virtual_machine.h"
 #include "code_gen.h"
 #include "symtab.h"
 #include "ported_lib.h"
@@ -77,14 +76,18 @@ void CodeGen_skip_bytecode_count(uint32_t count)
     while(count--)
     {
         check_code_buffer();
-        s_generated_code.buffer[s_generated_code.len++].opcode = opcode_nop;    
+        s_generated_code.buffer[s_generated_code.len].type = code_buf_opcode;
+        s_generated_code.buffer[s_generated_code.len].bytecode.opcode = opcode_nop;    
+        s_generated_code.len++;
     }
 }
 
 void CodeGen_add_opcode(opcode_t opcode)
 {
     check_code_buffer();
-    s_generated_code.buffer[s_generated_code.len++].opcode = opcode;
+    s_generated_code.buffer[s_generated_code.len].type = code_buf_opcode;
+    s_generated_code.buffer[s_generated_code.len].bytecode.opcode = opcode;
+    s_generated_code.len++;
 }
 
 // cppcheck-suppress unusedFunction
@@ -97,7 +100,9 @@ void CodeGen_add_number(double number)
 
     check_code_buffer();
     CodeGen_add_opcode(opcode_push);
-    s_generated_code.buffer[s_generated_code.len++].value = number_obj;
+    s_generated_code.buffer[s_generated_code.len].type = code_buf_value;
+    s_generated_code.buffer[s_generated_code.len].bytecode.value = number_obj;
+    s_generated_code.len++;
 }
 
 // cppcheck-suppress unusedFunction
@@ -112,7 +117,9 @@ void CodeGen_add_string(char* str_ptr)
 
     check_code_buffer();
     CodeGen_add_opcode(opcode_push);
-    s_generated_code.buffer[s_generated_code.len++].value = string_obj;
+    s_generated_code.buffer[s_generated_code.len].type = code_buf_value;
+    s_generated_code.buffer[s_generated_code.len].bytecode.value = string_obj;
+    s_generated_code.len++;
 }
 
 // cppcheck-suppress unusedFunction
@@ -127,7 +134,9 @@ void CodeGen_add_variable(const char* type_str, const char* ident_str)
     general_obj.value.general = ((uint64_t)type_tab_idx << 32) | (literal_index);
 
     check_code_buffer();
-    s_generated_code.buffer[s_generated_code.len++].value = general_obj;
+    s_generated_code.buffer[s_generated_code.len].type = code_buf_value;
+    s_generated_code.buffer[s_generated_code.len].bytecode.value = general_obj;
+    s_generated_code.len++;
 }
 
 void CodeGen_read_symtab_variable(const char* ident_str)
@@ -140,7 +149,9 @@ void CodeGen_read_symtab_variable(const char* ident_str)
     general_obj.value.general = literal_index;
 
     check_code_buffer();
-    s_generated_code.buffer[s_generated_code.len++].value = general_obj;
+    s_generated_code.buffer[s_generated_code.len].type = code_buf_value;
+    s_generated_code.buffer[s_generated_code.len].bytecode.value = general_obj;
+    s_generated_code.len++;
 }
 
 void CodeGen_modify_codebuf(code_buf_t* dst, code_buf_t src)

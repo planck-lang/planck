@@ -214,7 +214,7 @@ static bool execute_code(void)
 
     while(true)
     {
-        opcode_t opcode = pc->opcode;
+        opcode_t opcode = pc->bytecode.opcode;
 
         switch(opcode)
         {
@@ -226,14 +226,14 @@ static bool execute_code(void)
         case opcode_push:
         {
             pc++;                       // next code has value which will be pushed into stack
-            push_stack(pc->value);      // value has been pushed into stack and increase pc to execute next code
+            push_stack(pc->bytecode.value);      // value has been pushed into stack and increase pc to execute next code
             pc++;
             break;
         }
         case opcode_decl:
         {
             pc++;
-            object_t identify_info = pc->value;
+            object_t identify_info = pc->bytecode.value;
             uint32_t type_idx = identify_info.value.general >> 32;
             uint32_t literal_idx = identify_info.value.general & 0xFFFFFFFF;
             
@@ -259,7 +259,7 @@ static bool execute_code(void)
         case opcode_store:
         {
             pc++;
-            object_t literal_idx = pc->value;
+            object_t literal_idx = pc->bytecode.value;
             char* identify_ptr = Symtab_get_string_literal_by_idx(literal_idx.value.general);
 
             if (Symtab_is_exist_variable(identify_ptr) == false)
@@ -301,14 +301,14 @@ static bool execute_code(void)
             object_t result = pop_stack();
             
             pc++;
-            uint64_t offset = pc->value.value.general;
+            uint64_t offset = pc->bytecode.value.value.general;
             pc = cmp_false_jmp(pc, result, offset);
             break;
         }
         case opcode_jmp:
         {
             pc++;
-            int64_t offset = pc->value.value.general;
+            int64_t offset = pc->bytecode.value.value.general;
             pc += offset;
             break;
         }
