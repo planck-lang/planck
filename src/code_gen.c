@@ -154,6 +154,15 @@ void CodeGen_read_symtab_variable(const char* ident_str)
     s_generated_code.len++;
 }
 
+code_buf_t CodeGen_gen_general_bytecode(int64_t genvalue)
+{
+    code_buf_t code;
+    code.type = code_buf_value;
+    code.bytecode.value.type = object_type_general;
+    code.bytecode.value.value.general = genvalue;
+    return code;
+}
+
 void CodeGen_modify_codebuf(code_buf_t* dst, code_buf_t src)
 {
     *dst = src;

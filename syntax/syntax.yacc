@@ -43,11 +43,9 @@ static void Variable_assignment_with_op(opcode_t opcode, char* var_str)
 
 static void Modify_jump_addr(code_buf_t* dst, code_buf_t* jmp)
 {
-    code_buf_t jmp_addr;
-    uint64_t offset = jmp - dst;
-    jmp_addr.type = code_buf_value;
-    jmp_addr.bytecode.value.type = object_type_general;
-    jmp_addr.bytecode.value.value.general = offset;
+    int64_t offset = jmp - dst;
+    code_buf_t jmp_addr = CodeGen_gen_general_bytecode(offset);
+    
     CodeGen_modify_codebuf(dst, jmp_addr);
 }
 
