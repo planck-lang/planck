@@ -29,7 +29,7 @@ src = [ 'src/planck.c',
         'src/expr.c',
         'src/virtual_machine.c',
         'src/ported_lib.c',
-        'src/second_pass.c']
+        'src/multi_pass.c']
 libplancks = both_libraries('planck', [src, gen_yacc, gen_lex], 
                         version : meson.project_version(), soversion : '0',
                         c_args:cflags, include_directories:incdir, pic:true)

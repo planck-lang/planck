@@ -113,7 +113,8 @@ SET(SRCS
 	src/symtab.c
 	src/expr.c
 	src/ported_lib.c
-	src/virtual_machine.c)
+	src/virtual_machine.c
+	src/multi_pass.c)
 ADD_LIBRARY(modplanck OBJECT ${SRCS})
 TARGET_COMPILE_OPTIONS(modplanck PRIVATE
 	-std=c11 -fPIC)
