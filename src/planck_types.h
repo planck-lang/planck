@@ -110,6 +110,8 @@ typedef enum _opcode_t_ {
     opcode_end_scope,
     opcode_begin_loop,
     opcode_end_loop,
+    opcode_break,
+    opcode_continue,
     opcode_halt,
     opcode_MAXNUM
 } opcode_t;
@@ -124,7 +126,7 @@ typedef enum _code_buf_type_ {
  */
 typedef struct _code_buf_t_ {
     code_buf_type_t type;
-    struct {
+    union {
         opcode_t    opcode;
         object_t    value;
     } bytecode;

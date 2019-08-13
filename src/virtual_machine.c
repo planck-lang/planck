@@ -325,6 +325,12 @@ static bool execute_code(void)
             pc++;
             break;
         }
+        case opcode_break:
+        case opcode_continue:
+        {
+            pc++;
+            break;
+        }
         case opcode_halt:
         case opcode_MAXNUM:
             return check_no_error();
