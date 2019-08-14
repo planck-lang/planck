@@ -425,7 +425,7 @@ TESTCASE(08, "break bytecode")
     ASSERT_EQ_NUM(4, pc->bytecode.value.value.general); pc++;
 
     //          break
-    ASSERT_EQ_NUM(opcode_jmp, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(opcode_break, pc->bytecode.opcode); pc++;
     code_buf_t* break_jmp = pc; pc++;
 
     //      }

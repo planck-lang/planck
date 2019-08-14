@@ -162,8 +162,8 @@ comparison_expr : expr '<' expr        {CodeGen_add_opcode(opcode_lt);}
 stmt : /* empty */
      | decl
      | assign
-     | BREAK
-     | CONTINUE
+     | BREAK        {CodeGen_add_opcode(opcode_break);    CodeGen_add_opcode(opcode_nop);}
+     | CONTINUE     {CodeGen_add_opcode(opcode_continue); CodeGen_add_opcode(opcode_nop);}
      ;
 
 decl : IDENTIFIER IDENTIFIER '=' expr   {Variable_declaration($1, $2); free($1); free($2);}

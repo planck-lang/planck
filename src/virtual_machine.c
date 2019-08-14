@@ -306,6 +306,8 @@ static bool execute_code(void)
             break;
         }
         case opcode_jmp:
+        case opcode_break:
+        case opcode_continue:
         {
             pc++;
             int64_t offset = pc->bytecode.value.value.general;
@@ -321,12 +323,6 @@ static bool execute_code(void)
         }
         case opcode_begin_loop:
         case opcode_end_loop:
-        {
-            pc++;
-            break;
-        }
-        case opcode_break:
-        case opcode_continue:
         {
             pc++;
             break;
