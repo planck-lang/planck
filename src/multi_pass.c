@@ -140,7 +140,7 @@ static void Check_break_continue(code_buf_t* pc)
     else if (opcode_continue == pc->bytecode.opcode)
     {
         pc++;
-        offset = s_loop_stack.stack[s_loop_stack.loop_count].end_addr - pc;
+        offset = s_loop_stack.stack[s_loop_stack.loop_count].begin_addr - pc;
         jmp_addr = CodeGen_gen_general_bytecode(offset);
         CodeGen_modify_codebuf(pc, jmp_addr);
     }
