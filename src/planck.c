@@ -126,9 +126,9 @@ planck_result_t Planck_do_as_stmt(const char* buf, object_t* out_ret)
         CodeGen_add_opcode(opcode_halt);
 
         MultiPass_2nd_pass(CodeGen_get_bytecodes());
-        MultiPass_3rd_pass(CodeGen_get_bytecodes());
+        bool third_pass = MultiPass_3rd_pass(CodeGen_get_bytecodes());
 
-        if (VirtualMachine_run_vm(CodeGen_get_bytecodes()))
+        if (third_pass && VirtualMachine_run_vm(CodeGen_get_bytecodes()))
         {
             *out_ret = VirtualMachine_get_result();
             return planck_result_ok;

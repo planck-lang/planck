@@ -27,6 +27,8 @@ SOFTWARE.
 /**************************
  * Includes
  **************************/
+#include <stdbool.h>
+
 #include "planck_types.h"
 
 /**************************
@@ -41,7 +43,7 @@ SOFTWARE.
  * Public function prototypes
  **************************/
  void MultiPass_2nd_pass(code_buf_t* base_addr);
- void MultiPass_3rd_pass(code_buf_t* base_addr);
+ bool MultiPass_3rd_pass(code_buf_t* base_addr);
 
 /**************************
  * Inline functions

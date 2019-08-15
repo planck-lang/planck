@@ -33,6 +33,7 @@ SOFTWARE.
  **************************/
 #include "multi_pass.h"
 #include "code_gen.h"
+#include "virtual_machine.h"
 
 /**************************
  * External references
@@ -66,7 +67,7 @@ static loop_stack_t s_loop_stack = {0};
  * Private function prototypes
  **************************/
 static void Check_loop(code_buf_t* pc);
-static void Check_break_continue(code_buf_t* pc);
+static bool Check_break_continue(code_buf_t* pc);
 
 /**************************
  * Public functions
@@ -91,7 +92,7 @@ void MultiPass_2nd_pass(code_buf_t* base_addr)
     }
 }
 
-void MultiPass_3rd_pass(code_buf_t* base_addr)
+bool MultiPass_3rd_pass(code_buf_t* base_addr)
 {
     s_loop_stack.loop_count = 0;
 
@@ -105,10 +106,15 @@ void MultiPass_3rd_pass(code_buf_t* base_addr)
             {
                 break;
             }
-            Check_break_continue(pc);
+            if (false == Check_break_continue(pc))
+            {
+                return false;
+            }
         }
         pc++;
     }
+
+    return true;
 }
 
 /**************************
@@ -128,7 +134,7 @@ static void Check_loop(code_buf_t* pc)
     }
 }
 
-static void Check_break_continue(code_buf_t* pc)
+static bool Check_break_continue(code_buf_t* pc)
 {
     int64_t offset = 0;
     code_buf_t jmp_addr = {0};
@@ -139,6 +145,12 @@ static void Check_break_continue(code_buf_t* pc)
     }
     else if (opcode_continue == pc->bytecode.opcode)
     {
+        if (s_loop_stack.loop_count == 0)
+        {
+            VirtualMachine_add_error_msg(error_code_not_in_loop);
+            return false;
+        }
+
         pc++;
         offset = s_loop_stack.stack[s_loop_stack.loop_count].begin_addr - pc;
         jmp_addr = CodeGen_gen_general_bytecode(offset);
@@ -146,6 +158,12 @@ static void Check_break_continue(code_buf_t* pc)
     }
     else if (opcode_break == pc->bytecode.opcode)
     {
+        if (s_loop_stack.loop_count == 0)
+        {
+            VirtualMachine_add_error_msg(error_code_not_in_loop);
+            return false;
+        }
+
         pc++;
         offset = s_loop_stack.stack[s_loop_stack.loop_count].end_addr - pc;
         jmp_addr = CodeGen_gen_general_bytecode(offset);
@@ -155,4 +173,6 @@ static void Check_break_continue(code_buf_t* pc)
     {
         s_loop_stack.loop_count--;
     }
+
+    return true;
 }

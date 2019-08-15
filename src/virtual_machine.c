@@ -82,6 +82,7 @@ static vm_error_status_t s_vm_error, s_predefined_error[] = {
         {"Symbol not found from symtab", error_code_not_found_symbol},
         {"Redefined of variable", error_code_redefinition},
         {"Condition statement expects boolean expression", error_code_must_be_bool},
+        {"Loop not found", error_code_not_in_loop},
         {"No error", error_code_no_error}
 };
 

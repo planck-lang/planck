@@ -102,3 +102,25 @@ TESTCASE(03, "continue test")
     ASSERT_EQ_NUM(object_type_number, ret.type);
     ASSERT_EQ_NUM(11, ret.value.number);
 }
+
+TESTCASE(04, "single use error")
+{
+    char* codeline;
+    object_t ret;
+    planck_result_t st;
+
+    codeline = "break";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_fail, st);
+
+    char runtime_error_buf[1024] = {0};
+    error_code_t s_error_code = Planck_get_error(runtime_error_buf);
+    ASSERT_EQ_NUM(error_code_not_in_loop, s_error_code);
+
+    codeline = "continue";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_fail, st);
+
+    s_error_code = Planck_get_error(runtime_error_buf);
+    ASSERT_EQ_NUM(error_code_not_in_loop, s_error_code);
+}
