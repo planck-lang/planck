@@ -34,8 +34,8 @@ SOFTWARE.
  * Include project headers
  **************************/
 #include "symtab.h"
-#include "virtual_machine.h"
 #include "ported_lib.h"
+#include "error.h"
 
 /**************************
  * Data types, Constants
@@ -155,7 +155,7 @@ uint32_t Symtab_add_variable(uint32_t type_idx, const char* ident_str_ptr)
 
     if (check_type_index_valid(type_idx) == false)
     {
-        VirtualMachine_add_error_msg(error_code_undefined_type);
+        Error_add_error_msg(error_code_undefined_type);
         return 0;
     }
 
@@ -190,7 +190,7 @@ void Symtab_store_value_to_symtab(uint32_t symtab_idx, object_t value, bool fail
     symtab_t* symtab_item = find_symtab_by_idx(symtab_idx);
     if (symtab_item == NULL)
     {
-        VirtualMachine_add_error_msg(error_code_not_found_symbol);
+        Error_add_error_msg(error_code_not_found_symbol);
     }
 
     type_info_tab_t* type_info = &s_type_info_table[symtab_item->type_idx];
@@ -206,7 +206,7 @@ void Symtab_store_value_to_symtab(uint32_t symtab_idx, object_t value, bool fail
             remove_symtab_by_sym_node(symtab_item);
         }
 
-        VirtualMachine_add_error_msg(error_code_type_mismatch);
+        Error_add_error_msg(error_code_type_mismatch);
     }
 }
 
@@ -215,7 +215,7 @@ object_t Symtab_load_value_from_symtab(uint32_t symtab_idx)
     symtab_t* symtab_item = find_symtab_by_idx(symtab_idx);
     if (symtab_item == NULL)
     {
-        VirtualMachine_add_error_msg(error_code_not_found_symbol);
+        Error_add_error_msg(error_code_not_found_symbol);
     }
 
     return symtab_item->value;

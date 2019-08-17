@@ -33,7 +33,7 @@ SOFTWARE.
  **************************/
 #include "multi_pass.h"
 #include "code_gen.h"
-#include "virtual_machine.h"
+#include "error.h"
 
 /**************************
  * External references
@@ -147,7 +147,7 @@ static bool Check_break_continue(code_buf_t* pc)
     {
         if (s_loop_stack.loop_count == 0)
         {
-            VirtualMachine_add_error_msg(error_code_not_in_loop);
+            Error_add_error_msg(error_code_not_in_loop);
             return false;
         }
 
@@ -160,7 +160,7 @@ static bool Check_break_continue(code_buf_t* pc)
     {
         if (s_loop_stack.loop_count == 0)
         {
-            VirtualMachine_add_error_msg(error_code_not_in_loop);
+            Error_add_error_msg(error_code_not_in_loop);
             return false;
         }
 

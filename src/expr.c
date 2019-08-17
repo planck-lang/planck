@@ -34,7 +34,7 @@ SOFTWARE.
  **************************/
 #include "object.h"
 #include "expr.h"
-#include "virtual_machine.h"
+#include "error.h"
 
 /**************************
  * Private function prototypes
@@ -146,7 +146,7 @@ static object_t op_add(object_t op1, object_t op2)
     }
     else
     {
-        VirtualMachine_add_error_msg(error_code_type_mismatch);
+        Error_add_error_msg(error_code_type_mismatch);
     }
 
     return ret;
@@ -163,7 +163,7 @@ static object_t op_sub(object_t op1, object_t op2)
     }
     else
     {
-        VirtualMachine_add_error_msg(error_code_type_mismatch);
+        Error_add_error_msg(error_code_type_mismatch);
     }
 
     return ret;
@@ -188,7 +188,7 @@ static object_t op_mul(object_t op1, object_t op2)
     }
     else
     {
-        VirtualMachine_add_error_msg(error_code_type_mismatch);
+        Error_add_error_msg(error_code_type_mismatch);
     }
 
     return ret;
@@ -205,7 +205,7 @@ static object_t op_div(object_t op1, object_t op2)
     }
     else
     {
-        VirtualMachine_add_error_msg(error_code_type_mismatch);
+        Error_add_error_msg(error_code_type_mismatch);
     }
 
     return ret;
@@ -222,7 +222,7 @@ static object_t op_mod(object_t op1, object_t op2)
     }
     else
     {
-        VirtualMachine_add_error_msg(error_code_type_mismatch);
+        Error_add_error_msg(error_code_type_mismatch);
     }
 
     return ret;
@@ -237,7 +237,7 @@ static object_t op_con(object_t op1, object_t op2)
 
     if (ret.type == object_type_null)
     {
-        VirtualMachine_add_error_msg(error_code_type_mismatch);
+        Error_add_error_msg(error_code_type_mismatch);
     }
 
     return ret;
@@ -259,7 +259,7 @@ static object_t op_lt(object_t op1, object_t op2)
     }
     else
     {
-        VirtualMachine_add_error_msg(error_code_type_mismatch);
+        Error_add_error_msg(error_code_type_mismatch);
     }
 
     return ret;
@@ -281,7 +281,7 @@ static object_t op_gt(object_t op1, object_t op2)
     }
     else
     {
-        VirtualMachine_add_error_msg(error_code_type_mismatch);
+        Error_add_error_msg(error_code_type_mismatch);
     }
 
     return ret;
@@ -303,7 +303,7 @@ static object_t op_le(object_t op1, object_t op2)
     }
     else
     {
-        VirtualMachine_add_error_msg(error_code_type_mismatch);
+        Error_add_error_msg(error_code_type_mismatch);
     }
     
     return ret;
@@ -325,7 +325,7 @@ static object_t op_ge(object_t op1, object_t op2)
     }
     else
     {
-        VirtualMachine_add_error_msg(error_code_type_mismatch);
+        Error_add_error_msg(error_code_type_mismatch);
     }
     
     return ret;
@@ -351,7 +351,7 @@ static object_t op_eq(object_t op1, object_t op2)
     }
     else
     {
-        VirtualMachine_add_error_msg(error_code_type_mismatch);
+        Error_add_error_msg(error_code_type_mismatch);
     }
     
     return ret;
@@ -373,7 +373,7 @@ static object_t op_ne(object_t op1, object_t op2)
     }
     else
     {
-        VirtualMachine_add_error_msg(error_code_type_mismatch);
+        Error_add_error_msg(error_code_type_mismatch);
     }
     
     return ret;
@@ -391,7 +391,7 @@ static object_t op_xor(object_t op1, object_t op2)
     }
     else
     {
-        VirtualMachine_add_error_msg(error_code_type_mismatch);
+        Error_add_error_msg(error_code_type_mismatch);
     }
     
     return ret;
@@ -409,7 +409,7 @@ static object_t op_rshift(object_t op1, object_t op2)
     }
     else
     {
-        VirtualMachine_add_error_msg(error_code_type_mismatch);
+        Error_add_error_msg(error_code_type_mismatch);
     }
     
     return ret;
@@ -427,7 +427,7 @@ static object_t op_lshift(object_t op1, object_t op2)
     }
     else
     {
-        VirtualMachine_add_error_msg(error_code_type_mismatch);
+        Error_add_error_msg(error_code_type_mismatch);
     }
     
     return ret;
@@ -445,7 +445,7 @@ static object_t op_bit_or(object_t op1, object_t op2)
     }
     else
     {
-        VirtualMachine_add_error_msg(error_code_type_mismatch);
+        Error_add_error_msg(error_code_type_mismatch);
     }
     
     return ret;
@@ -463,7 +463,7 @@ static object_t op_bit_and(object_t op1, object_t op2)
     }
     else
     {
-        VirtualMachine_add_error_msg(error_code_type_mismatch);
+        Error_add_error_msg(error_code_type_mismatch);
     }
     
     return ret;
@@ -481,7 +481,7 @@ static object_t op_com_or(object_t op1, object_t op2)
     }
     else
     {
-        VirtualMachine_add_error_msg(error_code_type_mismatch);
+        Error_add_error_msg(error_code_type_mismatch);
     }
     
     return ret;
@@ -499,7 +499,7 @@ static object_t op_com_and(object_t op1, object_t op2)
     }
     else
     {
-        VirtualMachine_add_error_msg(error_code_type_mismatch);
+        Error_add_error_msg(error_code_type_mismatch);
     }
     
     return ret;

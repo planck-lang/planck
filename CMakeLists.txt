@@ -114,7 +114,8 @@ SET(SRCS
 	src/expr.c
 	src/ported_lib.c
 	src/virtual_machine.c
-	src/multi_pass.c)
+	src/multi_pass.c
+	src/error.c)
 ADD_LIBRARY(modplanck OBJECT ${SRCS})
 TARGET_COMPILE_OPTIONS(modplanck PRIVATE
 	-std=c11 -fPIC)

@@ -39,6 +39,7 @@ SOFT
 #include "planck.h"
 #include "ported_lib.h"
 #include "multi_pass.h"
+#include "error.h"
 
 /**************************
  * External references
@@ -114,7 +115,7 @@ planck_result_t Planck_do_as_stmt(const char* buf, object_t* out_ret)
         s_block_buf = NULL;
     }
 
-    s_error_code = VirtualMachine_get_error_msg(&s_error_msg_ptr);
+    s_error_code = Error_get_error_msg(&s_error_msg_ptr);
 
     if (!parse_result)  // ok
     {
@@ -135,7 +136,7 @@ planck_result_t Planck_do_as_stmt(const char* buf, object_t* out_ret)
         }
         else
         {
-            s_error_code = VirtualMachine_get_error_msg(&s_error_msg_ptr);
+            s_error_code = Error_get_error_msg(&s_error_msg_ptr);
             return planck_result_fail;
         }
 

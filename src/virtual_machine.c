@@ -39,6 +39,7 @@ SOFTWARE.
 #include "expr.h"
 #include "symtab.h"
 #include "ported_lib.h"
+#include "error.h"
 
 /**************************
  * Macro
@@ -66,25 +67,11 @@ typedef struct _vm_stack_t_ {
     uint32_t    limit;
 } vm_stack_t;
 
-typedef struct _vm_error_status_t_ {
-    char*           msg;
-    error_code_t    error_code;
-} vm_error_status_t;
-
 /**************************
  * Private variables
  **************************/
 static vm_registers_t s_vm_registers = {0};
 static vm_stack_t s_vm_stack = {0};
-static vm_error_status_t s_vm_error, s_predefined_error[] = {
-        {"Type mismatch error on this operator", error_code_type_mismatch},
-        {"Type is not defined (undefined type)", error_code_undefined_type},
-        {"Symbol not found from symtab", error_code_not_found_symbol},
-        {"Redefined of variable", error_code_redefinition},
-        {"Condition statement expects boolean expression", error_code_must_be_bool},
-        {"Loop not found", error_code_not_in_loop},
-        {"No error", error_code_no_error}
-};
 
 /**************************
  * Private function prototypes
@@ -94,7 +81,6 @@ static void check_stack(void);
 
 static void     push_stack(object_t value);
 static object_t pop_stack(void);
-static bool     check_no_error(void);
 
 static code_buf_t* cmp_false_jmp(code_buf_t* pc, object_t result, uint64_t offset);
 
@@ -115,26 +101,6 @@ bool VirtualMachine_run_vm(code_buf_t* codes)
 object_t VirtualMachine_get_result(void)
 {
     return pop_stack();
-}
-
-void VirtualMachine_add_error_msg(error_code_t error_code)
-{
-    for(uint32_t i = 0 ; i < error_code_MAXNUM; i++)
-    {
-        if (s_predefined_error[i].error_code == error_code)
-        {
-            s_vm_error.msg = s_predefined_error[i].msg;
-            s_vm_error.error_code = error_code;
-        }
-    }
-}
-
-error_code_t VirtualMachine_get_error_msg(char** out_msg_ptr)
-{
-    error_code_t ret = s_vm_error.error_code;
-    *out_msg_ptr = s_vm_error.msg;
-    memset(&s_vm_error, 0, sizeof(s_vm_error)); // reset s_vm_error
-    return ret;
 }
 
 /**************************
@@ -179,18 +145,6 @@ static object_t pop_stack(void)
     return value;
 }
 
-static bool check_no_error(void)
-{
-    bool no_error = true;
-
-    if (s_vm_error.error_code != error_code_no_error)
-    {
-        no_error = false;
-    }
-
-    return no_error;
-}
-
 static code_buf_t* cmp_false_jmp(code_buf_t* pc, object_t result, uint64_t offset)
 {
     if (result.type == object_type_boolean)
@@ -205,7 +159,7 @@ static code_buf_t* cmp_false_jmp(code_buf_t* pc, object_t result, uint64_t offse
         }
     }
 
-    VirtualMachine_add_error_msg(error_code_must_be_bool);
+    Error_add_error_msg(error_code_must_be_bool);
     return NULL;
 }
 
@@ -242,7 +196,7 @@ static bool execute_code(void)
 
             if (Symtab_is_exist_variable(identify_ptr))
             {
-                VirtualMachine_add_error_msg(error_code_redefinition);
+                Error_add_error_msg(error_code_redefinition);
                 return false;
             }
 
@@ -265,7 +219,7 @@ static bool execute_code(void)
 
             if (Symtab_is_exist_variable(identify_ptr) == false)
             {
-                VirtualMachine_add_error_msg(error_code_not_found_symbol);
+                Error_add_error_msg(error_code_not_found_symbol);
                 return false;
             }
 
@@ -330,7 +284,7 @@ static bool execute_code(void)
         }
         case opcode_halt:
         case opcode_MAXNUM:
-            return check_no_error();
+            return (!Error_is_happened());
 
         default:
             printf("Critical Error %d\n", opcode);
@@ -338,7 +292,7 @@ static bool execute_code(void)
             return false;
         }
 
-        if (check_no_error() == false)
+        if (Error_is_happened() == true)
         {
             return false;
         }
