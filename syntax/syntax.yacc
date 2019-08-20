@@ -115,7 +115,7 @@ static void Jmp_cmp(code_buf_t* jmp_dst, code_buf_t* jmp_offset, code_buf_t* cmp
 %left '*' '/' '%'
 
 %%
-prog : expr
+prog : exprlist
      | stmtlist
      ;
 
@@ -125,13 +125,18 @@ stmtlist : stmt
          | loop_stmt stmtlist
          ;
 
+exprlist : expr
+         | expr ',' exprlist
+         ;
+
 expr : NUMBER               {CodeGen_add_number($1);}
      | STRING               {CodeGen_add_string($1);}
      | IDENTIFIER           {Identifier_load($1); free($1);}
      | comparison_expr
      | basic_op_expr
      | bit_op_expr
-     | '(' expr ')'         
+     | arr_list_expr
+     | '(' expr ')'
      ;
 
 basic_op_expr : expr '+' expr        {CodeGen_add_opcode(opcode_add);}
@@ -158,6 +163,9 @@ comparison_expr : expr '<' expr        {CodeGen_add_opcode(opcode_lt);}
                 | expr COMAND expr     {CodeGen_add_opcode(opcode_com_and);}
                 | expr COMOR expr      {CodeGen_add_opcode(opcode_com_or);}
                 ;
+
+arr_list_expr : '[' exprlist ']'
+              ;
 
 stmt : /* empty */
      | decl

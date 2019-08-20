@@ -144,3 +144,22 @@ TESTCASE(05, "oversize test for string")
     ASSERT_EQ_NUM(object_type_null, ret.type);
     ASSERT_EQ_NUM(0, ret.value.number);
 }
+
+TESTCASE(06, "array expression")
+{
+    char* codeline;
+    object_t ret;
+    planck_result_t st;
+
+    codeline = "[1,2,3,4,5,6]";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    codeline = "[[1,2],[3,4],[5,6]]";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    codeline = "[[[1,2],[3,4]],[[5,6],[7,8]]]";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+}
