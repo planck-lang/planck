@@ -10,6 +10,8 @@
 
 extern int yylex (void);
 
+static uint32_t s_array_expr_num = 0;
+
 int yyerror(const char* str)
 {
     printf("[Parse Error] %s\n", str);
@@ -95,12 +97,12 @@ static void Jmp_cmp(code_buf_t* jmp_dst, code_buf_t* jmp_offset, code_buf_t* cmp
 %token                  ADDASSIGN SUBASSIGN MULASSIGN DIVASSIGN MODASSIGN CONCASSIGN
 %token                  RSHTASSIGN LSHTASSIGN
 %token                  ORASSIGN ANDASSIGN XORASSIGN
+%token                  IF ELSE ELIF WHILE
+%token                  BREAK CONTINUE
+
 %token<double_value>    NUMBER
 %token<string_ptr>      STRING
 %token<string_ptr>      IDENTIFIER
-
-%token                  IF ELSE ELIF WHILE
-%token                  BREAK CONTINUE
 
 %type<string_ptr>   load_first_var
 %type<code_ptr>     _current_pc_ block elif_list begin_block end_block
@@ -126,7 +128,7 @@ stmtlist : stmt
          ;
 
 exprlist : expr
-         | expr ',' exprlist
+         | expr ',' exprlist    {s_array_expr_num++; printf("\nexprlist\n");}
          ;
 
 expr : NUMBER               {CodeGen_add_number($1);}
@@ -164,7 +166,7 @@ comparison_expr : expr '<' expr        {CodeGen_add_opcode(opcode_lt);}
                 | expr COMOR expr      {CodeGen_add_opcode(opcode_com_or);}
                 ;
 
-arr_list_expr : '[' exprlist ']'
+arr_list_expr : '[' exprlist ']'    {s_array_expr_num++; printf("\narr_list_expr->%d\n", s_array_expr_num); s_array_expr_num = 0;}
               ;
 
 stmt : /* empty */

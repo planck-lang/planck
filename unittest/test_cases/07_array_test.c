@@ -155,9 +155,13 @@ TESTCASE(06, "array expression")
     st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
 
+    printf("\n-------------\n");
+
     codeline = "[[1,2],[3,4],[5,6]]";
     st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
+
+    printf("\n-------------\n");
 
     codeline = "[[[1,2],[3,4]],[[5,6],[7,8]]]";
     st = Planck_do_as_stmt(codeline, &ret);
