@@ -57,6 +57,7 @@ typedef enum _object_type_t_ {
     object_type_number,
     object_type_string,
     object_type_boolean,
+    object_type_array,
     object_type_MAXNUM
 } object_type_t;
 
@@ -64,6 +65,11 @@ typedef struct _str_t_ {
     char*    ptr;
     uint32_t table_idx;
 } str_t;
+
+typedef struct _list_t_ {
+    struct _list_t_ *next;
+    void* ptr_value;
+} list_t;
 
 typedef struct _object_t_ {
     object_type_t type;
@@ -73,6 +79,7 @@ typedef struct _object_t_ {
         double   number;
         str_t    str;
         bool     boolean;
+        list_t*  combined; 
     } value;
 } object_t;
 
@@ -113,6 +120,7 @@ typedef enum _opcode_t_ {
     opcode_end_loop,
     opcode_break,
     opcode_continue,
+    opcode_array,
     opcode_halt,
     opcode_MAXNUM
 } opcode_t;

@@ -123,3 +123,15 @@ int Obj_comp_string(object_t str_obj1, object_t str_obj2)
 
     return ret;
 }
+
+list_t* Obj_conv_list_item(object_t obj)
+{
+    list_t* list_item = (list_t*)new_malloc(sizeof(list_t));
+    
+    object_t* obj_item = (object_t*)new_malloc(sizeof(object_t));
+    memcpy(obj_item, &obj, sizeof(object_t));
+    
+    list_item->ptr_value = obj_item;
+    
+    return list_item;
+}
