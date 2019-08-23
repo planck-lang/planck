@@ -135,3 +135,35 @@ list_t* Obj_conv_list_item(object_t obj)
     
     return list_item;
 }
+
+char* Obj_combined_to_str(char* str, object_t obj, bool auto_free)
+{
+    if (obj.type != object_type_array)
+    {
+        return str;
+    }
+
+    list_t* list_head = obj.value.combined;
+
+    strncat(str, "[", 1);
+
+    for (list_t* item = list_head ; item != NULL ; item = item->next)
+    {
+        object_t* obj_item = item->ptr_value;
+
+        if (obj_item->type == object_type_number)
+        {
+            char temp[128] = {0};
+            sprintf(temp, "%f, ", obj_item->value.number);
+            strncat(str, temp, strlen(temp));
+        }
+        else if (obj_item->type == object_type_array)
+        {
+            str = Obj_combined_to_str(str, *obj_item, auto_free);
+        }
+    }
+
+    strncat(str, "]", 1);
+
+    return str;
+}

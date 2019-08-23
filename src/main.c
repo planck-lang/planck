@@ -37,6 +37,12 @@ SOFTWARE.
  * Include project headers
  **************************/
 #include "planck.h"
+#include "object.h"
+
+/**************************
+ * Data types, Constants
+ **************************/
+#define STRBUFLEN 2048
 
 /**************************
  * Private variables
@@ -44,6 +50,7 @@ SOFTWARE.
 static char* normal_prompt = ">> ";
 static char* block_prompt = ".. ";
 static char* prompt_ptr;
+static char s_string_print_buf[STRBUFLEN] = {0};
 
 
 /**************************
@@ -55,6 +62,8 @@ int main(int argc, char* argv[])
     
     while (true)
     {
+        memset(s_string_print_buf, 0, STRBUFLEN);
+
         char* buf = readline(prompt_ptr);
         if (buf == NULL)
         {
@@ -83,6 +92,10 @@ int main(int argc, char* argv[])
                 case object_type_boolean:
                     printf("%s\n", ret.value.boolean ? "true" : "false");
                     break;
+                case object_type_array:
+                    Obj_combined_to_str(s_string_print_buf, ret, true);
+                    printf("%s\n", s_string_print_buf);
+                    break;
                 case object_type_null:
                     break;
                 default:
@@ -91,9 +104,8 @@ int main(int argc, char* argv[])
             }
             else if (st == planck_result_fail)
             {
-                char runtime_error_buf[1024] = {0};
-                Planck_get_error(runtime_error_buf);
-                printf("%s", runtime_error_buf);
+                Planck_get_error(s_string_print_buf);
+                printf("%s", s_string_print_buf);
                 printf("[Error] -> %s\n", buf);
             }
             else
