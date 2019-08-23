@@ -105,6 +105,19 @@ void CodeGen_add_number(double number)
     s_generated_code.len++;
 }
 
+void CodeGen_add_argument(int64_t arg)
+{
+    object_t arg_obj = {0};
+
+    arg_obj.type = object_type_general;
+    arg_obj.value.general = arg;
+
+    check_code_buffer();
+    s_generated_code.buffer[s_generated_code.len].type = code_buf_value;
+    s_generated_code.buffer[s_generated_code.len].bytecode.value = arg_obj;
+    s_generated_code.len++;
+}
+
 // cppcheck-suppress unusedFunction
 void CodeGen_add_string(char* str_ptr)
 {

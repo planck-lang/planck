@@ -41,6 +41,7 @@ void        CodeGen_add_opcode(opcode_t opcode);
 void        CodeGen_add_number(double number);
 void        CodeGen_add_string(char* str_ptr);
 void        CodeGen_add_variable(const char* type_str, const char* ident_str);
+void        CodeGen_add_argument(int64_t general);
 void        CodeGen_read_symtab_variable(const char* ident_str);
 code_buf_t  CodeGen_gen_general_bytecode(int64_t genvalue);
 void        CodeGen_modify_codebuf(code_buf_t* dst, code_buf_t src);

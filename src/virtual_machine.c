@@ -81,6 +81,7 @@ static void check_stack(void);
 
 static void     push_stack(object_t value);
 static object_t pop_stack(void);
+static object_t pop_combine(object_type_t type, uint32_t count);
 
 static code_buf_t* cmp_false_jmp(code_buf_t* pc, object_t result, uint64_t offset);
 
@@ -161,6 +162,25 @@ static code_buf_t* cmp_false_jmp(code_buf_t* pc, object_t result, uint64_t offse
 
     Error_add_error_msg(error_code_must_be_bool);
     return NULL;
+}
+
+static object_t pop_combine(object_type_t type, uint32_t count)
+{
+    object_t combined_value = {0};
+    
+    combined_value.type = type;
+    list_t** current = &combined_value.value.combined;
+    
+    for (uint32_t i = 0 ; i < count ; i++)
+    {
+        object_t value = pop_stack();
+        list_t* list_item = Obj_conv_list_item(value);
+        
+        *current = list_item;
+        current = &list_item->next;
+    }
+    
+    return combined_value;
 }
 
 static bool execute_code(void)
@@ -279,6 +299,15 @@ static bool execute_code(void)
         case opcode_begin_loop:
         case opcode_end_loop:
         {
+            pc++;
+            break;
+        }
+        case opcode_array:
+        {
+            pc++;
+            uint32_t combine_count = pc->bytecode.value.value.general;
+            object_t result = pop_combine(object_type_array, combine_count);
+            push_stack(result);
             pc++;
             break;
         }

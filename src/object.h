@@ -37,5 +37,6 @@ object_t Obj_to_string(object_t obj);
 object_t Obj_conc_string(object_t str_obj1, object_t str_obj2);
 object_t Obj_rept_string(object_t str_obj, object_t num_obj);
 int      Obj_comp_string(object_t str_obj, object_t num_obj);
+list_t*  Obj_conv_list_item(object_t obj);
 
 #endif /* SRC_OBJECT_H_ */

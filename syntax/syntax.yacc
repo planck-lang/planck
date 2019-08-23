@@ -10,7 +10,7 @@
 
 extern int yylex (void);
 
-static uint32_t s_array_expr_num = 0;
+static uint32_t s_combine_expr_num = 0;
 
 int yyerror(const char* str)
 {
@@ -79,6 +79,15 @@ static void Jmp_cmp(code_buf_t* jmp_dst, code_buf_t* jmp_offset, code_buf_t* cmp
     }
 }
 
+static void Combine_expr(opcode_t opcode)
+{
+    s_combine_expr_num++;
+    CodeGen_add_opcode(opcode_array);
+    CodeGen_add_argument(s_combine_expr_num);
+    s_combine_expr_num = 0;
+}
+
+
 %}
 
 %union {
@@ -128,7 +137,7 @@ stmtlist : stmt
          ;
 
 exprlist : expr
-         | expr ',' exprlist    {s_array_expr_num++; printf("\nexprlist\n");}
+         | expr ',' exprlist    {s_combine_expr_num++;}
          ;
 
 expr : NUMBER               {CodeGen_add_number($1);}
@@ -166,7 +175,7 @@ comparison_expr : expr '<' expr        {CodeGen_add_opcode(opcode_lt);}
                 | expr COMOR expr      {CodeGen_add_opcode(opcode_com_or);}
                 ;
 
-arr_list_expr : '[' exprlist ']'    {s_array_expr_num++; printf("\narr_list_expr->%d\n", s_array_expr_num); s_array_expr_num = 0;}
+arr_list_expr : '[' exprlist ']'    {Combine_expr(opcode_array);}
               ;
 
 stmt : /* empty */
