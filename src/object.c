@@ -154,12 +154,26 @@ char* Obj_combined_to_str(char* str, object_t obj, bool auto_free)
         if (obj_item->type == object_type_number)
         {
             char temp[128] = {0};
-            sprintf(temp, "%f, ", obj_item->value.number);
+            int64_t check_integer = (int64_t)obj_item->value.number;
+            if ((double)check_integer == obj_item->value.number)
+            {
+                sprintf(temp, "%ld", check_integer);
+            }
+            else
+            {
+                sprintf(temp, "%f", obj_item->value.number);
+            }
+            
             strncat(str, temp, strlen(temp));
         }
         else if (obj_item->type == object_type_array)
         {
             str = Obj_combined_to_str(str, *obj_item, auto_free);
+        }
+
+        if (item->next) // do not add comma at the last item
+        {
+            strncat(str, ", ", 2);
         }
     }
 
