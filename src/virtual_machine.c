@@ -169,15 +169,15 @@ static object_t pop_combine(object_type_t type, uint32_t count)
     object_t combined_value = {0};
     
     combined_value.type = type;
-    list_t** current = &combined_value.value.combined;
     
     for (uint32_t i = 0 ; i < count ; i++)
     {
         object_t value = pop_stack();
         list_t* list_item = Obj_conv_list_item(value);
         
-        *current = list_item;
-        current = &list_item->next;
+        // insert item into the head
+        list_item->next = combined_value.value.combined;
+        combined_value.value.combined = list_item;
     }
     
     return combined_value;
