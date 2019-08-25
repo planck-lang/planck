@@ -25,6 +25,7 @@ SOFTWARE.
 #include "TestMain.h"
 
 #include "planck.h"
+#include "object.h"
 
 REGISTER_SUITE_AUTO(Condition_statement_Test, "07 Array Test")
 
@@ -162,4 +163,36 @@ TESTCASE(06, "array expression")
     codeline = "[[[1,2],[3,4]],[[5,6],[7,8]]]";
     st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
+}
+
+TESTCASE(07, "array expression print")
+{
+    char* codeline;
+    object_t ret;
+    planck_result_t st;
+
+    char string_print_buf[1024] = {0};
+
+    codeline = "[1,2,3,4,5,6]";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    ASSERT_EQ_UINT(object_type_array, ret.type);
+    Obj_combined_to_str(string_print_buf, ret, true);
+    ASSERT_EQ_STR("[1, 2, 3, 4, 5, 6]", string_print_buf);
+
+    codeline = "[[1,2],[3,4],[5,6]]";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    ASSERT_EQ_UINT(object_type_array, ret.type);
+    memset(string_print_buf, 0, 1024);
+    Obj_combined_to_str(string_print_buf, ret, true);
+    ASSERT_EQ_STR("[[1, 2], [3, 4], [5, 6]]", string_print_buf);
+
+    codeline = "[[[1,2],[3,4]],[[5,6],[7,8]]]";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+    ASSERT_EQ_UINT(object_type_array, ret.type);
+    memset(string_print_buf, 0, 1024);
+    Obj_combined_to_str(string_print_buf, ret, true);
+    ASSERT_EQ_STR("[[[1, 2], [3, 4]], [[5, 6], [7, 8]]]", string_print_buf);
 }
