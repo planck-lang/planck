@@ -38,6 +38,12 @@ SOFTWARE.
 #include "ported_lib.h"
 
 /**************************
+ * Private function prototypes
+ **************************/
+static void release_item_instance(list_t* list_obj);
+static void release_object_instance(object_t* obj);
+
+/**************************
  * Public functions
  **************************/
 object_t Obj_to_string(object_t obj)
@@ -147,7 +153,7 @@ char* Obj_combined_to_str(char* str, object_t obj, bool auto_free)
 
     strncat(str, "[", 1);
 
-    for (list_t* item = list_head ; item != NULL ; item = item->next)
+    for (list_t* item = list_head ; item != NULL ; )
     {
         object_t* obj_item = item->ptr_value;
 
@@ -175,9 +181,35 @@ char* Obj_combined_to_str(char* str, object_t obj, bool auto_free)
         {
             strncat(str, ", ", 2);
         }
+
+        list_t* curr = item;
+        item = item->next;
+
+        if (auto_free)
+        {
+            release_item_instance(curr);
+        }
     }
 
     strncat(str, "]", 1);
 
     return str;
+}
+
+/**************************
+ * Private functions
+ **************************/
+static void release_item_instance(list_t* list_obj)
+{
+    release_object_instance(list_obj->ptr_value);
+    release_mem(list_obj);
+}
+
+static void release_object_instance(object_t* obj)
+{
+    // Add additional releasing memory code if object type needs
+    // ...
+    
+    // release object object
+    release_mem(obj);
 }
