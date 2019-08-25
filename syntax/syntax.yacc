@@ -137,7 +137,9 @@ stmtlist : stmt
          ;
 
 exprlist : expr
-         | expr ',' exprlist    {s_combine_expr_num++;}
+         | arr_list_expr
+         | expr ',' exprlist             {s_combine_expr_num++;}
+         | arr_list_expr ',' exprlist    {s_combine_expr_num++;}
          ;
 
 expr : NUMBER               {CodeGen_add_number($1);}
@@ -146,7 +148,6 @@ expr : NUMBER               {CodeGen_add_number($1);}
      | comparison_expr
      | basic_op_expr
      | bit_op_expr
-     | arr_list_expr
      | '(' expr ')'
      ;
 
@@ -178,6 +179,10 @@ comparison_expr : expr '<' expr        {CodeGen_add_opcode(opcode_lt);}
 arr_list_expr : '[' exprlist ']'    {Combine_expr(opcode_array);}
               ;
 
+item_indexing : '[' expr ']'
+              | '[' expr ']' item_indexing
+              ;
+
 stmt : /* empty */
      | decl
      | assign
@@ -186,6 +191,7 @@ stmt : /* empty */
      ;
 
 decl : IDENTIFIER IDENTIFIER '=' expr   {Variable_declaration($1, $2); free($1); free($2);}
+     | IDENTIFIER item_indexing IDENTIFIER '=' arr_list_expr
      ;
 
 assign : IDENTIFIER '=' expr            {Variable_assignment($1); free($1);}
