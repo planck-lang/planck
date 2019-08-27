@@ -89,38 +89,38 @@ typedef struct _object_t_ {
  */
 typedef enum _opcode_t_ {
     opcode_nop = 0,
-    opcode_push,
-    opcode_decl,
-    opcode_store,
-    opcode_load,
-    opcode_add,
-    opcode_sub,
-    opcode_xor,
-    opcode_mul,
-    opcode_div,
-    opcode_mod,
-    opcode_con,
-    opcode_lt,
-    opcode_gt,
-    opcode_le,
-    opcode_ge,
-    opcode_eq,
-    opcode_ne,
-    opcode_rshift,
-    opcode_lshift,
-    opcode_bit_or,
-    opcode_bit_and,
-    opcode_com_or,
-    opcode_com_and,
-    opcode_cmp,
-    opcode_jmp,
-    opcode_begin_scope,
-    opcode_end_scope,
-    opcode_begin_loop,
-    opcode_end_loop,
-    opcode_break,
-    opcode_continue,
-    opcode_array,
+    opcode_push,                /* value */
+    opcode_decl,                /* type(64:33), literal_idx(32:0) */
+    opcode_store,               /* literal_idx */
+    opcode_load,                /* literal_idx */
+    opcode_add,                 /* no args */
+    opcode_sub,                 /* no args */
+    opcode_xor,                 /* no args */
+    opcode_mul,                 /* no args */
+    opcode_div,                 /* no args */
+    opcode_mod,                 /* no args */
+    opcode_con,                 /* no args */  
+    opcode_lt,                  /* no args */
+    opcode_gt,                  /* no args */
+    opcode_le,                  /* no args */
+    opcode_ge,                  /* no args */
+    opcode_eq,                  /* no args */
+    opcode_ne,                  /* no args */
+    opcode_rshift,              /* no args */  
+    opcode_lshift,              /* no args */
+    opcode_bit_or,              /* no args */
+    opcode_bit_and,             /* no args */  
+    opcode_com_or,              /* no args */
+    opcode_com_and,             /* no args */
+    opcode_cmp,                 /* jmp_offset */
+    opcode_jmp,                 /* jmp_offset */
+    opcode_begin_scope,         /* no args */
+    opcode_end_scope,           /* no args */
+    opcode_begin_loop,          /* no args */
+    opcode_end_loop,            /* no args */
+    opcode_break,               /* jmp_offset */
+    opcode_continue,            /* jmp_offset */
+    opcode_array,               /* number_of_array */
     opcode_halt,
     opcode_MAXNUM
 } opcode_t;
