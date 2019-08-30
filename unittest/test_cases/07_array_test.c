@@ -26,6 +26,7 @@ SOFTWARE.
 
 #include "planck.h"
 #include "object.h"
+#include "code_gen.h"
 
 REGISTER_SUITE_AUTO(Condition_statement_Test, "07 Array Test")
 
@@ -35,7 +36,7 @@ TESTCASE(01, "array of number test")
     object_t ret;
     planck_result_t st;
 
-    codeline = "num_t[3] arr = [1,2,3]";
+    codeline = "num_t[] arr = [1,2,3]";
     st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
 
@@ -62,7 +63,7 @@ TESTCASE(02, "array of string test")
     object_t ret;
     planck_result_t st;
 
-    codeline = "str_t[3] arrstr = ['hi', 'hello', 'annyung']";
+    codeline = "str_t[] arrstr = ['hi', 'hello', 'annyung']";
     st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
 
@@ -79,7 +80,7 @@ TESTCASE(03, "multi dimension test")
     object_t ret;
     planck_result_t st;
 
-    codeline = "num_t[2][2] arrm = [[1,2], [3,4]]";
+    codeline = "num_t[] arrm = [[1,2], [3,4]]";
     st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
 
@@ -106,7 +107,7 @@ TESTCASE(04, "oversize test")
     object_t ret;
     planck_result_t st;
 
-    codeline = "num_t[10] arr_over = [1,2,3]";
+    codeline = "num_t[] arr_over = [1,2,3]";
     st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
 
@@ -129,7 +130,7 @@ TESTCASE(05, "oversize test for string")
     object_t ret;
     planck_result_t st;
 
-    codeline = "str_t[14] arrstr_over = ['hi', 'hello', 'annyung']";
+    codeline = "str_t[] arrstr_over = ['hi', 'hello', 'annyung']";
     st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
 
@@ -141,7 +142,7 @@ TESTCASE(05, "oversize test for string")
 
     codeline = "arrstr_over[7]";
     st = Planck_do_as_stmt(codeline, &ret);
-    ASSERT_EQ_NUM(planck_result_ok, st);
+    ASSERT_EQ_NUM(planck_result_fail, st);
     ASSERT_EQ_NUM(object_type_null, ret.type);
     ASSERT_EQ_NUM(0, ret.value.number);
 }
@@ -155,14 +156,17 @@ TESTCASE(06, "array expression")
     codeline = "[1,2,3,4,5,6]";
     st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
+    Obj_release_list(ret);
 
     codeline = "[[1,2],[3,4],[5,6]]";
     st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
+    Obj_release_list(ret);
 
     codeline = "[[[1,2],[3,4]],[[5,6],[7,8]]]";
     st = Planck_do_as_stmt(codeline, &ret);
     ASSERT_EQ_NUM(planck_result_ok, st);
+    Obj_release_list(ret);
 }
 
 TESTCASE(07, "array expression print")
@@ -195,4 +199,30 @@ TESTCASE(07, "array expression print")
     memset(string_print_buf, 0, 1024);
     Obj_combined_to_str(string_print_buf, ret, true);
     ASSERT_EQ_STR("[[[1, 2], [3, 4]], [[5, 6], [7, 8]]]", string_print_buf);
+}
+TESTCASE(08, "array bytecode test")
+{
+    char* codeline;
+    object_t ret;
+    planck_result_t st;
+
+    codeline = "num_t[] arrbyte = [1,2,3]";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    code_buf_t* pc = CodeGen_get_bytecodes();
+
+    // 1,2,3
+    ASSERT_EQ_NUM(opcode_push, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(1, pc->bytecode.value.value.number); pc++;
+    ASSERT_EQ_NUM(opcode_push, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(2, pc->bytecode.value.value.number); pc++;
+    ASSERT_EQ_NUM(opcode_push, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(3, pc->bytecode.value.value.number); pc++;
+
+    // []
+    ASSERT_EQ_NUM(opcode_array, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(3, pc->bytecode.value.value.general); pc++;
+
+    // num_t[] arrbyte
 }

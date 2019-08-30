@@ -24,6 +24,7 @@ SOFTWARE.
 
 #include "TestMain.h"
 
+#include "code_gen.h"
 #include "planck.h"
 
 REGISTER_SUITE_AUTO(Condition_statement_Test, "05 Condition statement Test")
@@ -453,4 +454,262 @@ TESTCASE(12, "if{if-elif-elif{if-elif-else}-else}-elif-else")
     ASSERT_EQ_NUM(22, ret.value.number);
 
     free(base_test_code);
+}
+
+TESTCASE(13, "if statement bytecode validation")
+{
+    char* codeline;
+    object_t ret;
+    planck_result_t st;
+
+    codeline = "num_t cab = 3";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    codeline = "if cab == 4 {\n\tcab = 2;\n\tnum_t cxb = 10;\n\tcxb += 1;\n}";
+    st = Planck_do_as_stmt(codeline, &ret);
+
+    if (planck_result_ok != st)
+    {
+        char runtime_error_buf[1024] = {0};
+        Planck_get_error(runtime_error_buf);
+        printf("--> %s", runtime_error_buf);
+    }
+
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    code_buf_t* pc = CodeGen_get_bytecodes();
+    
+    // cab == 4
+    ASSERT_EQ_NUM(opcode_load, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(45, pc->bytecode.value.value.general); pc++;
+    ASSERT_EQ_NUM(opcode_push, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(4, pc->bytecode.value.value.number); pc++;
+    ASSERT_EQ_NUM(opcode_eq, pc->bytecode.opcode); pc++;
+
+    // if
+    ASSERT_EQ_NUM(opcode_cmp, pc->bytecode.opcode); pc++;
+    code_buf_t* jmp_addr = pc; pc++;
+
+    // {
+    ASSERT_EQ_NUM(opcode_begin_scope, pc->bytecode.opcode); pc++;
+    
+    // cab = 2
+    ASSERT_EQ_NUM(opcode_push, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(2, pc->bytecode.value.value.number); pc++;
+    ASSERT_EQ_NUM(opcode_store, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(45, pc->bytecode.value.value.general); pc++;
+    
+    // num_t cxb = 10
+    ASSERT_EQ_NUM(opcode_push, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(10, pc->bytecode.value.value.number); pc++;
+    ASSERT_EQ_NUM(opcode_decl, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(46, pc->bytecode.value.value.general); pc++;
+
+    // cxb += 1
+    ASSERT_EQ_NUM(opcode_load, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(46, pc->bytecode.value.value.general); pc++;
+    ASSERT_EQ_NUM(opcode_push, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(1, pc->bytecode.value.value.number); pc++;
+    ASSERT_EQ_NUM(opcode_add, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(opcode_store, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(46, pc->bytecode.value.value.general); pc++;
+
+    // }
+    ASSERT_EQ_NUM(opcode_end_scope, pc->bytecode.opcode); pc++;
+
+    ASSERT_EQ_NUM(opcode_nop, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(opcode_nop, pc->bytecode.opcode); pc++;
+
+    // validate jumping address
+    uint64_t offset = pc - jmp_addr;
+    ASSERT_EQ_NUM(jmp_addr->bytecode.value.value.general, offset);
+}
+
+TESTCASE(14, "if-else statement bytecode validation")
+{
+    char* codeline;
+    object_t ret;
+    planck_result_t st;
+
+    codeline = "if cab != 3 {\n \
+                    cab = 5;\n  \
+                } else {\n      \
+                    cab = 10;\n \
+                }";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    code_buf_t* pc = CodeGen_get_bytecodes();
+
+    // cab != 3
+    ASSERT_EQ_NUM(opcode_load, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(45, pc->bytecode.value.value.general); pc++;
+    ASSERT_EQ_NUM(opcode_push, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(3, pc->bytecode.value.value.number); pc++;
+    ASSERT_EQ_NUM(opcode_ne, pc->bytecode.opcode); pc++;
+
+    // if
+    ASSERT_EQ_NUM(opcode_cmp, pc->bytecode.opcode); pc++;
+    code_buf_t* jmp_addr = pc; pc++;
+
+    // {
+    ASSERT_EQ_NUM(opcode_begin_scope, pc->bytecode.opcode); pc++;
+
+    // cab = 5;
+    ASSERT_EQ_NUM(opcode_push, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(5, pc->bytecode.value.value.number); pc++;
+    ASSERT_EQ_NUM(opcode_store, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(45, pc->bytecode.value.value.general); pc++;
+
+    // }
+    ASSERT_EQ_NUM(opcode_end_scope, pc->bytecode.opcode); pc++;
+
+    // when EXPR is true, run the if-block and skip the else-block
+    ASSERT_EQ_NUM(opcode_jmp, pc->bytecode.opcode); pc++;
+    code_buf_t* jmp_addr_else = pc; pc++;
+
+    // else
+    // when EXPR is false, the jumping destination address is here
+    uint64_t offsetelse = pc - jmp_addr;
+    ASSERT_EQ_NUM(jmp_addr->bytecode.value.value.general, offsetelse);
+
+    ASSERT_EQ_NUM(opcode_nop, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(opcode_nop, pc->bytecode.opcode); pc++;
+
+    // {
+    ASSERT_EQ_NUM(opcode_begin_scope, pc->bytecode.opcode); pc++;
+
+    // cab = 10;
+    ASSERT_EQ_NUM(opcode_push, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(10, pc->bytecode.value.value.number); pc++;
+    ASSERT_EQ_NUM(opcode_store, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(45, pc->bytecode.value.value.general); pc++;
+
+    // }
+    ASSERT_EQ_NUM(opcode_end_scope, pc->bytecode.opcode); pc++;
+
+    ASSERT_EQ_NUM(opcode_nop, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(opcode_nop, pc->bytecode.opcode); pc++;
+
+    // validate jumping address
+    uint64_t offset = pc - jmp_addr_else;
+    ASSERT_EQ_NUM(jmp_addr_else->bytecode.value.value.general, offset);
+}
+
+TESTCASE(15, "if-elif-elif statement bytecode validation")
+{
+    char* codeline;
+    object_t ret;
+    planck_result_t st;
+
+    codeline = "if cab == 3 {\n \
+                    cab = 5;\n  \
+                } elif cab == 4 {\n      \
+                    cab = 10;\n \
+                } elif cab == 5 {\n \
+                    cab = 20;\n \
+                }";
+    st = Planck_do_as_stmt(codeline, &ret);
+    ASSERT_EQ_NUM(planck_result_ok, st);
+
+    code_buf_t* pc = CodeGen_get_bytecodes();
+
+    // cab == 3
+    ASSERT_EQ_NUM(opcode_load, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(45, pc->bytecode.value.value.general); pc++;
+    ASSERT_EQ_NUM(opcode_push, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(3, pc->bytecode.value.value.number); pc++;
+    ASSERT_EQ_NUM(opcode_eq, pc->bytecode.opcode); pc++;
+
+    // if
+    ASSERT_EQ_NUM(opcode_cmp, pc->bytecode.opcode); pc++;
+    code_buf_t* jmp_addr1 = pc; pc++;
+
+    // {
+    ASSERT_EQ_NUM(opcode_begin_scope, pc->bytecode.opcode); pc++;
+
+    // cab = 5;
+    ASSERT_EQ_NUM(opcode_push, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(5, pc->bytecode.value.value.number); pc++;
+    ASSERT_EQ_NUM(opcode_store, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(45, pc->bytecode.value.value.general); pc++;
+
+    // }
+    ASSERT_EQ_NUM(opcode_end_scope, pc->bytecode.opcode); pc++;
+
+    // when EXPR is true, run the if-block and skip the else-block
+    ASSERT_EQ_NUM(opcode_jmp, pc->bytecode.opcode); pc++;
+    code_buf_t* out_addr1 = pc; pc++;
+
+    // elif
+    // when EXPR is false, the jumping destination address is here
+    uint64_t offset = pc - jmp_addr1;
+    ASSERT_EQ_NUM(jmp_addr1->bytecode.value.value.general, offset);
+
+    // cab == 4
+    ASSERT_EQ_NUM(opcode_load, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(45, pc->bytecode.value.value.general); pc++;
+    ASSERT_EQ_NUM(opcode_push, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(4, pc->bytecode.value.value.number); pc++;
+    ASSERT_EQ_NUM(opcode_eq, pc->bytecode.opcode); pc++;
+
+    ASSERT_EQ_NUM(opcode_cmp, pc->bytecode.opcode); pc++;
+    code_buf_t* jmp_addr2 = pc; pc++;
+
+    // {
+    ASSERT_EQ_NUM(opcode_begin_scope, pc->bytecode.opcode); pc++;
+
+    // cab = 10;
+    ASSERT_EQ_NUM(opcode_push, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(10, pc->bytecode.value.value.number); pc++;
+    ASSERT_EQ_NUM(opcode_store, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(45, pc->bytecode.value.value.general); pc++;
+
+    // }
+    ASSERT_EQ_NUM(opcode_end_scope, pc->bytecode.opcode); pc++;
+
+    // when EXPR is true, run the if-block and skip the else-block
+    ASSERT_EQ_NUM(opcode_jmp, pc->bytecode.opcode); pc++;
+    code_buf_t* out_addr2 = pc; pc++;
+
+    // elif
+    // when EXPR is false, the jumping destination address is here
+    offset = pc - jmp_addr2;
+    ASSERT_EQ_NUM(jmp_addr2->bytecode.value.value.general, offset);
+
+    // cab == 5
+    ASSERT_EQ_NUM(opcode_load, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(45, pc->bytecode.value.value.general); pc++;
+    ASSERT_EQ_NUM(opcode_push, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(5, pc->bytecode.value.value.number); pc++;
+    ASSERT_EQ_NUM(opcode_eq, pc->bytecode.opcode); pc++;
+
+    ASSERT_EQ_NUM(opcode_cmp, pc->bytecode.opcode); pc++;
+    code_buf_t* jmp_addr3 = pc; pc++;
+
+    // {
+    ASSERT_EQ_NUM(opcode_begin_scope, pc->bytecode.opcode); pc++;
+
+    // cab = 20;
+    ASSERT_EQ_NUM(opcode_push, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(20, pc->bytecode.value.value.number); pc++;
+    ASSERT_EQ_NUM(opcode_store, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(45, pc->bytecode.value.value.general); pc++;
+
+    // }
+    ASSERT_EQ_NUM(opcode_end_scope, pc->bytecode.opcode); pc++;
+
+    ASSERT_EQ_NUM(opcode_nop, pc->bytecode.opcode); pc++;
+    ASSERT_EQ_NUM(opcode_nop, pc->bytecode.opcode); pc++;
+
+    offset = pc - jmp_addr3;
+    ASSERT_EQ_NUM(jmp_addr3->bytecode.value.value.general, offset);
+
+    // validate jumping address
+    offset = pc - out_addr1;
+    ASSERT_EQ_NUM(out_addr1->bytecode.value.value.general, offset);
+
+    offset = pc - out_addr2;
+    ASSERT_EQ_NUM(out_addr2->bytecode.value.value.general, offset);
 }
