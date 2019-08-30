@@ -196,6 +196,33 @@ char* Obj_combined_to_str(char* str, object_t obj, bool auto_free)
     return str;
 }
 
+void Obj_release_list(object_t obj)
+{
+    if (obj.type != object_type_array)
+    {
+        return;
+    }
+
+    list_t* list_head = obj.value.combined;
+
+    for (list_t* item = list_head ; item != NULL ; )
+    {
+        object_t* obj_item = item->ptr_value;
+
+        if (obj_item->type == object_type_array)
+        {
+            Obj_release_list(*obj_item);
+        }
+
+        list_t* curr = item;
+        item = item->next;
+
+        release_item_instance(curr);
+    }
+
+    return;
+}
+
 /**************************
  * Private functions
  **************************/
