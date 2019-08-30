@@ -149,6 +149,7 @@ expr : NUMBER               {CodeGen_add_number($1);}
      | basic_op_expr
      | bit_op_expr
      | '(' expr ')'
+     | item_ref
      ;
 
 basic_op_expr : expr '+' expr        {CodeGen_add_opcode(opcode_add);}
@@ -183,6 +184,9 @@ item_indexing : '[' expr ']'
               | '[' expr ']' item_indexing
               ;
 
+item_ref : IDENTIFIER item_indexing
+         ;
+
 stmt : /* empty */
      | decl
      | assign
@@ -191,7 +195,7 @@ stmt : /* empty */
      ;
 
 decl : IDENTIFIER IDENTIFIER '=' expr   {Variable_declaration($1, $2); free($1); free($2);}
-     | IDENTIFIER item_indexing IDENTIFIER '=' arr_list_expr
+     | IDENTIFIER '[' ']' IDENTIFIER '=' arr_list_expr
      ;
 
 assign : IDENTIFIER '=' expr            {Variable_assignment($1); free($1);}
@@ -209,6 +213,7 @@ assign : IDENTIFIER '=' expr            {Variable_assignment($1); free($1);}
        ;
 
 load_first_var : IDENTIFIER         {Identifier_load($1);}
+               | item_ref           {$$ = "array";}
                ;
 
 condition_stmt : IF comparison_expr block           {Jmp_cmp(NULL, NULL, $3, CodeGen_current_bytecode_ptr());}
