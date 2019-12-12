@@ -1,9 +1,0 @@
-libdir=@CMAKE_INSTALL_FULL_LIBDIR@
-includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@/nugu
-version=@VERSION@
-
-Name: planck
-Description: a new awesome weird programming language.
-Version: ${version}
-Libs: -L${libdir} -lplanck
-Cflags: -I${includedir}/planck
