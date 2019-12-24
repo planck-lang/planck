@@ -1,7 +1,7 @@
 /*
-main.c
+codegen.c
 
-Copyright (c) 12/12/2019, 12:28:08 AM Manwoo Yi
+Copyright (c) 12/24/2019, 12:37:16 AM Manwoo Yi
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,32 +25,21 @@ SOFTWARE.
 /**************************
  * Include system headers
  **************************/
-#include <stdbool.h>
 #include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <readline/readline.h>
-#include <readline/history.h>
 
 /**************************
  * Include project headers
  **************************/
- 
+#include "codegen.h"
+
 /**************************
  * External references
  **************************/ 
-typedef struct yy_buffer_state* YY_BUFFER_STATE;
-extern int yyparse();
-extern YY_BUFFER_STATE yy_scan_string(const char * str);
-extern void yy_delete_buffer(YY_BUFFER_STATE buffer);
-extern int yylex(void);
 
 /**************************
  * Macro
  **************************/
-#define NORMAL_PROMPT   ">> "
-#define STRBUFLEN       2048
-
+  
 /**************************
  * Data types, Constants
  **************************/
@@ -58,8 +47,7 @@ extern int yylex(void);
 /**************************
  * Private variables
  **************************/
-static char* s_prompt_ptr;
-
+ 
 /**************************
  * Private function prototypes
  **************************/
@@ -67,39 +55,21 @@ static char* s_prompt_ptr;
 /**************************
  * Public functions
  **************************/
-int main(int argc, char* argv[])
+void codegen_add_num(const valtype_e valtype, const int64_t val)
 {
-    s_prompt_ptr = NORMAL_PROMPT;
-
-    while(true) 
+    if (valtype == valtype_int)
     {
-        char* buf = readline(s_prompt_ptr);
-        if (buf == NULL)
-        {
-            puts("\nAnnyuonghi Gaseyo.\n");
-            break;
-        }
-
-        if (strlen(buf) > 0) 
-        {
-            add_history(buf);
-            
-            YY_BUFFER_STATE yyst = yy_scan_string(buf);
-            int parse_result = yyparse();    
-            yy_delete_buffer(yyst);
-
-            if (!parse_result) // OK
-            {
-                printf("OK\n");
-            }
-            else
-            {
-                printf("Parse Error\n");
-            }
-        }
-
-        free(buf);
+        printf("TYPE %d VAL %ld\n", (int)valtype, val);
     }
+    else if (valtype == valtype_double)
+    {
+        printf("TYPE %d VAL %f\n", (int)valtype, (double)val);
+    }
+}
+
+void codegen_add_opcode(const opcode_e opcode)
+{
+    printf("OP %d\n", opcode);
 }
 
 /**************************
