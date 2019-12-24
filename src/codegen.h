@@ -42,7 +42,7 @@ SOFTWARE.
 /**************************
  * Public function prototypes
  **************************/
-void codegen_add_num(const valtype_e valtype, const int64_t val);
+void codegen_add_num(const valtype_e valtype, const valptr_t val);
 void codegen_add_opcode(const opcode_e opcode);
 
 /**************************

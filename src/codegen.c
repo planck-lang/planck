@@ -55,15 +55,17 @@ SOFTWARE.
 /**************************
  * Public functions
  **************************/
-void codegen_add_num(const valtype_e valtype, const int64_t val)
+void codegen_add_num(const valtype_e valtype, const valptr_t val)
 {
     if (valtype == valtype_int)
     {
-        printf("TYPE %d VAL %ld\n", (int)valtype, val);
+        int64_t i64val = (int64_t)val.ival;
+        printf("TYPE %d VAL %ld\n", (int)valtype, i64val);
     }
     else if (valtype == valtype_double)
     {
-        printf("TYPE %d VAL %f\n", (int)valtype, (double)val);
+        double dval = (double)val.dval;
+        printf("TYPE %d VAL %f\n", (int)valtype, dval);
     }
 }
 

@@ -56,8 +56,8 @@ int yyerror(const char* str)
 prog    :   expr
         ;
 
-expr    :   INUM            {codegen_add_num(valtype_int,    $1);}
-        |   DNUM            {codegen_add_num(valtype_double, $1);}
+expr    :   INUM            {codegen_add_num(valtype_int,    (valptr_t)$1);}
+        |   DNUM            {codegen_add_num(valtype_double, (valptr_t)$1);}
         |   expr ADD expr   {codegen_add_opcode(opcode_add);}
         |   expr SUB expr   {codegen_add_opcode(opcode_sub);}
         |   expr MUL expr   {codegen_add_opcode(opcode_mul);}
