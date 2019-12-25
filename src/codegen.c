@@ -55,7 +55,7 @@ SOFTWARE.
 /**************************
  * Public functions
  **************************/
-void codegen_add_num(const valtype_e valtype, const valptr_t val)
+void codegen_add_num(const valtype_e valtype, const val_t val)
 {
     if (valtype == valtype_int)
     {

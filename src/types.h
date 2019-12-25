@@ -38,7 +38,7 @@ SOFTWARE.
 typedef union _val_t_ {
     int64_t ival;
     double  dval;
-} valptr_t;
+} val_t;
 
 typedef enum _valtype_e_ {
     valtype_int = 1,
