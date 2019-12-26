@@ -1,7 +1,7 @@
 /*
-types.h
+exe.h
 
-Copyright (c) 12/24/2019, 12:38:31 AM Manwoo Yi
+Copyright (c) 12/26/2019, 2:55:45 AM Manwoo Yi
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,11 +22,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
  
- #pragma once
+#pragma once
  
 /**************************
  * Includes
  **************************/
+#include "types.h"
 
 /**************************
  * Macro
@@ -35,43 +36,15 @@ SOFTWARE.
 /**************************
  * Data types, Constants
  **************************/
-typedef union _val_t_ {
-    int64_t ival;
-    double  dval;
-} val_t;
-
-typedef enum _valtype_e_ {
-    valtype_none = 0,
-    valtype_int  = 1,
-    valtype_double,
-    valtype_primitive_max,
-    valtype_builtin_max,
-    valtype_max
-} valtype_e;
-
-typedef enum _opcode_e_ {
-    opcode_nop  = 0,
-    opcode_add  = 1,
-    opcode_sub  = 2,
-    opcode_mul  = 3,
-    opcode_div  = 4,
-    opcode_push = 5,
-} opcode_e;
-
-typedef struct _data_t_ {
-    valtype_e   valtype;
-    val_t       val;
-} data_t;
-
-typedef struct _objcode_t_ {
-    opcode_e    opcode;
-    data_t      data;
-} objcode_t;
-
+ 
 /**************************
  * Public function prototypes
  **************************/
- 
+val_t exe_add(valtype_e valtype, val_t v1, val_t v2);
+val_t exe_sub(valtype_e valtype, val_t v1, val_t v2);
+val_t exe_mul(valtype_e valtype, val_t v1, val_t v2);
+val_t exe_div(valtype_e valtype, val_t v1, val_t v2);
+
 /**************************
  * Inline functions
  **************************/

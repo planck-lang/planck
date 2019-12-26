@@ -72,8 +72,8 @@ void codegen_add_num(const valtype_e valtype, const val_t val)
     objcode_t objcode = {0};
 
     objcode.opcode = opcode_push;
-    objcode.valtype = valtype;
-    objcode.val = val;
+    objcode.data.valtype = valtype;
+    objcode.data.val = val;
 
     add_objcode(objcode);
 }
@@ -109,21 +109,22 @@ void codegen_debug_print(void)
         objcode_t objcode = objcode_buffer[i];
         printf("%s", opcode_name[objcode.opcode]);
 
-        if (valtype_none != objcode.valtype)
+        data_t data = objcode.data;
+        if (valtype_none != data.valtype)
         {
-            printf(" %s", valtype_name[objcode.valtype]);
+            printf(" %s", valtype_name[data.valtype]);
             
-            switch (objcode.valtype)
+            switch (data.valtype)
             {
             case valtype_none:
             break;
 
             case valtype_int:
-                printf(" %ld", objcode.val.ival);
+                printf(" %ld", data.val.ival);
             break;
 
             case valtype_double:
-                printf(" %f", objcode.val.dval);
+                printf(" %f", data.val.dval);
             break;
 
             default:
