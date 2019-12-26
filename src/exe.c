@@ -61,19 +61,62 @@ val_t exe_add(valtype_e valtype, val_t v1, val_t v2)
 
     if (valtype_int == valtype)
     {
-        result.ival = (int64_t)v1 + (int64_t)v2;
+        result.ival = v1.ival + v2.ival;
     }
     else if (valtype_double == valtype)
     {
-        result.dval = (double)v1 + (double)v2;
+        result.dval = v1.dval + v2.dval;
     }
 
     return result;
 }
 
-val_t exe_sub(valtype_e valtype, val_t v1, val_t v2);
-val_t exe_mul(valtype_e valtype, val_t v1, val_t v2);
-val_t exe_div(valtype_e valtype, val_t v1, val_t v2);
+val_t exe_sub(valtype_e valtype, val_t v1, val_t v2)
+{
+    val_t result = {0};
+
+    if (valtype_int == valtype)
+    {
+        result.ival = v1.ival - v2.ival;
+    }
+    else if (valtype_double == valtype)
+    {
+        result.dval = v1.dval - v2.dval;
+    }
+
+    return result;
+}
+val_t exe_mul(valtype_e valtype, val_t v1, val_t v2)
+{
+    val_t result = {0};
+
+    if (valtype_int == valtype)
+    {
+        result.ival = v1.ival * v2.ival;
+    }
+    else if (valtype_double == valtype)
+    {
+        result.dval = v1.dval * v2.dval;
+    }
+
+    return result;
+}
+
+val_t exe_div(valtype_e valtype, val_t v1, val_t v2)
+{
+    val_t result = {0};
+
+    if (valtype_int == valtype)
+    {
+        result.ival = v1.ival / v2.ival;
+    }
+    else if (valtype_double == valtype)
+    {
+        result.dval = v1.dval / v2.dval;
+    }
+
+    return result;
+}
 
 /**************************
  * Private functions

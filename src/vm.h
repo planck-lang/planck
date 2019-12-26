@@ -27,6 +27,9 @@ SOFTWARE.
 /**************************
  * Includes
  **************************/
+#include <stdint.h>
+
+#include "types.h"
 
 /**************************
  * Macro
@@ -39,7 +42,10 @@ SOFTWARE.
 /**************************
  * Public function prototypes
  **************************/
- 
+void vm_init(const objcode_t* pcode, const uint32_t lines);
+void vm_run(void);
+void vm_show_last_stack(void);
+
 /**************************
  * Inline functions
  **************************/

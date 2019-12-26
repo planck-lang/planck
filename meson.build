@@ -22,6 +22,8 @@ gen_lex = custom_target('lex',
 # libraries (shared, static)
 incdir = include_directories('src')
 src = [ 'src/codegen.c',
+        'src/vm.c',
+        'src/exe.c',
         'src/utils.c']
 libplancks = both_libraries('planck', [src, gen_yacc, gen_lex], 
                         version : meson.project_version(), soversion : '0',

@@ -28,11 +28,13 @@ SOFTWARE.
  * Includes
  **************************/
 #include <stdint.h>
+#include <stdio.h>
 
 /**************************
  * Macro
  **************************/
- 
+#define DEBUG_PRINT(_f, ...)  printf((_f), __VA_ARGS__)
+
 /**************************
  * Data types, Constants
  **************************/

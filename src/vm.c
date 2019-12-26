@@ -55,7 +55,7 @@ SOFTWARE.
 static data_t data_stack[STACK_MAX];
 static uint32_t data_stack_pointer;
 
-static objcode_t* code_ptr;
+static const objcode_t* code_ptr;
 static uint32_t code_line;
 static uint32_t code_pc;
 /**************************
@@ -87,6 +87,20 @@ void vm_run(void)
     {
         objcode_t code = fetch_code();
         execute_code(code);
+    }
+}
+
+void vm_show_last_stack(void)
+{
+    data_t data = stack_pop();
+
+    if (valtype_int == data.valtype)
+    {
+        DEBUG_PRINT("%ld\n", data.val.ival);
+    }
+    else if (valtype_double == data.valtype)
+    {
+        DEBUG_PRINT("%f\n", data.val.dval);
     }
 }
 
@@ -126,22 +140,11 @@ static void arithmetic(opcode_e opcode)
     data_t val1 = stack_pop();
     data_t val2 = stack_pop();
 
-    valtype_e valtype1 = val1.valtype;
-    valtype_e valtype2 = val2.valtype;
-
-    if (valtype1 < valtype_primitive_max && valtype2 < valtype_primitive_max)
-    {
-        valtype_e big_type = (valtype_e)get_max_int64((int64_t)valtype1, (int64_t)valtype2);
-
-        valtype1 = big_type;
-        valtype2 = big_type;
-    }
-
     data_t result = {0};
 
-    if (valtype1 == valtype2)
+    if (val1.valtype == val2.valtype)
     {
-        result.valtype = valtype1;
+        result.valtype = val1.valtype;
 
         switch(opcode)
         {
@@ -150,10 +153,20 @@ static void arithmetic(opcode_e opcode)
         break;
 
         case opcode_sub:
+            result.val = exe_sub(result.valtype, val1.val, val2.val);
+        break;
+
         case opcode_mul:
+            result.val = exe_mul(result.valtype, val1.val, val2.val);
+        break;
+
         case opcode_div:
+            result.val = exe_div(result.valtype, val1.val, val2.val);
+        break;
+
         default:
             // TODO: Critical Error, Should be never happened
+        break;
         }
     }
     else

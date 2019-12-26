@@ -36,6 +36,7 @@ SOFTWARE.
  * Include project headers
  **************************/
 #include "codegen.h"
+#include "vm.h"
 
 /**************************
  * External references
@@ -92,8 +93,14 @@ int main(int argc, char* argv[])
 
             if (!parse_result) // OK
             {
-                printf("OK\n");
                 codegen_debug_print();
+                printf("--OK--\n");
+                vm_init(
+                    codegen_get_objcode(),
+                    codegen_get_objcode_lines()
+                );
+                vm_run();
+                vm_show_last_stack();
             }
             else
             {

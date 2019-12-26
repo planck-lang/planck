@@ -33,6 +33,7 @@ SOFTWARE.
  * Include project headers
  **************************/
 #include "codegen.h"
+#include "utils.h"
 
 /**************************
  * External references
@@ -87,6 +88,16 @@ void codegen_add_opcode(const opcode_e opcode)
     add_objcode(objcode);
 }
 
+objcode_t* codegen_get_objcode(void)
+{
+    return objcode_buffer;
+}
+
+uint32_t codegen_get_objcode_lines(void)
+{
+    return objcode_cur_line;
+}
+
 void codegen_debug_print(void)
 {
     static const char* opcode_name[] = {
@@ -107,12 +118,12 @@ void codegen_debug_print(void)
     for (uint32_t i = 0 ; i < objcode_cur_line ; i++)
     {
         objcode_t objcode = objcode_buffer[i];
-        printf("%s", opcode_name[objcode.opcode]);
+        DEBUG_PRINT("%s", opcode_name[objcode.opcode]);
 
         data_t data = objcode.data;
         if (valtype_none != data.valtype)
         {
-            printf(" %s", valtype_name[data.valtype]);
+            DEBUG_PRINT(" %s", valtype_name[data.valtype]);
             
             switch (data.valtype)
             {
@@ -120,20 +131,20 @@ void codegen_debug_print(void)
             break;
 
             case valtype_int:
-                printf(" %ld", data.val.ival);
+                DEBUG_PRINT(" %ld", data.val.ival);
             break;
 
             case valtype_double:
-                printf(" %f", data.val.dval);
+                DEBUG_PRINT(" %f", data.val.dval);
             break;
 
             default:
-                printf("Error!!");
+                DEBUG_PRINT("%s", "Error!");
             break;
             }
         }
 
-        printf("\n");
+        DEBUG_PRINT("%s", "\n");
     }
 }
 
