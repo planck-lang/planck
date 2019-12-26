@@ -41,7 +41,8 @@ typedef union _val_t_ {
 } val_t;
 
 typedef enum _valtype_e_ {
-    valtype_int = 1,
+    valtype_none = 0,
+    valtype_int  = 1,
     valtype_double,
 } valtype_e;
 
@@ -51,7 +52,14 @@ typedef enum _opcode_e_ {
     opcode_sub  = 2,
     opcode_mul  = 3,
     opcode_div  = 4,
+    opcode_push = 5,
 } opcode_e;
+
+typedef struct _objcode_t_ {
+    opcode_e    opcode;
+    valtype_e   valtype;
+    val_t       val;
+} objcode_t;
 
 /**************************
  * Public function prototypes

@@ -26,6 +26,8 @@ SOFTWARE.
  * Include system headers
  **************************/
 #include <stdio.h>
+#include <stdint.h>
+#include <string.h>
 
 /**************************
  * Include project headers
@@ -43,37 +45,101 @@ SOFTWARE.
 /**************************
  * Data types, Constants
  **************************/
+#define BUF_LINES       2048
 
 /**************************
  * Private variables
  **************************/
- 
+static objcode_t objcode_buffer[BUF_LINES];
+static uint32_t objcode_cur_line;
+
 /**************************
  * Private function prototypes
  **************************/
- 
+static void add_objcode(objcode_t objcode);
+
 /**************************
  * Public functions
  **************************/
+void codegen_init(void)
+{
+    objcode_cur_line = 0;
+    memset(objcode_buffer, 0, sizeof(objcode_buffer));
+}
+
 void codegen_add_num(const valtype_e valtype, const val_t val)
 {
-    if (valtype == valtype_int)
-    {
-        int64_t i64val = (int64_t)val.ival;
-        printf("TYPE %d VAL %ld\n", (int)valtype, i64val);
-    }
-    else if (valtype == valtype_double)
-    {
-        double dval = (double)val.dval;
-        printf("TYPE %d VAL %f\n", (int)valtype, dval);
-    }
+    objcode_t objcode = {0};
+
+    objcode.opcode = opcode_push;
+    objcode.valtype = valtype;
+    objcode.val = val;
+
+    add_objcode(objcode);
 }
 
 void codegen_add_opcode(const opcode_e opcode)
 {
-    printf("OP %d\n", opcode);
+    objcode_t objcode = {0};
+
+    objcode.opcode = opcode;
+
+    add_objcode(objcode);
+}
+
+void codegen_debug_print(void)
+{
+    static const char* opcode_name[] = {
+        "opcode_nop",
+        "opcode_add",
+        "opcode_sub",
+        "opcode_mul",
+        "opcode_div",
+        "opcode_push",
+    };
+
+    static const char* valtype_name[] = {
+        "valtype_none",
+        "valtype_int",
+        "valtype_double",
+    };
+
+    for (uint32_t i = 0 ; i < objcode_cur_line ; i++)
+    {
+        objcode_t objcode = objcode_buffer[i];
+        printf("%s", opcode_name[objcode.opcode]);
+
+        if (valtype_none != objcode.valtype)
+        {
+            printf(" %s", valtype_name[objcode.valtype]);
+            
+            switch (objcode.valtype)
+            {
+            case valtype_none:
+            break;
+
+            case valtype_int:
+                printf(" %ld", objcode.val.ival);
+            break;
+
+            case valtype_double:
+                printf(" %f", objcode.val.dval);
+            break;
+
+            default:
+                printf("Error!!");
+            break;
+            }
+        }
+
+        printf("\n");
+    }
 }
 
 /**************************
  * Private functions
  **************************/
+static void add_objcode(objcode_t objcode)
+{
+    objcode_buffer[objcode_cur_line++] = objcode;
+}

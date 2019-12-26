@@ -35,7 +35,8 @@ SOFTWARE.
 /**************************
  * Include project headers
  **************************/
- 
+#include "codegen.h"
+
 /**************************
  * External references
  **************************/ 
@@ -49,7 +50,6 @@ extern int yylex(void);
  * Macro
  **************************/
 #define NORMAL_PROMPT   ">> "
-#define STRBUFLEN       2048
 
 /**************************
  * Data types, Constants
@@ -83,7 +83,9 @@ int main(int argc, char* argv[])
         if (strlen(buf) > 0) 
         {
             add_history(buf);
-            
+
+            codegen_init();
+
             YY_BUFFER_STATE yyst = yy_scan_string(buf);
             int parse_result = yyparse();    
             yy_delete_buffer(yyst);
@@ -91,6 +93,7 @@ int main(int argc, char* argv[])
             if (!parse_result) // OK
             {
                 printf("OK\n");
+                codegen_debug_print();
             }
             else
             {
