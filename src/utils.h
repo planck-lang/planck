@@ -44,7 +44,6 @@ SOFTWARE.
  **************************/
 int64_t     str_to_int64(const char* str, uint32_t base);
 double      str_to_double(const char* str);
-int64_t     get_max_int64(const int64_t v1, const int64_t v2);
 
 /**************************
  * Inline functions

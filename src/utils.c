@@ -77,10 +77,6 @@ double str_to_double(const char* str)
     return ret;
 }
 
-int64_t get_max_int64(const int64_t v1, const int64_t v2)
-{
-    return (v1 > v2) ? v1 : v2;
-}
 /**************************
  * Private functions
  **************************/
