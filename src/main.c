@@ -93,7 +93,7 @@ int main(int argc, char* argv[])
             if (!parse_result) // OK
             {
                 printf("OK\n");
-                codegen_debug_print();
+                codegen_debug_dump();
             }
             else
             {

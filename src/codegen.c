@@ -87,7 +87,7 @@ void codegen_add_opcode(const opcode_e opcode)
     add_objcode(objcode);
 }
 
-void codegen_debug_print(void)
+void codegen_debug_dump(void)
 {
     static const char* opcode_name[] = {
         "opcode_nop",

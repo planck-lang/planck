@@ -46,7 +46,7 @@ void codegen_init(void);
 void codegen_add_num(const valtype_e valtype, const val_t val);
 void codegen_add_opcode(const opcode_e opcode);
 
-void codegen_debug_print(void);
+void codegen_debug_dump(void);
 /**************************
  * Inline functions
  **************************/
