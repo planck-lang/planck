@@ -1,7 +1,7 @@
 /*
-utils.c
+exe.h
 
-Copyright (c) 12/24/2019, 12:19:57 AM Manwoo Yi
+Copyright (c) 12/26/2019, 2:55:45 AM Manwoo Yi
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,61 +22,29 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
  
+#pragma once
+ 
 /**************************
- * Include system headers
+ * Includes
  **************************/
-#include <stdlib.h>
-
-/**************************
- * Include project headers
- **************************/
-#include "utils.h"
-
-/**************************
- * External references
- **************************/ 
+#include "types.h"
 
 /**************************
  * Macro
  **************************/
-  
+ 
 /**************************
  * Data types, Constants
  **************************/
-
-/**************************
- * Private variables
- **************************/
  
 /**************************
- * Private function prototypes
+ * Public function prototypes
  **************************/
+val_t exe_add(valtype_e valtype, val_t v1, val_t v2);
+val_t exe_sub(valtype_e valtype, val_t v1, val_t v2);
+val_t exe_mul(valtype_e valtype, val_t v1, val_t v2);
+val_t exe_div(valtype_e valtype, val_t v1, val_t v2);
 
 /**************************
- * Public functions
- **************************/
-int64_t str_to_int64(const char* str, uint32_t base)
-{
-    int64_t ret = 0;
-
-    if (10 == base)
-    {
-        ret = (int64_t)str_to_double(str);
-    }
-
-    return ret;
-}
-
-double str_to_double(const char* str)
-{
-    double ret = 0;
-    char* ptr = NULL;
-
-    ret = strtod(str, &ptr);
-
-    return ret;
-}
-
-/**************************
- * Private functions
+ * Inline functions
  **************************/

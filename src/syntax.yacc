@@ -27,12 +27,13 @@ SOFTWARE.
 #include <stdio.h>
 
 #include "codegen.h"
+#include "utils.h"
 
 extern int yylex (void);
 
 int yyerror(const char* str)
 {
-    printf("[Parse Error] %s\n", str);
+    DEBUG_PRINT("[Parse Error] %s\n", str);
     return 0;
 }
 %}

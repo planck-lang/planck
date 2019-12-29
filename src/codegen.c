@@ -33,6 +33,7 @@ SOFTWARE.
  * Include project headers
  **************************/
 #include "codegen.h"
+#include "utils.h"
 
 /**************************
  * External references
@@ -72,8 +73,8 @@ void codegen_add_num(const valtype_e valtype, const val_t val)
     objcode_t objcode = {0};
 
     objcode.opcode = opcode_push;
-    objcode.valtype = valtype;
-    objcode.val = val;
+    objcode.data.valtype = valtype;
+    objcode.data.val = val;
 
     add_objcode(objcode);
 }
@@ -85,6 +86,16 @@ void codegen_add_opcode(const opcode_e opcode)
     objcode.opcode = opcode;
 
     add_objcode(objcode);
+}
+
+objcode_t* codegen_get_objcode(void)
+{
+    return objcode_buffer;
+}
+
+uint32_t codegen_get_objcode_lines(void)
+{
+    return objcode_cur_line;
 }
 
 void codegen_debug_dump(void)
@@ -107,32 +118,33 @@ void codegen_debug_dump(void)
     for (uint32_t i = 0 ; i < objcode_cur_line ; i++)
     {
         objcode_t objcode = objcode_buffer[i];
-        printf("%s", opcode_name[objcode.opcode]);
+        DEBUG_PRINT("%s", opcode_name[objcode.opcode]);
 
-        if (valtype_none != objcode.valtype)
+        data_t data = objcode.data;
+        if (valtype_none != data.valtype)
         {
-            printf(" %s", valtype_name[objcode.valtype]);
+            DEBUG_PRINT(" %s", valtype_name[data.valtype]);
             
-            switch (objcode.valtype)
+            switch (data.valtype)
             {
             case valtype_none:
             break;
 
             case valtype_int:
-                printf(" %ld", objcode.val.ival);
+                DEBUG_PRINT(" %ld", data.val.ival);
             break;
 
             case valtype_double:
-                printf(" %f", objcode.val.dval);
+                DEBUG_PRINT(" %f", data.val.dval);
             break;
 
             default:
-                printf("Error!!");
+                DEBUG_PRINT("%s", "Error!");
             break;
             }
         }
 
-        printf("\n");
+        DEBUG_PRINT("%s", "\n");
     }
 }
 

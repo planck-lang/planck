@@ -1,7 +1,7 @@
 /*
-utils.c
+exe.c
 
-Copyright (c) 12/24/2019, 12:19:57 AM Manwoo Yi
+Copyright (c) 12/26/2019, 2:55:38 AM Manwoo Yi
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -25,12 +25,12 @@ SOFTWARE.
 /**************************
  * Include system headers
  **************************/
-#include <stdlib.h>
+#include <stdint.h>
 
 /**************************
  * Include project headers
  **************************/
-#include "utils.h"
+#include "exe.h"
 
 /**************************
  * External references
@@ -51,30 +51,71 @@ SOFTWARE.
 /**************************
  * Private function prototypes
  **************************/
-
+ 
 /**************************
  * Public functions
  **************************/
-int64_t str_to_int64(const char* str, uint32_t base)
+val_t exe_add(valtype_e valtype, val_t v1, val_t v2)
 {
-    int64_t ret = 0;
+    val_t result = {0};
 
-    if (10 == base)
+    if (valtype_int == valtype)
     {
-        ret = (int64_t)str_to_double(str);
+        result.ival = v1.ival + v2.ival;
+    }
+    else if (valtype_double == valtype)
+    {
+        result.dval = v1.dval + v2.dval;
     }
 
-    return ret;
+    return result;
 }
 
-double str_to_double(const char* str)
+val_t exe_sub(valtype_e valtype, val_t v1, val_t v2)
 {
-    double ret = 0;
-    char* ptr = NULL;
+    val_t result = {0};
 
-    ret = strtod(str, &ptr);
+    if (valtype_int == valtype)
+    {
+        result.ival = v1.ival - v2.ival;
+    }
+    else if (valtype_double == valtype)
+    {
+        result.dval = v1.dval - v2.dval;
+    }
 
-    return ret;
+    return result;
+}
+val_t exe_mul(valtype_e valtype, val_t v1, val_t v2)
+{
+    val_t result = {0};
+
+    if (valtype_int == valtype)
+    {
+        result.ival = v1.ival * v2.ival;
+    }
+    else if (valtype_double == valtype)
+    {
+        result.dval = v1.dval * v2.dval;
+    }
+
+    return result;
+}
+
+val_t exe_div(valtype_e valtype, val_t v1, val_t v2)
+{
+    val_t result = {0};
+
+    if (valtype_int == valtype)
+    {
+        result.ival = v1.ival / v2.ival;
+    }
+    else if (valtype_double == valtype)
+    {
+        result.dval = v1.dval / v2.dval;
+    }
+
+    return result;
 }
 
 /**************************

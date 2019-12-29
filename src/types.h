@@ -44,6 +44,9 @@ typedef enum _valtype_e_ {
     valtype_none = 0,
     valtype_int  = 1,
     valtype_double,
+    valtype_primitive_max,
+    valtype_builtin_max,
+    valtype_max
 } valtype_e;
 
 typedef enum _opcode_e_ {
@@ -55,10 +58,14 @@ typedef enum _opcode_e_ {
     opcode_push = 5,
 } opcode_e;
 
-typedef struct _objcode_t_ {
-    opcode_e    opcode;
+typedef struct _data_t_ {
     valtype_e   valtype;
     val_t       val;
+} data_t;
+
+typedef struct _objcode_t_ {
+    opcode_e    opcode;
+    data_t      data;
 } objcode_t;
 
 /**************************
