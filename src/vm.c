@@ -90,18 +90,10 @@ void vm_run(void)
     }
 }
 
-void vm_show_last_stack(void)
+data_t vm_get_last_stack(void)
 {
     data_t data = stack_pop();
-
-    if (valtype_int == data.valtype)
-    {
-        DEBUG_PRINT("%ld\n", data.val.ival);
-    }
-    else if (valtype_double == data.valtype)
-    {
-        DEBUG_PRINT("%f\n", data.val.dval);
-    }
+    return data;
 }
 
 /**************************

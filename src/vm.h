@@ -44,7 +44,7 @@ SOFTWARE.
  **************************/
 void vm_init(const objcode_t* pcode, const uint32_t lines);
 void vm_run(void);
-void vm_show_last_stack(void);
+data_t vm_get_last_stack(void);
 
 /**************************
  * Inline functions

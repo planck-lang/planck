@@ -1,7 +1,7 @@
 /*
-main.c
+planck.h
 
-Copyright (c) 12/12/2019, 12:28:08 AM Manwoo Yi
+Copyright (c) 1/4/2020, 1:28:31 AM Manwoo Yi
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -22,83 +22,26 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
  */
  
+#pragma once
+ 
 /**************************
- * Include system headers
+ * Includes
  **************************/
-#include <stdbool.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-
-/**************************
- * Include project headers
- **************************/
-#include "planck.h"
-
-/**************************
- * External references
- **************************/ 
+#include "types.h"
 
 /**************************
  * Macro
  **************************/
-#define NORMAL_PROMPT   ">> "
-
+ 
 /**************************
  * Data types, Constants
  **************************/
+ 
+/**************************
+ * Public function prototypes
+ **************************/
+data_t planck(const char* str);
 
 /**************************
- * Private variables
+ * Inline functions
  **************************/
-static char* s_prompt_ptr;
-
-/**************************
- * Private function prototypes
- **************************/
-void print_result(data_t data);
-
-/**************************
- * Public functions
- **************************/
-int main(int argc, char* argv[])
-{
-    s_prompt_ptr = NORMAL_PROMPT;
-
-    while(true) 
-    {
-        char* buf = readline(s_prompt_ptr);
-        if (buf == NULL)
-        {
-            puts("\nAnnyuonghi Gaseyo.\n");
-            break;
-        }
-
-        if (strlen(buf) > 0) 
-        {
-            add_history(buf);
-
-            data_t ret = planck(buf);
-            print_result(ret);
-        }
-
-        free(buf);
-    }
-}
-
-/**************************
- * Private functions
- **************************/
-void print_result(data_t data)
-{
-    if (valtype_int == data.valtype)
-    {
-        printf("%ld\n", data.val.ival);
-    }
-    else if (valtype_double == data.valtype)
-    {
-        printf("%f\n", data.val.dval);
-    }
-}

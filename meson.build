@@ -24,7 +24,8 @@ incdir = include_directories('src')
 src = [ 'src/codegen.c',
         'src/vm.c',
         'src/exe.c',
-        'src/utils.c']
+        'src/utils.c',
+        'src/planck.c']
 libplancks = both_libraries('planck', [src, gen_yacc, gen_lex], 
                         version : meson.project_version(), soversion : '0',
                         c_args:cflags, include_directories:incdir, pic:true)
