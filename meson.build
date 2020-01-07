@@ -39,3 +39,13 @@ executable('planck', 'src/main.c',
 executable('planck_static', 'src/main.c', 
             link_with:libplancks.get_static_lib(),
             c_args:cflags, dependencies:readline_dep)
+
+# unit test
+unit_test_src = ['unittest/testcases/basic_op_test.c',
+                'unittest/framework/TestMain.c']
+
+test_incdir = include_directories(['src', 'unittest/framework'])
+
+executable('unittest', unit_test_src,
+            link_with:libplancks.get_shared_lib(),
+            c_args:cflags, include_directories:test_incdir)
