@@ -74,8 +74,6 @@ data_t planck(const char* str)
 
     if (!parse_result) // OK
     {
-        codegen_debug_dump();
-        DEBUG_PRINT("%s\n","--OK--");
         vm_init(
             codegen_get_objcode(),
             codegen_get_objcode_lines()
