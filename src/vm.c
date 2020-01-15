@@ -129,8 +129,8 @@ static void execute_code(objcode_t code)
 
 static void arithmetic(opcode_e opcode)
 {
-    data_t val1 = stack_pop();
     data_t val2 = stack_pop();
+    data_t val1 = stack_pop();
 
     data_t result = {0};
 
