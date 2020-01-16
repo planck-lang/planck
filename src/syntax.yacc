@@ -36,6 +36,8 @@ int yyerror(const char* str)
     DEBUG_PRINT("[Parse Error] %s\n", str);
     return 0;
 }
+
+static data_t constant_data;
 %}
 
 %union {
@@ -48,20 +50,44 @@ int yyerror(const char* str)
 %token<int_value>       INUM
 %token<double_value>    DNUM
 
-%token      ADD SUB MUL DIV
-
-%left       ADD SUB
-%left       MUL DIV
+%token      PLUS MINUS STAR SLASH 
 
 %%
 prog    :   expr
         ;
 
-expr    :   INUM            {codegen_add_num(valtype_int,    (val_t)$1);}
-        |   DNUM            {codegen_add_num(valtype_double, (val_t)$1);}
-        |   expr ADD expr   {codegen_add_opcode(opcode_add);}
-        |   expr SUB expr   {codegen_add_opcode(opcode_sub);}
-        |   expr MUL expr   {codegen_add_opcode(opcode_mul);}
-        |   expr DIV expr   {codegen_add_opcode(opcode_div);}
-        ;
+expr
+: term
+| term PLUS term            {codegen_add_opcode(opcode_add);}
+| term MINUS term           {codegen_add_opcode(opcode_sub);}
+;
+
+term
+: factor
+| factor STAR factor        {codegen_add_opcode(opcode_mul);}
+| factor SLASH factor       {codegen_add_opcode(opcode_div);}
+//| factor '%' factor
+;
+
+factor
+: unary                     {codegen_add_num(constant_data.valtype, constant_data.val);}
+//| unary '^' factor
+;
+
+unary
+: primary
+| PLUS unary
+| MINUS unary               {constant_data.val.ival *= -1;}
+;
+
+primary
+: constant
+//| id
+| '(' expr ')'
+;
+
+constant
+: INUM                      {constant_data.valtype = valtype_int; constant_data.val = (val_t)$1;}
+| DNUM                      {constant_data.valtype = valtype_double; constant_data.val = (val_t)$1;}
+;
 %%

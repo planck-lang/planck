@@ -38,17 +38,17 @@ int yywrap(void)
 %%
 [ \t\n]*        ;
 
-"+"             return ADD;
-"-"             return SUB;
-"*"             return MUL;
-"/"             return DIV;
+"+"             return PLUS;
+"-"             return MINUS;
+"*"             return STAR;
+"/"             return SLASH;
 
-"-"?[0-9]+ {
+[0-9]+ {
     yylval.int_value = str_to_int64(yytext, 10);
     return INUM;
 }
 
-"-"?[0-9]+"."([0-9]*)? {
+[0-9]+"."([0-9]*)? {
     yylval.double_value = str_to_double(yytext);
     return DNUM;
 }
