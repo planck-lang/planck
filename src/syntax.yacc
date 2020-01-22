@@ -37,7 +37,7 @@ int yyerror(const char* str)
     return 0;
 }
 
-static data_t constant_data;
+static int64_t plusminus = 1;
 %}
 
 %union {
@@ -50,11 +50,13 @@ static data_t constant_data;
 %token<int_value>       INUM
 %token<double_value>    DNUM
 
-%token      PLUS MINUS STAR SLASH 
+%token      OPENBR CLOSEBR
+%token      PLUS MINUS STAR SLASH
 
 %%
-prog    :   expr
-        ;
+prog    
+:   expr                    {plusminus = 1;}
+;
 
 expr
 : term
@@ -70,24 +72,24 @@ term
 ;
 
 factor
-: unary                     {codegen_add_num(constant_data.valtype, constant_data.val);}
+: unary
 //| unary '^' factor
 ;
 
 unary
 : primary
 | PLUS unary
-| MINUS unary               {constant_data.val.ival *= -1;}
+| MINUS unary               {plusminus = -1;}
 ;
 
 primary
 : constant
+| OPENBR expr CLOSEBR
 //| id
-| '(' expr ')'
 ;
 
 constant
-: INUM                      {constant_data.valtype = valtype_int; constant_data.val = (val_t)$1;}
-| DNUM                      {constant_data.valtype = valtype_double; constant_data.val = (val_t)$1;}
+: INUM                      {codegen_add_num(valtype_int, (val_t)(plusminus * $1));}
+| DNUM                      {codegen_add_num(valtype_double, (val_t)(plusminus * $1));}
 ;
 %%

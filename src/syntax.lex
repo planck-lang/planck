@@ -38,6 +38,8 @@ int yywrap(void)
 %%
 [ \t\n]*        ;
 
+"("             return OPENBR;
+")"             return CLOSEBR;
 "+"             return PLUS;
 "-"             return MINUS;
 "*"             return STAR;

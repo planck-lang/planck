@@ -115,6 +115,7 @@ void codegen_debug_dump(void)
         "valtype_double",
     };
 
+    DEBUG_PRINT("%s", "\n");
     for (uint32_t i = 0 ; i < objcode_cur_line ; i++)
     {
         objcode_t objcode = objcode_buffer[i];
