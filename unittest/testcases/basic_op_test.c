@@ -56,6 +56,14 @@ TESTCASE(3, "no space expr")
     ret = planck(codeline);
     ASSERT_EQ_NUM(3.3-4.4/3.3, ret.val.dval);
     ASSERT(ret.valtype == valtype_double, "valtype should be double");
+
+    codeline = "-3+4*3";
+    ret = planck(codeline);
+    ASSERT_EQ_INT(-3+4*3, ret.val.ival);
+
+    codeline = "-3+2";
+    ret = planck(codeline);
+    ASSERT_EQ_INT(-3+2, ret.val.ival);
 }
 
 TESTCASE(4, "bracket")

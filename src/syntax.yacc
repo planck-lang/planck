@@ -79,7 +79,7 @@ factor
 unary
 : primary
 | PLUS unary
-| MINUS unary               {plusminus = -1;}
+| MINUS {plusminus = -1;} unary {plusminus = 1;}
 ;
 
 primary
