@@ -32,7 +32,8 @@ SOFTWARE.
 /**************************
  * Macro
  **************************/
- 
+#define OUT_PTR // nothing just indication purpose
+
 /**************************
  * Data types, Constants
  **************************/

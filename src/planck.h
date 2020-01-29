@@ -28,6 +28,7 @@ SOFTWARE.
  * Includes
  **************************/
 #include "types.h"
+#include "errors.h"
 
 /**************************
  * Macro
@@ -40,7 +41,7 @@ SOFTWARE.
 /**************************
  * Public function prototypes
  **************************/
-data_t planck(const char* str);
+error_code_e planck(const char* str, OUT_PTR data_t* ret);
 
 /**************************
  * Inline functions

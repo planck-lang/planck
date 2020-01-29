@@ -80,8 +80,13 @@ int main(int argc, char* argv[])
         {
             add_history(buf);
 
-            data_t ret = planck(buf);
-            print_result(ret);
+            data_t ret = {0};
+            error_code_e error = planck(buf, &ret);
+
+            if (error_none == error)
+            {
+                print_result(ret);
+            }
         }
 
         free(buf);

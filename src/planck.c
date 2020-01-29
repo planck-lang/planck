@@ -62,10 +62,8 @@ extern int yylex(void);
 /**************************
  * Public functions
  **************************/
-data_t planck(const char* str)
+error_code_e planck(const char* str, OUT_PTR data_t* ret)
 {
-    data_t ret = {};
-
     codegen_init();
 
     YY_BUFFER_STATE yyst = yy_scan_string(str);
@@ -81,14 +79,14 @@ data_t planck(const char* str)
             codegen_get_objcode_lines()
         );
         vm_run();
-        ret = vm_get_last_stack();
+        *ret = vm_get_last_stack();
     }
     else
     {
         DEBUG_PRINT("%s\n","Parse Error");
     }
 
-    return ret;
+    return error_none;
 }
 
 /**************************
