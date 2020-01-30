@@ -67,7 +67,7 @@ error_code_e planck(const char* str, OUT_PTR data_t* ret)
     codegen_init();
 
     YY_BUFFER_STATE yyst = yy_scan_string(str);
-    int parse_result = yyparse();    
+    int parse_result = yyparse();
     yy_delete_buffer(yyst);
 
     if (!parse_result) // OK
