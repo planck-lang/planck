@@ -25,10 +25,13 @@ SOFTWARE.
 /**************************
  * Include system headers
  **************************/
+#include <stdint.h>
+#include <string.h>
 
 /**************************
  * Include project headers
  **************************/
+#include "errors.h"
 
 /**************************
  * External references
@@ -41,10 +44,30 @@ SOFTWARE.
 /**************************
  * Data types, Constants
  **************************/
+#define ERR_LIST_NUM 128
+
+struct error_text
+{
+    error_code_e e;
+    char* text;
+};
 
 /**************************
  * Private variables
  **************************/
+static error_code_e error_list[ERR_LIST_NUM];
+static uint32_t error_list_idx;
+
+static struct error_text error_text_dict[] = 
+{
+    // Parser errors
+    {error_parser_syntax, "Syntax Error"},
+
+    // VM errors
+    {error_vm_type_mismatch, "Type mismatch"},
+    {error_vm_unknown_opcode, "Unkown opcode"},
+};
+static const uint32_t num_of_error_text_dict = sizeof(error_text_dict) / sizeof(struct error_text);
 
 /**************************
  * Private function prototypes
@@ -53,6 +76,45 @@ SOFTWARE.
 /**************************
  * Public functions
  **************************/
+void errors_reset(void)
+{
+    error_list_idx = 0;
+    memset(error_list, 0, sizeof(error_list));
+}
+
+void errors_add(error_code_e e)
+{
+    error_list[error_list_idx++] = e;
+}
+
+bool errors_has_error(void)
+{
+    return (error_list_idx != 0);
+}
+
+error_code_e errors_get(void)
+{
+    if (errors_has_error())
+    {
+        return error_list[--error_list_idx];
+    }
+
+    return error_none;
+}
+
+char* errors_get_text(error_code_e e)
+{
+    // Linear search
+    for(uint32_t i = 0 ; i < num_of_error_text_dict ; i++)
+    {
+        if (e == error_text_dict[i].e)
+        {
+            return error_text_dict[i].text;
+        }
+    }
+
+    return NULL;
+}
 
 /**************************
  * Private functions

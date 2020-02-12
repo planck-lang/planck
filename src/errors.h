@@ -27,6 +27,7 @@ SOFTWARE.
 /**************************
  * Includes
  **************************/
+#include <stdbool.h>
 
 /**************************
  * Macro
@@ -45,9 +46,15 @@ typedef enum _error_code_e_ {
     error_vm_type_mismatch         = 0x10001,
     error_vm_unknown_opcode        = 0x10002,
 } error_code_e;
+
 /**************************
  * Public function prototypes
  **************************/
+void errors_reset(void);
+void errors_add(error_code_e e);
+bool errors_has_error(void);
+error_code_e errors_get(void);
+char* errors_get_text(error_code_e e);
 
 /**************************
  * Inline functions
