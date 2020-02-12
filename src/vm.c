@@ -35,6 +35,7 @@ SOFTWARE.
 #include "types.h"
 #include "utils.h"
 #include "exe.h"
+#include "errors.h"
 
 /**************************
  * External references
@@ -87,6 +88,11 @@ void vm_run(void)
     {
         objcode_t code = fetch_code();
         execute_code(code);
+
+        if (errors_has_error())
+        {
+            return;
+        }
     }
 }
 
@@ -122,7 +128,9 @@ static void execute_code(objcode_t code)
         break;
 
         case opcode_nop:
+        break;
         default:
+            errors_add(error_vm_unknown_opcode);
         break;
     }
 }
@@ -163,7 +171,7 @@ static void arithmetic(opcode_e opcode)
     }
     else
     {
-        // TODO: Type mismatch error
+        errors_add(error_vm_type_mismatch);
     }
 
     stack_push(result);

@@ -33,6 +33,7 @@ SOFTWARE.
 #include "codegen.h"
 #include "vm.h"
 #include "utils.h"
+#include "errors.h"
 
 /**************************
  * External references
@@ -65,6 +66,7 @@ extern int yylex(void);
 error_code_e planck(const char* str, OUT_PTR data_t* ret)
 {
     codegen_init();
+    errors_reset();
 
     YY_BUFFER_STATE yyst = yy_scan_string(str);
     int parse_result = yyparse();
@@ -79,14 +81,18 @@ error_code_e planck(const char* str, OUT_PTR data_t* ret)
             codegen_get_objcode_lines()
         );
         vm_run();
-        *ret = vm_get_last_stack();
+        
+        if (!errors_has_error())
+        {
+            *ret = vm_get_last_stack();
+        }
     }
     else
     {
-        DEBUG_PRINT("%s\n","Parse Error");
+        errors_add(error_parser_syntax);
     }
 
-    return error_none;
+    return errors_get();
 }
 
 /**************************

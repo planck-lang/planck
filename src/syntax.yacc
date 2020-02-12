@@ -33,7 +33,7 @@ extern int yylex (void);
 
 int yyerror(const char* str)
 {
-    DEBUG_PRINT("[Parse Error] %s\n", str);
+    //DEBUG_PRINT("[Parse Error] %s\n", str);
     return 0;
 }
 
