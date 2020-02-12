@@ -59,6 +59,7 @@ static char* s_prompt_ptr;
  * Private function prototypes
  **************************/
 void print_result(data_t data);
+void print_error(error_code_e e);
 
 /**************************
  * Public functions
@@ -87,6 +88,10 @@ int main(int argc, char* argv[])
             {
                 print_result(ret);
             }
+            else
+            {
+                print_error(error);
+            }
         }
 
         free(buf);
@@ -106,4 +111,9 @@ void print_result(data_t data)
     {
         printf("%f\n", data.val.dval);
     }
+}
+
+void print_error(error_code_e e)
+{
+    printf("Error: %s\n", errors_get_text(e));
 }
