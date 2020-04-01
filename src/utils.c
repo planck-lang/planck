@@ -26,6 +26,7 @@ SOFTWARE.
  * Include system headers
  **************************/
 #include <stdlib.h>
+#include <string.h>
 
 /**************************
  * Include project headers
@@ -75,6 +76,14 @@ double str_to_double(const char* str)
     ret = strtod(str, &ptr);
 
     return ret;
+}
+
+char* str_dup(const char* str, uint32_t len)
+{
+    char* ret_ptr = malloc(len + 1);
+    memset(ret_ptr, 0, len + 1);
+    memcpy(ret_ptr, str, len);
+    return ret_ptr;
 }
 
 /**************************

@@ -44,6 +44,7 @@ SOFTWARE.
  **************************/
 int64_t     str_to_int64(const char* str, uint32_t base);
 double      str_to_double(const char* str);
+char*       str_dup(const char* str, uint32_t len);
 
 /**************************
  * Inline functions

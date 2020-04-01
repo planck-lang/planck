@@ -44,6 +44,9 @@ int yywrap(void)
 "-"             return MINUS;
 "*"             return STAR;
 "/"             return SLASH;
+"="             return EQUAL;
+
+"let"           return K_LET;
 
 [0-9]+ {
     yylval.int_value = str_to_int64(yytext, 10);
@@ -53,5 +56,10 @@ int yywrap(void)
 [0-9]+"."([0-9]*)? {
     yylval.double_value = str_to_double(yytext);
     return DNUM;
+}
+
+[a-zA-Z_][0-9a-zA-Z_]* {
+    yylval.identifier = str_dup(yytext, strlen(yytext));
+    return IDENTIFIER;
 }
 %%

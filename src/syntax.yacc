@@ -43,25 +43,34 @@ static int64_t plusminus = 1;
 %union {
     int64_t     int_value;
     double      double_value;
+    char*       identifier;
 }
 
 %start prog
 
 %token<int_value>       INUM
 %token<double_value>    DNUM
+%token<identifier>      IDENTIFIER
 
 %token      OPENBR CLOSEBR
-%token      PLUS MINUS STAR SLASH
+%token      PLUS MINUS STAR SLASH EQUAL
+%token      K_LET
 
 %%
 prog    
-:   expr                    {plusminus = 1;}
+: expr
+| declaration
+;
+
+declaration
+: K_LET IDENTIFIER EQUAL expr
+                            {printf("symbol: %s\n", $2);}
 ;
 
 expr
-: term
-| term PLUS term            {codegen_add_opcode(opcode_add);}
-| term MINUS term           {codegen_add_opcode(opcode_sub);}
+: term                      {plusminus = 1;}
+| term PLUS term            {plusminus = 1; codegen_add_opcode(opcode_add);}
+| term MINUS term           {plusminus = 1; codegen_add_opcode(opcode_sub);}
 ;
 
 term
