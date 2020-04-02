@@ -28,6 +28,7 @@ SOFTWARE.
 
 #include "codegen.h"
 #include "utils.h"
+#include "symtab.h"
 
 extern int yylex (void);
 
@@ -64,9 +65,9 @@ prog
 
 declaration
 : K_LET IDENTIFIER EQUAL expr
-                            {printf("symbol: %s\n", $2);}
+                            {symtab_add_symbol($2);}
 | K_LET IDENTIFIER EQUAL expr K_AS IDENTIFIER
-                            {printf("symbol: %s\n", $2);}
+                            {symtab_add_symbol_type($2, $6);}
 ;
 
 expr
