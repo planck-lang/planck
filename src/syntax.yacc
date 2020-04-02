@@ -54,16 +54,18 @@ static int64_t plusminus = 1;
 
 %token      OPENBR CLOSEBR
 %token      PLUS MINUS STAR SLASH EQUAL
-%token      K_LET
+%token      K_LET K_AS
 
 %%
-prog    
+prog
 : expr
 | declaration
 ;
 
 declaration
 : K_LET IDENTIFIER EQUAL expr
+                            {printf("symbol: %s\n", $2);}
+| K_LET IDENTIFIER EQUAL expr K_AS IDENTIFIER
                             {printf("symbol: %s\n", $2);}
 ;
 

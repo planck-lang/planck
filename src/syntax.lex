@@ -47,6 +47,7 @@ int yywrap(void)
 "="             return EQUAL;
 
 "let"           return K_LET;
+"as"            return K_AS;
 
 [0-9]+ {
     yylval.int_value = str_to_int64(yytext, 10);
