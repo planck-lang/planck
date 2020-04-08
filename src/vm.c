@@ -84,7 +84,7 @@ void vm_init(const objcode_t* pcode, const uint32_t lines)
 
 void vm_run(void)
 {
-    while(code_pc < code_line)
+    while (code_pc < code_line)
     {
         objcode_t code = fetch_code();
         execute_code(code);
@@ -96,10 +96,16 @@ void vm_run(void)
     }
 }
 
-data_t vm_get_last_stack(void)
+bool vm_get_last_stack(OUT_PTR data_t* ret)
 {
-    data_t data = stack_pop();
-    return data;
+    printf("-- %d\n", data_stack_pointer);
+    if (data_stack_pointer == 0)
+    {
+        return false;
+    }
+
+    *ret = stack_pop();
+    return true;
 }
 
 /**************************

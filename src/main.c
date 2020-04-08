@@ -115,5 +115,8 @@ void print_result(data_t data)
 
 void print_error(error_code_e e)
 {
-    printf("Error: %s\n", errors_get_text(e));
+    if (e > error_start_idx)
+    {
+        printf("Error: %s\n", errors_get_text(e));
+    }
 }

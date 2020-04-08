@@ -84,7 +84,10 @@ error_code_e planck(const char* str, OUT_PTR data_t* ret)
         
         if (!errors_has_error())
         {
-            *ret = vm_get_last_stack();
+            if (vm_get_last_stack(ret) == false)    // vm stack is empty
+            {
+                errors_add(error_vm_stack_empty);
+            }
         }
     }
     else

@@ -38,13 +38,16 @@ SOFTWARE.
  **************************/
 typedef enum _error_code_e_ {
     error_none                     = 0x00,
+    error_vm_stack_empty           = 0x01,
+
+    error_start_idx                = 0x10000,
 
     // Parser errors
-    error_parser_syntax            = 0x00001,
+    error_parser_syntax            = 0x10001,
 
     // VM errors
-    error_vm_type_mismatch         = 0x10001,
-    error_vm_unknown_opcode        = 0x10002,
+    error_vm_type_mismatch         = 0x20001,
+    error_vm_unknown_opcode        = 0x20002,
 } error_code_e;
 
 /**************************

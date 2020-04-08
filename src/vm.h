@@ -28,6 +28,7 @@ SOFTWARE.
  * Includes
  **************************/
 #include <stdint.h>
+#include <stdbool.h>
 
 #include "types.h"
 
@@ -44,7 +45,7 @@ SOFTWARE.
  **************************/
 void vm_init(const objcode_t* pcode, const uint32_t lines);
 void vm_run(void);
-data_t vm_get_last_stack(void);
+bool vm_get_last_stack(OUT_PTR data_t* ret);
 
 /**************************
  * Inline functions

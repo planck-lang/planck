@@ -58,13 +58,15 @@ SOFTWARE.
  **************************/
 void symtab_add_symbol(const char* sym_name)
 {
-    data_t data = vm_get_last_stack();
+    data_t data = {0};
+    vm_get_last_stack(&data);
     printf("%s : %s -> %ld\n", __FUNCTION__, sym_name, data.val.ival);
 }
 
 void symtab_add_symbol_type(const char* sym_name, const char* type_name)
 {
-    data_t data = vm_get_last_stack();
+    data_t data = {0};
+    vm_get_last_stack(&data);
     printf("%s : %s - %s -> %ld\n", __FUNCTION__, sym_name, type_name, data.val.ival);
 }
 
