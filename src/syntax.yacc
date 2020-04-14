@@ -65,9 +65,9 @@ prog
 
 declaration
 : K_LET IDENTIFIER EQUAL expr
-                            {symtab_add_symbol($2);}
+                            {codegen_add_store(symtab_add_symbol($2));}
 | K_LET IDENTIFIER EQUAL expr K_AS IDENTIFIER
-                            {symtab_add_symbol_type($2, $6);}
+                            {codegen_add_store(symtab_add_symbol_type($2, $6));}
 ;
 
 expr

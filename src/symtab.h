@@ -27,6 +27,7 @@ SOFTWARE.
 /**************************
  * Includes
  **************************/
+#include <stdbool.h>
 
 /**************************
  * Macro
@@ -39,8 +40,10 @@ SOFTWARE.
 /**************************
  * Public function prototypes
  **************************/
-void symtab_add_symbol(const char* sym_name);
-void symtab_add_symbol_type(const char* sym_name, const char* type_name);
+uint32_t symtab_add_symbol(const char* sym_name);
+uint32_t symtab_add_symbol_type(const char* sym_name, const char* type_name);
+bool symtab_set_value_to_symbol_idx(const uint32_t sym_idx, const data_t data);
+data_t symtab_get_value_from_symbol_idx(const uint32_t sym_idx);
 
 /**************************
  * Inline functions

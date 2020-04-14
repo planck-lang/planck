@@ -47,17 +47,19 @@ typedef enum _valtype_e_ {
     valtype_int  = 1,
     valtype_double,
     valtype_primitive_max,
+    valtype_tab_idx,
     valtype_builtin_max,
     valtype_max
 } valtype_e;
 
 typedef enum _opcode_e_ {
-    opcode_nop  = 0,
-    opcode_add  = 1,
-    opcode_sub  = 2,
-    opcode_mul  = 3,
-    opcode_div  = 4,
-    opcode_push = 5,
+    opcode_nop      = 0,
+    opcode_add      = 1,
+    opcode_sub      = 2,
+    opcode_mul      = 3,
+    opcode_div      = 4,
+    opcode_push     = 5,
+    opcode_store    = 6,
 } opcode_e;
 
 typedef struct _data_t_ {

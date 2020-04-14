@@ -68,22 +68,41 @@ void codegen_init(void)
     memset(objcode_buffer, 0, sizeof(objcode_buffer));
 }
 
-void codegen_add_num(const valtype_e valtype, const val_t val)
-{
-    objcode_t objcode = {0};
-
-    objcode.opcode = opcode_push;
-    objcode.data.valtype = valtype;
-    objcode.data.val = val;
-
-    add_objcode(objcode);
-}
-
 void codegen_add_opcode(const opcode_e opcode)
 {
     objcode_t objcode = {0};
 
     objcode.opcode = opcode;
+
+    add_objcode(objcode);
+}
+
+void codegen_add_num(const valtype_e valtype, const val_t val)
+{
+    data_t data = {0};
+
+    data.valtype = valtype;
+    data.val = val;
+
+    codegen_add_opcode_with_val(opcode_push, data);
+}
+
+void codegen_add_store(const uint32_t symtab_idx)
+{
+    data_t data = {0};
+
+    data.valtype = valtype_tab_idx;
+    data.val.ival = symtab_idx;
+
+    codegen_add_opcode_with_val(opcode_store, data);
+}
+
+void codegen_add_opcode_with_val(const opcode_e opcode, const data_t data)
+{
+    objcode_t objcode = {0};
+
+    objcode.opcode = opcode;
+    objcode.data = data;
 
     add_objcode(objcode);
 }
@@ -107,12 +126,16 @@ void codegen_debug_dump(void)
         "opcode_mul",
         "opcode_div",
         "opcode_push",
+        "opcode_store",
     };
 
     static const char* valtype_name[] = {
         "valtype_none",
         "valtype_int",
         "valtype_double",
+        "primitive_max",
+        "valtype_tabidx",
+        "builtin_max",
     };
 
     DEBUG_PRINT("%s", "\n");
@@ -137,6 +160,10 @@ void codegen_debug_dump(void)
 
             case valtype_double:
                 DEBUG_PRINT(" %f", data.val.dval);
+            break;
+
+            case valtype_tab_idx:
+                DEBUG_PRINT(" $%ld", data.val.ival);
             break;
 
             default:

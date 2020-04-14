@@ -48,6 +48,9 @@ typedef enum _error_code_e_ {
     // VM errors
     error_vm_type_mismatch         = 0x20001,
     error_vm_unknown_opcode        = 0x20002,
+
+    // Symtab errors
+    error_symtab_no_sym_name       = 0x30001,
 } error_code_e;
 
 /**************************

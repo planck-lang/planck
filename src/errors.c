@@ -66,6 +66,9 @@ static struct error_text error_text_dict[] =
     // VM errors
     {error_vm_type_mismatch, "Type mismatch"},
     {error_vm_unknown_opcode, "Unkown opcode"},
+
+    // Symtab errors
+    {error_symtab_no_sym_name, "Not found symbol name"},
 };
 static const uint32_t num_of_error_text_dict = sizeof(error_text_dict) / sizeof(struct error_text);
 

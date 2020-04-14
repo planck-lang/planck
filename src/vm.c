@@ -36,6 +36,7 @@ SOFTWARE.
 #include "utils.h"
 #include "exe.h"
 #include "errors.h"
+#include "symtab.h"
 
 /**************************
  * External references
@@ -66,6 +67,8 @@ static objcode_t fetch_code(void);
 static void execute_code(objcode_t code);
 
 static void arithmetic(opcode_e opcode);
+static void store_after_pop(data_t data);
+
 static void stack_push(data_t data);
 static data_t stack_pop(void);
 
@@ -98,7 +101,6 @@ void vm_run(void)
 
 bool vm_get_last_stack(OUT_PTR data_t* ret)
 {
-    printf("-- %d\n", data_stack_pointer);
     if (data_stack_pointer == 0)
     {
         return false;
@@ -131,6 +133,10 @@ static void execute_code(objcode_t code)
 
         case opcode_push:
             stack_push(code.data);
+        break;
+
+        case opcode_store:
+            store_after_pop(code.data);
         break;
 
         case opcode_nop:
@@ -181,6 +187,19 @@ static void arithmetic(opcode_e opcode)
     }
 
     stack_push(result);
+}
+
+static void store_after_pop(data_t data)
+{
+    uint32_t sym_idx = (uint32_t)data.val.ival;
+    data_t val = stack_pop();
+
+    bool result = symtab_set_value_to_symbol_idx(sym_idx, val);
+
+    if (false == result)
+    {
+        errors_add(error_symtab_no_sym_name);
+    }
 }
 
 static void stack_push(data_t data)

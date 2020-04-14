@@ -43,8 +43,10 @@ SOFTWARE.
  * Public function prototypes
  **************************/
 void codegen_init(void);
-void codegen_add_num(const valtype_e valtype, const val_t val);
 void codegen_add_opcode(const opcode_e opcode);
+void codegen_add_num(const valtype_e valtype, const val_t val);
+void codegen_add_store(const uint32_t symtab_idx);
+void codegen_add_opcode_with_val(const opcode_e opcode, const data_t data);
 objcode_t* codegen_get_objcode(void);
 uint32_t codegen_get_objcode_lines(void);
 
