@@ -26,12 +26,13 @@ SOFTWARE.
  * Include system headers
  **************************/
 #include <stdio.h>
+#include <stdbool.h>
 
 /**************************
  * Include project headers
  **************************/
-#include "vm.h"
 #include "types.h"
+#include "symtab.h"
 
 /**************************
  * External references

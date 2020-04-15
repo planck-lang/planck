@@ -2,7 +2,6 @@
 
 #include "planck.h"
 
-#include "planck.h"
 #include "symtab.h"
 
 REGISTER_SUITE_AUTO(Variable_Test, "Variable Test")
