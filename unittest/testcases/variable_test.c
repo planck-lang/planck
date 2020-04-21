@@ -40,6 +40,11 @@ TESTCASE(2, "load test")
     error = planck(codeline, &ret);
     ASSERT_EQ_INT(error_none, error);
     ASSERT_EQ_INT(ret.val.ival, -3);
+
+    codeline = "-a * 3";
+    error = planck(codeline, &ret);
+    ASSERT_EQ_INT(error_none, error);
+    ASSERT_EQ_INT(ret.val.ival, -21);
 }
 
 TESTCASE(3, "find symbol index")
