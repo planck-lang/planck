@@ -41,3 +41,18 @@ TESTCASE(2, "load test")
     ASSERT_EQ_INT(error_none, error);
     ASSERT_EQ_INT(ret.val.ival, -3);
 }
+
+TESTCASE(3, "find symbol index")
+{
+    char* codeline = "let b = 3 + 4";
+
+    data_t ret = {0};
+    error_code_e error = planck(codeline, &ret);
+    ASSERT_EQ_INT(error_vm_stack_empty, error);
+
+    uint32_t idx = symtab_get_idx_by_name("b");
+    ASSERT_EQ_UINT(idx, 2);
+
+    idx = symtab_get_idx_by_name("be");
+    ASSERT_EQ_UINT(idx, SYMTAB_NO_IDX);
+}
