@@ -26,7 +26,7 @@ TESTCASE(2, "load test")
     data_t ret = {0};
     error_code_e error = planck(codeline, &ret);
 
-    ret = symtab_get_value_from_symbol_idx(0);
+    ret = symtab_get_value_from_symbol_idx(1);
 
     ASSERT_EQ_INT(ret.val.ival, 7);
     ASSERT_EQ_INT(error_vm_stack_empty, error);
