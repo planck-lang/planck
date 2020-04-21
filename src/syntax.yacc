@@ -97,8 +97,17 @@ unary
 primary
 : constant
 | OPENBR expr CLOSEBR
-//| id
+| identifier
 ;
+
+identifier
+: IDENTIFIER                {uint32_t sidx = symtab_get_idx_by_name($1);
+                             data_t v = symtab_get_value_from_symbol_idx(sidx);
+                             codegen_add_num(v.valtype, (val_t)(plusminus * v.val.ival));
+                             release_mem($1);
+                            }
+;
+
 
 constant
 : INUM                      {codegen_add_num(valtype_int, (val_t)(plusminus * $1));}

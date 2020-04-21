@@ -33,6 +33,7 @@ SOFTWARE.
  **************************/
 #include "types.h"
 #include "symtab.h"
+#include "utils.h"
 
 /**************************
  * External references
@@ -60,14 +61,15 @@ struct symtab {
 /**************************
  * Private variables
  **************************/
-struct symtab global_symtab = {0};
+static struct symtab global_symtab = {0};
 
 /**************************
  * Private function prototypes
  **************************/
-uint32_t push_symbol(struct symtab* ptr_symtab, const char* symname);
-bool set_value_to_symbol(struct symtab* ptr_symtab, const uint32_t idx, const data_t data);
-data_t get_value_from_symbol(struct symtab* ptr_symtab, const uint32_t idx);
+static uint32_t push_symbol(struct symtab* ptr_symtab, const char* symname);
+static bool set_value_to_symbol(struct symtab* ptr_symtab, const uint32_t idx, const data_t data);
+static data_t get_value_from_symbol(struct symtab* ptr_symtab, const uint32_t idx);
+static uint32_t get_idx_by_name(struct symtab* ptr_symtab, const char* sym_name);
 
 /**************************
  * Public functions
@@ -92,14 +94,19 @@ data_t symtab_get_value_from_symbol_idx(const uint32_t sym_idx)
     return get_value_from_symbol(&global_symtab, sym_idx);
 }
 
+uint32_t symtab_get_idx_by_name(const char* sym_name)
+{
+    return get_idx_by_name(&global_symtab, sym_name);
+}
+
 /**************************
  * Private functions
  **************************/
-uint32_t push_symbol(struct symtab* ptr_symtab, const char* symname)
+static uint32_t push_symbol(struct symtab* ptr_symtab, const char* symname)
 {
     if (ptr_symtab->top >= MAX_SYM_TAB_NUM)
     {
-        return MAX_SYM_TAB_NUM;
+        return SYMTAB_NO_IDX;
     }
 
     uint32_t idx = ptr_symtab->top;
@@ -110,7 +117,7 @@ uint32_t push_symbol(struct symtab* ptr_symtab, const char* symname)
     return idx;
 }
 
-bool set_value_to_symbol(struct symtab* ptr_symtab, const uint32_t idx, const data_t data)
+static bool set_value_to_symbol(struct symtab* ptr_symtab, const uint32_t idx, const data_t data)
 {
     if (idx >= ptr_symtab->top)
     {
@@ -122,7 +129,7 @@ bool set_value_to_symbol(struct symtab* ptr_symtab, const uint32_t idx, const da
     return true;
 }
 
-data_t get_value_from_symbol(struct symtab* ptr_symtab, const uint32_t idx)
+static data_t get_value_from_symbol(struct symtab* ptr_symtab, const uint32_t idx)
 {
     data_t ret_value = {0};
 
@@ -134,4 +141,17 @@ data_t get_value_from_symbol(struct symtab* ptr_symtab, const uint32_t idx)
     ret_value = ptr_symtab->table[idx].value;
 
     return ret_value;
+}
+
+static uint32_t get_idx_by_name(struct symtab* ptr_symtab, const char* sym_name)
+{
+    for (uint32_t idx = 0 ; idx < ptr_symtab->top ; idx++)
+    {
+        if (str_cmp(sym_name, ptr_symtab->table[idx].name))
+        {
+            return idx;
+        }
+    }
+
+    return SYMTAB_NO_IDX;
 }

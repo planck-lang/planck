@@ -29,6 +29,7 @@ SOFTWARE.
  **************************/
 #include <stdint.h>
 #include <stdio.h>
+#include <stdbool.h>
 
 /**************************
  * Macro
@@ -45,6 +46,8 @@ SOFTWARE.
 int64_t     str_to_int64(const char* str, uint32_t base);
 double      str_to_double(const char* str);
 char*       str_dup(const char* str, uint32_t len);
+void        release_mem(void* ptr);
+bool        str_cmp(const char* s1, const char* s2);
 
 /**************************
  * Inline functions

@@ -86,6 +86,25 @@ char* str_dup(const char* str, uint32_t len)
     return ret_ptr;
 }
 
+void release_mem(void* ptr)
+{
+    if (ptr != NULL)
+    {
+        free(ptr);
+    }
+}
+
+bool str_cmp(const char* s1, const char* s2)
+{
+    size_t len_s1 = strlen(s1);
+    size_t len_s2 = strlen(s2);
+
+    bool check_len = (len_s1 == len_s2);
+    bool check_val = (strncmp(s1, s2, len_s1) == 0);
+
+    return (check_len == true && check_val ==  true);
+}
+
 /**************************
  * Private functions
  **************************/

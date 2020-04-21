@@ -36,6 +36,7 @@ SOFTWARE.
 /**************************
  * Data types, Constants
  **************************/
+#define SYMTAB_NO_IDX   ((uint32_t)-1)
 
 /**************************
  * Public function prototypes
@@ -44,6 +45,7 @@ uint32_t symtab_add_symbol(const char* sym_name);
 uint32_t symtab_add_symbol_type(const char* sym_name, const char* type_name);
 bool symtab_set_value_to_symbol_idx(const uint32_t sym_idx, const data_t data);
 data_t symtab_get_value_from_symbol_idx(const uint32_t sym_idx);
+uint32_t symtab_get_idx_by_name(const char* sym_name);
 
 /**************************
  * Inline functions
