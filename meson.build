@@ -23,7 +23,6 @@ gen_lex = custom_target('lex',
 incdir = include_directories('src')
 src = [ 'src/codegen.c',
         'src/vm.c',
-        'src/exe.c',
         'src/utils.c',
         'src/errors.c',
         'src/symtab.c',

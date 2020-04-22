@@ -157,38 +157,36 @@ static void arithmetic(opcode_e opcode)
     data_t val2 = stack_pop();
     data_t val1 = stack_pop();
 
-    data_t result = {0};
+    data_t result = {.valtype = valtype_num, .val = 0};
 
-    if (val1.valtype == val2.valtype)
+    switch(opcode)
     {
-        result.valtype = val1.valtype;
+    case opcode_add:
+        result.val = val1.val + val2.val;
+    break;
 
-        switch(opcode)
+    case opcode_sub:
+        result.val = val1.val - val2.val;
+    break;
+
+    case opcode_mul:
+        result.val = val1.val * val2.val;
+    break;
+
+    case opcode_div:
+        if (val1.valtype == valtype_int && val2.valtype == valtype_int)
         {
-        case opcode_add:
-            result.val = exe_add(result.valtype, val1.val, val2.val);
-        break;
-
-        case opcode_sub:
-            result.val = exe_sub(result.valtype, val1.val, val2.val);
-        break;
-
-        case opcode_mul:
-            result.val = exe_mul(result.valtype, val1.val, val2.val);
-        break;
-
-        case opcode_div:
-            result.val = exe_div(result.valtype, val1.val, val2.val);
-        break;
-
-        default:
-            // TODO: Critical Error, Should be never happened
-        break;
+            result.val = (uint64_t)val1.val / (uint64_t)val2.val;
         }
-    }
-    else
-    {
-        errors_add(error_vm_type_mismatch);
+        else
+        {
+            result.val = val1.val / val2.val;
+        }
+    break;
+
+    default:
+        // TODO: Critical Error, Should be never happened
+    break;
     }
 
     stack_push(result);
@@ -196,7 +194,7 @@ static void arithmetic(opcode_e opcode)
 
 static void store_after_pop(data_t data)
 {
-    uint32_t sym_idx = (uint32_t)data.val.ival;
+    uint32_t sym_idx = (uint32_t)data.val;
     data_t val = stack_pop();
 
     bool result = symtab_set_value_to_symbol_idx(sym_idx, val);
@@ -209,7 +207,7 @@ static void store_after_pop(data_t data)
 
 static void load_after_push(data_t data)
 {
-    uint32_t sym_idx = (uint32_t)data.val.ival;
+    uint32_t sym_idx = (uint32_t)data.val;
 
     if (sym_idx == SYMTAB_NO_IDX)
     {

@@ -7,14 +7,14 @@
 
 REGISTER_SUITE_AUTO(Error_Test, "Error Test")
 
-TESTCASE(1, "type mismatch error")
+TESTCASE(1, "no error")
 {
     char* codeline = "3 + 4.0";
 
     data_t ret = {0};
     error_code_e error = planck(codeline, &ret);
 
-    ASSERT_EQ_UINT(error_vm_type_mismatch, error);
+    ASSERT_EQ_UINT(error_none, error);
 }
 
 TESTCASE(2, "unknown opcode")

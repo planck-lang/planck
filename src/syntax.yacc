@@ -38,7 +38,6 @@ int yyerror(const char* str)
     return 0;
 }
 
-static int64_t plusminus = 1;
 %}
 
 %union {
@@ -71,9 +70,9 @@ declaration
 ;
 
 expr
-: term                      {plusminus = 1;}
-| term PLUS term            {plusminus = 1; codegen_add_opcode(opcode_add);}
-| term MINUS term           {plusminus = 1; codegen_add_opcode(opcode_sub);}
+: term
+| term PLUS term            {codegen_add_opcode(opcode_add);}
+| term MINUS term           {codegen_add_opcode(opcode_sub);}
 ;
 
 term
@@ -91,7 +90,7 @@ factor
 unary
 : primary
 | PLUS unary
-| MINUS {plusminus = -1;} unary {plusminus = 1;}
+| MINUS {codegen_add_num(valtype_int, (val_t)(-1));} unary {codegen_add_opcode(opcode_mul);}
 ;
 
 primary
@@ -108,7 +107,7 @@ identifier
 
 
 constant
-: INUM                      {codegen_add_num(valtype_int, (val_t)(plusminus * $1));}
-| DNUM                      {codegen_add_num(valtype_double, (val_t)(plusminus * $1));}
+: INUM                      {codegen_add_num(valtype_int, (val_t)($1));}
+| DNUM                      {codegen_add_num(valtype_num, (val_t)($1));}
 ;
 %%

@@ -92,7 +92,7 @@ void codegen_add_store_load(const char op, const uint32_t symtab_idx)
     data_t data = {0};
 
     data.valtype = valtype_tab_idx;
-    data.val.ival = symtab_idx;
+    data.val = symtab_idx;
 
     opcode_e opcode = opcode_nop;
     if (op == 'S')
@@ -169,16 +169,12 @@ void codegen_debug_dump(void)
             case valtype_none:
             break;
 
-            case valtype_int:
-                DEBUG_PRINT(" %ld", data.val.ival);
-            break;
-
-            case valtype_double:
-                DEBUG_PRINT(" %f", data.val.dval);
+            case valtype_num:
+                DEBUG_PRINT(" %f", data.val);
             break;
 
             case valtype_tab_idx:
-                DEBUG_PRINT(" $%ld", data.val.ival);
+                DEBUG_PRINT(" $%d", (uint32_t)data.val);
             break;
 
             default:

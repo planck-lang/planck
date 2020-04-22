@@ -37,15 +37,12 @@ SOFTWARE.
 /**************************
  * Data types, Constants
  **************************/
-typedef union _val_t_ {
-    int64_t ival;
-    double  dval;
-} val_t;
+typedef double val_t;
 
 typedef enum _valtype_e_ {
     valtype_none = 0,
-    valtype_int  = 1,
-    valtype_double,
+    valtype_int,
+    valtype_num,
     valtype_primitive_max,
     valtype_tab_idx,
     valtype_builtin_max,

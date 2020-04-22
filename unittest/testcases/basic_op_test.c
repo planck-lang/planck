@@ -12,8 +12,8 @@ TESTCASE(1, "simple add")
     error_code_e error = planck(codeline, &ret);
 
     ASSERT_EQ_INT(error_none, error);
-    ASSERT_EQ_INT(ret.val.ival, 7);
-    ASSERT(ret.valtype == valtype_int, "valtype should be int");
+    ASSERT_EQ_INT(ret.val, 7);
+    ASSERT(ret.valtype == valtype_num, "valtype should be num");
 }
 
 TESTCASE(2, "simple mixed")
@@ -26,20 +26,20 @@ TESTCASE(2, "simple mixed")
     codeline = "3 + 4 * 3";
     error = planck(codeline, &ret);
     ASSERT_EQ_INT(error_none, error);
-    ASSERT_EQ_INT(3 + 4 * 3, ret.val.ival);
-    ASSERT(ret.valtype == valtype_int, "valtype should be int");
+    ASSERT_EQ_INT(3 + 4 * 3, ret.val);
+    ASSERT(ret.valtype == valtype_num, "valtype should be num");
 
     codeline = "3 - 4 * 3";
     error = planck(codeline, &ret);
     ASSERT_EQ_INT(error_none, error);
-    ASSERT_EQ_INT(3 - 4 * 3, ret.val.ival);
-    ASSERT(ret.valtype == valtype_int, "valtype should be int");
+    ASSERT_EQ_INT(3 - 4 * 3, ret.val);
+    ASSERT(ret.valtype == valtype_num, "valtype should be num");
 
     codeline = "3 - 4 / 3";
     error = planck(codeline, &ret);
     ASSERT_EQ_INT(error_none, error);
-    ASSERT_EQ_INT(3 - 4 / 3, ret.val.ival);
-    ASSERT(ret.valtype == valtype_int, "valtype should be int");
+    ASSERT_EQ_INT(3 - 4 / 3, ret.val);
+    ASSERT(ret.valtype == valtype_num, "valtype should be num");
 }
 
 TESTCASE(3, "no space expr")
@@ -52,30 +52,32 @@ TESTCASE(3, "no space expr")
     codeline = "3+4*3";
     error = planck(codeline, &ret);
     ASSERT_EQ_INT(error_none, error);
-    ASSERT_EQ_INT(3+4*3, ret.val.ival);
-    ASSERT(ret.valtype == valtype_int, "valtype should be int");
+    ASSERT_EQ_INT(3+4*3, ret.val);
 
     codeline = "3-4*3";
     error = planck(codeline, &ret);
     ASSERT_EQ_INT(error_none, error);
-    ASSERT_EQ_INT(3-4*3, ret.val.ival);
-    ASSERT(ret.valtype == valtype_int, "valtype should be int");
+    ASSERT_EQ_INT(3-4*3, ret.val);
 
     codeline = "3.3-4.4/3.3";
     error = planck(codeline, &ret);
     ASSERT_EQ_INT(error_none, error);
-    ASSERT_EQ_NUM(3.3-4.4/3.3, ret.val.dval);
-    ASSERT(ret.valtype == valtype_double, "valtype should be double");
+    ASSERT_EQ_NUM(3.3-4.4/3.3, ret.val);
 
     codeline = "-3+4*3";
     error = planck(codeline, &ret);
     ASSERT_EQ_INT(error_none, error);
-    ASSERT_EQ_INT(-3+4*3, ret.val.ival);
+    ASSERT_EQ_INT(-3+4*3, ret.val);
 
     codeline = "-3+2";
     error = planck(codeline, &ret);
     ASSERT_EQ_INT(error_none, error);
-    ASSERT_EQ_INT(-3+2, ret.val.ival);
+    ASSERT_EQ_INT(-3+2, ret.val);
+
+    codeline = "-3.7+2.8";
+    error = planck(codeline, &ret);
+    ASSERT_EQ_INT(error_none, error);
+    ASSERT_EQ_NUM(-3.7+2.8, ret.val);
 }
 
 TESTCASE(4, "bracket")
@@ -88,18 +90,20 @@ TESTCASE(4, "bracket")
     codeline = "(3+4)*3";
     error = planck(codeline, &ret);
     ASSERT_EQ_INT(error_none, error);
-    ASSERT_EQ_INT((3+4)*3, ret.val.ival);
-    ASSERT(ret.valtype == valtype_int, "valtype should be int");
+    ASSERT_EQ_INT((3+4)*3, ret.val);
 
     codeline = "(3-4)*3";
     error = planck(codeline, &ret);
     ASSERT_EQ_INT(error_none, error);
-    ASSERT_EQ_INT((3-4)*3, ret.val.ival);
-    ASSERT(ret.valtype == valtype_int, "valtype should be int");
+    ASSERT_EQ_INT((3-4)*3, ret.val);
 
     codeline = "(3.3-4.4)/3.3";
     error = planck(codeline, &ret);
     ASSERT_EQ_INT(error_none, error);
-    ASSERT_EQ_NUM((3.3-4.4)/3.3, ret.val.dval);
-    ASSERT(ret.valtype == valtype_double, "valtype should be double");
+    ASSERT_EQ_NUM((3.3-4.4)/3.3, ret.val);
+
+    codeline = "-(3.3+4.4)/3.3";
+    error = planck(codeline, &ret);
+    ASSERT_EQ_INT(error_none, error);
+    ASSERT_EQ_NUM(-(3.3+4.4)/3.3, ret.val);
 }

@@ -15,7 +15,7 @@ TESTCASE(1, "basic test")
 
     ret = symtab_get_value_from_symbol_idx(0);
 
-    ASSERT_EQ_INT(ret.val.ival, 7);
+    ASSERT_EQ_INT(7, ret.val);
     ASSERT_EQ_INT(error_vm_stack_empty, error);
 }
 
@@ -28,23 +28,23 @@ TESTCASE(2, "load test")
 
     ret = symtab_get_value_from_symbol_idx(1);
 
-    ASSERT_EQ_INT(ret.val.ival, 7);
+    ASSERT_EQ_INT(7, ret.val);
     ASSERT_EQ_INT(error_vm_stack_empty, error);
 
     codeline = "4 + a";
     error = planck(codeline, &ret);
     ASSERT_EQ_INT(error_none, error);
-    ASSERT_EQ_INT(ret.val.ival, 11);
+    ASSERT_EQ_INT(11, ret.val);
 
     codeline = "4 - a";
     error = planck(codeline, &ret);
     ASSERT_EQ_INT(error_none, error);
-    ASSERT_EQ_INT(ret.val.ival, -3);
+    ASSERT_EQ_INT(-3, ret.val);
 
     codeline = "-a * 3";
     error = planck(codeline, &ret);
     ASSERT_EQ_INT(error_none, error);
-    ASSERT_EQ_INT(ret.val.ival, -21);
+    ASSERT_EQ_INT(-21, ret.val);
 }
 
 TESTCASE(3, "find symbol index")
