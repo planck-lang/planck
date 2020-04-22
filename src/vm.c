@@ -34,7 +34,6 @@ SOFTWARE.
 #include "vm.h"
 #include "types.h"
 #include "utils.h"
-#include "exe.h"
 #include "errors.h"
 #include "symtab.h"
 
