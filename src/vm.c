@@ -174,7 +174,7 @@ static void arithmetic(opcode_e opcode)
     break;
 
     case opcode_div:
-        if (val1.valtype == valtype_int && val2.valtype == valtype_int)
+        if (result.valtype == valtype_int)
         {
             result.val = (uint64_t)val1.val / (uint64_t)val2.val;
         }

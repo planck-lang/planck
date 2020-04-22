@@ -13,7 +13,7 @@ TESTCASE(1, "simple add")
 
     ASSERT_EQ_INT(error_none, error);
     ASSERT_EQ_INT(ret.val, 7);
-    ASSERT(ret.valtype == valtype_num, "valtype should be num");
+    ASSERT(ret.valtype == valtype_int, "valtype should be int");
 }
 
 TESTCASE(2, "simple mixed")
@@ -27,19 +27,19 @@ TESTCASE(2, "simple mixed")
     error = planck(codeline, &ret);
     ASSERT_EQ_INT(error_none, error);
     ASSERT_EQ_INT(3 + 4 * 3, ret.val);
-    ASSERT(ret.valtype == valtype_num, "valtype should be num");
+    ASSERT(ret.valtype == valtype_int, "valtype should be int");
 
     codeline = "3 - 4 * 3";
     error = planck(codeline, &ret);
     ASSERT_EQ_INT(error_none, error);
     ASSERT_EQ_INT(3 - 4 * 3, ret.val);
-    ASSERT(ret.valtype == valtype_num, "valtype should be num");
+    ASSERT(ret.valtype == valtype_int, "valtype should be int");
 
     codeline = "3 - 4 / 3";
     error = planck(codeline, &ret);
     ASSERT_EQ_INT(error_none, error);
     ASSERT_EQ_INT(3 - 4 / 3, ret.val);
-    ASSERT(ret.valtype == valtype_num, "valtype should be num");
+    ASSERT(ret.valtype == valtype_int, "valtype should be int");
 }
 
 TESTCASE(3, "no space expr")
