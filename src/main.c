@@ -86,7 +86,7 @@ int main(int argc, char* argv[])
 
             if (error_none == error)
             {
-                printf("%f\n", ret.val);
+                print_result(ret);
             }
             else
             {
@@ -101,6 +101,18 @@ int main(int argc, char* argv[])
 /**************************
  * Private functions
  **************************/
+void print_result(data_t data)
+{
+    if (valtype_int == data.valtype)
+    {
+        printf("%ld\n", (uint64_t)data.val);
+    }
+    else if (valtype_num == data.valtype)
+    {
+        printf("%f\n", data.val);
+    }
+}
+
 void print_error(error_code_e e)
 {
     if (e > error_start_idx)

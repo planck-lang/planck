@@ -156,7 +156,8 @@ static void arithmetic(opcode_e opcode)
     data_t val2 = stack_pop();
     data_t val1 = stack_pop();
 
-    data_t result = {.valtype = valtype_num, .val = 0};
+    data_t result = {0};
+    result.valtype = ((val1.valtype == val2.valtype) ? val1.valtype : valtype_num);
 
     switch(opcode)
     {
