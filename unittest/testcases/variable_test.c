@@ -61,3 +61,23 @@ TESTCASE(3, "find symbol index")
     idx = symtab_get_idx_by_name("be");
     ASSERT_EQ_UINT(idx, SYMTAB_NO_IDX);
 }
+
+TESTCASE(4, "overwrite")
+{
+    char* codeline = "a";
+
+    data_t ret = {0};
+    error_code_e error = planck(codeline, &ret);
+
+    ASSERT_EQ_INT(error_none, error);
+    ASSERT_EQ_INT(7, ret.val);
+
+    codeline = "a = 23 + 99";
+    error = planck(codeline, &ret);
+    ASSERT_EQ_INT(error_vm_stack_empty, error);
+
+    codeline = "a";
+    error = planck(codeline, &ret);
+    ASSERT_EQ_INT(error_none, error);
+    ASSERT_EQ_INT((23+99), ret.val);
+}

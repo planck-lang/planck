@@ -197,6 +197,12 @@ static void store_after_pop(data_t data)
     uint32_t sym_idx = (uint32_t)data.val;
     data_t val = stack_pop();
 
+    if (sym_idx == SYMTAB_NO_IDX)
+    {
+        errors_add(error_symtab_no_sym_name);
+        return;
+    }
+
     bool result = symtab_set_value_to_symbol_idx(sym_idx, val);
 
     if (false == result)

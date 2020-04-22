@@ -60,6 +60,7 @@ int yyerror(const char* str)
 prog
 : expr
 | declaration
+| assignment
 ;
 
 declaration
@@ -67,6 +68,12 @@ declaration
                             {codegen_add_store_load('S', symtab_add_symbol($2));}
 | K_LET IDENTIFIER EQUAL expr K_AS IDENTIFIER
                             {codegen_add_store_load('S', symtab_add_symbol_type($2, $6));}
+;
+
+assignment
+: IDENTIFIER EQUAL expr     {codegen_add_store_load('S', symtab_get_idx_by_name($1));
+                             release_mem($1);
+                            }
 ;
 
 expr
@@ -104,7 +111,6 @@ identifier
                              release_mem($1);
                             }
 ;
-
 
 constant
 : INUM                      {codegen_add_num(valtype_int, (val_t)($1));}
