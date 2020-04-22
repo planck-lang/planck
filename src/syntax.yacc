@@ -65,9 +65,9 @@ prog
 
 declaration
 : K_LET IDENTIFIER EQUAL expr
-                            {codegen_add_store(symtab_add_symbol($2));}
+                            {codegen_add_store_load('S', symtab_add_symbol($2));}
 | K_LET IDENTIFIER EQUAL expr K_AS IDENTIFIER
-                            {codegen_add_store(symtab_add_symbol_type($2, $6));}
+                            {codegen_add_store_load('S', symtab_add_symbol_type($2, $6));}
 ;
 
 expr
@@ -101,9 +101,7 @@ primary
 ;
 
 identifier
-: IDENTIFIER                {uint32_t sidx = symtab_get_idx_by_name($1);
-                             data_t v = symtab_get_value_from_symbol_idx(sidx);
-                             codegen_add_num(v.valtype, (val_t)(plusminus * v.val.ival));
+: IDENTIFIER                {codegen_add_store_load('L', symtab_get_idx_by_name($1));
                              release_mem($1);
                             }
 ;

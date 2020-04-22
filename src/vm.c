@@ -68,6 +68,7 @@ static void execute_code(objcode_t code);
 
 static void arithmetic(opcode_e opcode);
 static void store_after_pop(data_t data);
+static void load_after_push(data_t data);
 
 static void stack_push(data_t data);
 static data_t stack_pop(void);
@@ -139,6 +140,10 @@ static void execute_code(objcode_t code)
             store_after_pop(code.data);
         break;
 
+        case opcode_load:
+            load_after_push(code.data);
+        break;
+
         case opcode_nop:
         break;
         default:
@@ -200,6 +205,20 @@ static void store_after_pop(data_t data)
     {
         errors_add(error_symtab_no_sym_name);
     }
+}
+
+static void load_after_push(data_t data)
+{
+    uint32_t sym_idx = (uint32_t)data.val.ival;
+
+    if (sym_idx == SYMTAB_NO_IDX)
+    {
+        errors_add(error_symtab_no_sym_name);
+        return;
+    }
+
+    data_t val = symtab_get_value_from_symbol_idx(sym_idx);
+    stack_push(val);
 }
 
 static void stack_push(data_t data)

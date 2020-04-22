@@ -87,14 +87,28 @@ void codegen_add_num(const valtype_e valtype, const val_t val)
     codegen_add_opcode_with_val(opcode_push, data);
 }
 
-void codegen_add_store(const uint32_t symtab_idx)
+void codegen_add_store_load(const char op, const uint32_t symtab_idx)
 {
     data_t data = {0};
 
     data.valtype = valtype_tab_idx;
     data.val.ival = symtab_idx;
 
-    codegen_add_opcode_with_val(opcode_store, data);
+    opcode_e opcode = opcode_nop;
+    if (op == 'S')
+    {
+        opcode = opcode_store;
+    }
+    else if (op == 'L') 
+    {
+        opcode = opcode_load;
+    }
+    else
+    {
+        opcode = opcode_nop;
+    }
+
+    codegen_add_opcode_with_val(opcode, data);
 }
 
 void codegen_add_opcode_with_val(const opcode_e opcode, const data_t data)
@@ -127,6 +141,7 @@ void codegen_debug_dump(void)
         "opcode_div",
         "opcode_push",
         "opcode_store",
+        "opcode_load",
     };
 
     static const char* valtype_name[] = {

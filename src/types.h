@@ -60,6 +60,7 @@ typedef enum _opcode_e_ {
     opcode_div      = 4,
     opcode_push     = 5,
     opcode_store    = 6,
+    opcode_load     = 7,
 } opcode_e;
 
 typedef struct _data_t_ {
