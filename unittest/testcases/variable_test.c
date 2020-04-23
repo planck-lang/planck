@@ -81,3 +81,29 @@ TESTCASE(4, "overwrite")
     ASSERT_EQ_INT(error_none, error);
     ASSERT_EQ_INT((23+99), ret.val);
 }
+
+TESTCASE(5, "no symbol")
+{
+    // read from no symbol
+    char* codeline = "a = aelk + 9";
+
+    data_t ret = {0};
+    error_code_e error = planck(codeline, &ret);
+
+    ASSERT_EQ_INT(error_symtab_no_sym_name, error);
+
+    // read and write to symbol
+    codeline = "a = b + 27";
+    error = planck(codeline, &ret);
+    ASSERT_EQ_INT(error_vm_stack_empty, error);
+
+    codeline = "a";
+    error = planck(codeline, &ret);
+    ASSERT_EQ_INT(error_none, error);
+    ASSERT_EQ_INT(34, ret.val);
+
+    // write to no symbol
+    codeline = "k = 3";
+    error = planck(codeline, &ret);
+    ASSERT_EQ_INT(error_symtab_no_sym_name, error);
+}
