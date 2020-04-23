@@ -34,6 +34,7 @@ SOFTWARE.
 #include "types.h"
 #include "symtab.h"
 #include "utils.h"
+#include "errors.h"
 
 /**************************
  * External references
@@ -104,6 +105,15 @@ uint32_t symtab_get_idx_by_name(const char* sym_name)
  **************************/
 static uint32_t push_symbol(struct symtab* ptr_symtab, const char* symname)
 {
+    // Prevent duplicated pushing symbol
+    if (get_idx_by_name(ptr_symtab, symname) != SYMTAB_NO_IDX)
+    {
+        errors_add(error_symtab_dup_sym_name);
+        // It means that the ptr_symtab has symbol name as same as symname
+        // so, return SYMTAB_NO_IDX
+        return SYMTAB_NO_IDX;
+    }
+
     if (ptr_symtab->top >= MAX_SYM_TAB_NUM)
     {
         return SYMTAB_NO_IDX;

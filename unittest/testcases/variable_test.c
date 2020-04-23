@@ -82,7 +82,7 @@ TESTCASE(4, "overwrite")
     ASSERT_EQ_INT((23+99), ret.val);
 }
 
-TESTCASE(5, "no symbol")
+TESTCASE(5, "no symbol error")
 {
     // read from no symbol
     char* codeline = "a = aelk + 9";
@@ -106,4 +106,25 @@ TESTCASE(5, "no symbol")
     codeline = "k = 3";
     error = planck(codeline, &ret);
     ASSERT_EQ_INT(error_symtab_no_sym_name, error);
+}
+
+TESTCASE(6, "duplicated symbol error")
+{
+    char* codeline = "let b = 10";
+
+    data_t ret = {0};
+    error_code_e error = planck(codeline, &ret);
+    ASSERT_EQ_INT(error_symtab_dup_sym_name, error);
+
+    codeline = "let akea = b + 27";
+    error = planck(codeline, &ret);
+    ASSERT_EQ_INT(error_vm_stack_empty, error);
+
+    codeline = "let akea = 30";
+    error = planck(codeline, &ret);
+    ASSERT_EQ_INT(error_symtab_dup_sym_name, error);
+
+    codeline = "let b = 30";
+    error = planck(codeline, &ret);
+    ASSERT_EQ_INT(error_symtab_dup_sym_name, error);
 }
