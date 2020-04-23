@@ -46,8 +46,12 @@ int yywrap(void)
 "/"             return SLASH;
 "="             return EQUAL;
 
+"{"             return OPENBLOCK;
+"}"             return CLOSEBLOCK;
+
 "let"           return K_LET;
 "as"            return K_AS;
+"struct"        return K_STRUCT;
 
 [0-9]+ {
     yylval.int_value = str_to_int64(yytext, 10);

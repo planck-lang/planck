@@ -52,15 +52,16 @@ int yyerror(const char* str)
 %token<double_value>    DNUM
 %token<identifier>      IDENTIFIER
 
-%token      OPENBR CLOSEBR
+%token      OPENBR CLOSEBR OPENBLOCK CLOSEBLOCK
 %token      PLUS MINUS STAR SLASH EQUAL
-%token      K_LET K_AS
+%token      K_LET K_AS K_STRUCT
 
 %%
 prog
 : expr
 | declaration
 | assignment
+| struct_declaration
 ;
 
 declaration
@@ -68,6 +69,21 @@ declaration
                             {codegen_add_store_load('S', symtab_add_symbol($2));}
 | K_LET IDENTIFIER EQUAL expr K_AS IDENTIFIER
                             {codegen_add_store_load('S', symtab_add_symbol_type($2, $6));}
+;
+
+member_decl_list
+: declaration
+| member_decl
+| declaration member_decl_list
+| member_decl member_decl_list
+;
+
+member_decl
+: K_LET IDENTIFIER K_AS IDENTIFIER
+;
+
+struct_declaration
+: K_STRUCT IDENTIFIER OPENBLOCK member_decl_list CLOSEBLOCK
 ;
 
 assignment
