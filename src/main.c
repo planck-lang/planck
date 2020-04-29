@@ -45,6 +45,7 @@ SOFTWARE.
  * Macro
  **************************/
 #define NORMAL_PROMPT   ">> "
+#define BLOCK_PROMPT    ".. "
 
 /**************************
  * Data types, Constants
@@ -58,16 +59,18 @@ static char* s_prompt_ptr;
 /**************************
  * Private function prototypes
  **************************/
-void print_result(data_t data);
-void print_error(error_code_e e);
+static void print_result(data_t data);
+static void print_error(error_code_e e);
 
 /**************************
  * Public functions
  **************************/
 int main(int argc, char* argv[])
 {
-    s_prompt_ptr = NORMAL_PROMPT;
+    char* line = NULL;
 
+    s_prompt_ptr = NORMAL_PROMPT;
+    
     while(true) 
     {
         char* buf = readline(s_prompt_ptr);
@@ -77,12 +80,24 @@ int main(int argc, char* argv[])
             break;
         }
 
-        if (strlen(buf) > 0) 
-        {
-            add_history(buf);
+        add_history(buf);
 
+        uint32_t block_depth = 0;
+        line = planck_block_buff(line, buf, OUT_PTR &block_depth);
+        free(buf);
+
+        s_prompt_ptr = NORMAL_PROMPT;
+
+        if (0 != block_depth)
+        {
+            s_prompt_ptr = BLOCK_PROMPT;
+            continue;
+        }
+
+        if (strlen(line) > 0) 
+        {
             data_t ret = {0};
-            error_code_e error = planck(buf, &ret);
+            error_code_e error = planck(line, &ret);
 
             if (error_none == error)
             {
@@ -94,14 +109,15 @@ int main(int argc, char* argv[])
             }
         }
 
-        free(buf);
+        free(line);
+        line = NULL;
     }
 }
 
 /**************************
  * Private functions
  **************************/
-void print_result(data_t data)
+static void print_result(data_t data)
 {
     if (valtype_int == data.valtype)
     {
@@ -113,7 +129,7 @@ void print_result(data_t data)
     }
 }
 
-void print_error(error_code_e e)
+static void print_error(error_code_e e)
 {
     if (e > error_start_idx)
     {

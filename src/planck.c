@@ -25,7 +25,8 @@ SOFTWARE.
 /**************************
  * Include system headers
  **************************/
- 
+#include <string.h>
+
 /**************************
  * Include project headers
  **************************/
@@ -55,16 +56,20 @@ extern int yylex(void);
 /**************************
  * Private variables
  **************************/
- 
+static uint32_t s_block_depth = 0;
+
 /**************************
  * Private function prototypes
  **************************/
- 
+static void check_block(const char* input);
+
 /**************************
  * Public functions
  **************************/
 error_code_e planck(const char* str, OUT_PTR data_t* ret)
 {
+    s_block_depth = 0;
+
     codegen_init();
     errors_reset();
 
@@ -98,6 +103,47 @@ error_code_e planck(const char* str, OUT_PTR data_t* ret)
     return errors_get();
 }
 
+char* planck_block_buff(char* block_buf, char* line_buf, OUT_PTR uint32_t *block_depth)
+{
+    check_block(line_buf);
+    *block_depth = s_block_depth;
+
+    char* new_block_buf = (NULL == block_buf) ? 
+                            str_dup(line_buf, strlen(line_buf)):
+                            str_con(block_buf, line_buf, strlen(block_buf), strlen(line_buf), " ");
+    
+    if (block_buf != NULL)
+    {
+        release_mem(block_buf);
+    }
+    
+    return new_block_buf;
+}
+
 /**************************
  * Private functions
  **************************/
+
+static void check_block(const char* input)
+{
+    size_t end_index = strlen(input) - 1;
+
+    // find the first character unless new line, space, tab
+    while(true)
+    {
+        if (input[end_index] != '\n' || input[end_index] != ' ' || input[end_index] != '\t')
+        {
+            break;
+        }
+        end_index--;
+    }
+
+    if (input[end_index] == '{')
+    {
+        s_block_depth++;
+    }
+    else if (input[end_index] == '}')
+    {
+        s_block_depth--;
+    }
+}

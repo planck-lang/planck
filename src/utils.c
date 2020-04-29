@@ -86,6 +86,21 @@ char* str_dup(const char* str, uint32_t len)
     return ret_ptr;
 }
 
+char* str_con(const char* front, const char* back, size_t frontlen, size_t backlen, char* delim)
+{
+    size_t delim_len = (NULL == delim) ? 0 : strlen(delim);
+    size_t all_len = frontlen + backlen + delim_len + 1;
+
+    char* ret_ptr = malloc(all_len);
+    memset(ret_ptr, 0, all_len);
+
+    memcpy(ret_ptr, front, frontlen);
+    if (NULL != delim) { memcpy((ret_ptr + frontlen), delim, delim_len); }
+    memcpy((ret_ptr + frontlen + delim_len), back, backlen);
+    
+    return ret_ptr;
+}
+
 void release_mem(void* ptr)
 {
     if (ptr != NULL)

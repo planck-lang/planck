@@ -46,8 +46,10 @@ SOFTWARE.
 int64_t     str_to_int64(const char* str, uint32_t base);
 double      str_to_double(const char* str);
 char*       str_dup(const char* str, uint32_t len);
-void        release_mem(void* ptr);
+char*       str_con(const char* front, const char* back, size_t frontlen, size_t backlen, char* delim);
 bool        str_cmp(const char* s1, const char* s2);
+
+void        release_mem(void* ptr);
 
 /**************************
  * Inline functions
