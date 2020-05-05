@@ -82,13 +82,12 @@ int main(int argc, char* argv[])
 
         add_history(buf);
 
-        uint32_t block_depth = 0;
-        line = planck_block_buff(line, buf, OUT_PTR &block_depth);
+        line = planck_block_buff(line, buf);
         free(buf);
 
         s_prompt_ptr = NORMAL_PROMPT;
 
-        if (0 != block_depth)
+        if (0 != planck_get_block_depth())
         {
             s_prompt_ptr = BLOCK_PROMPT;
             continue;

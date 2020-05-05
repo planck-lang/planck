@@ -103,10 +103,9 @@ error_code_e planck(const char* str, OUT_PTR data_t* ret)
     return errors_get();
 }
 
-char* planck_block_buff(char* block_buf, char* line_buf, OUT_PTR uint32_t *block_depth)
+char* planck_block_buff(char* block_buf, char* line_buf)
 {
     check_block(line_buf);
-    *block_depth = s_block_depth;
 
     char* new_block_buf = (NULL == block_buf) ? 
                             str_dup(line_buf, strlen(line_buf)):
@@ -118,6 +117,11 @@ char* planck_block_buff(char* block_buf, char* line_buf, OUT_PTR uint32_t *block
     }
     
     return new_block_buf;
+}
+
+uint32_t planck_get_block_depth(void)
+{
+    return s_block_depth;
 }
 
 /**************************
