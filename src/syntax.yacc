@@ -72,9 +72,7 @@ declaration
 ;
 
 member_decl_list
-: declaration
-| member_decl
-| declaration member_decl_list
+: member_decl
 | member_decl member_decl_list
 ;
 
