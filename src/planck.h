@@ -42,6 +42,7 @@ SOFTWARE.
 /**************************
  * Public function prototypes
  **************************/
+void planck_init(void);
 error_code_e planck(const char* str, OUT_PTR data_t* ret);
 char* planck_block_buff(char* block_buf, char* line_buf);
 uint32_t planck_get_block_depth(void);

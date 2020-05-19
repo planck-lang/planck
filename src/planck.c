@@ -35,6 +35,7 @@ SOFTWARE.
 #include "vm.h"
 #include "utils.h"
 #include "errors.h"
+#include "typetab.h"
 
 /**************************
  * External references
@@ -66,6 +67,11 @@ static void check_block(const char* input);
 /**************************
  * Public functions
  **************************/
+void planck_init(void)
+{
+    typetab_init();
+}
+
 error_code_e planck(const char* str, OUT_PTR data_t* ret)
 {
     s_block_depth = 0;

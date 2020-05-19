@@ -26,6 +26,7 @@ src = [ 'src/codegen.c',
         'src/utils.c',
         'src/errors.c',
         'src/symtab.c',
+        'src/typetab.c',
         'src/planck.c']
 libplancks = both_libraries('planck', [src, gen_yacc, gen_lex], 
                         version : meson.project_version(), soversion : '0',

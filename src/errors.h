@@ -52,6 +52,9 @@ typedef enum _error_code_e_ {
     // Symtab errors
     error_symtab_no_sym_name       = 0x30001,
     error_symtab_dup_sym_name      = 0x30002,
+
+    // Typetab errors
+    error_typetab_no_type_name     = 0x40001,
 } error_code_e;
 
 /**************************

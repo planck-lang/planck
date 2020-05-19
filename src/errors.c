@@ -70,6 +70,9 @@ static struct error_text error_text_dict[] =
     // Symtab errors
     {error_symtab_no_sym_name, "Not found symbol name"},
     {error_symtab_dup_sym_name, "Duplicated declaration"},
+
+    // Typetab errors
+    {error_typetab_no_type_name, "Not found type name"},
 };
 static const uint32_t num_of_error_text_dict = sizeof(error_text_dict) / sizeof(struct error_text);
 

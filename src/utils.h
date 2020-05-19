@@ -48,7 +48,8 @@ double      str_to_double(const char* str);
 char*       str_dup(const char* str, uint32_t len);
 char*       str_con(const char* front, const char* back, size_t frontlen, size_t backlen, char* delim);
 bool        str_cmp(const char* s1, const char* s2);
-
+size_t      str_len(const char* s);
+void*       alloc_mem(size_t size_of_item, uint32_t num_of_item);
 void        release_mem(void* ptr);
 
 /**************************

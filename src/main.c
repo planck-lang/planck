@@ -70,6 +70,8 @@ int main(int argc, char* argv[])
     char* line = NULL;
 
     s_prompt_ptr = NORMAL_PROMPT;
+
+    planck_init();
     
     while(true) 
     {
