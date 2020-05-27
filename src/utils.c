@@ -119,6 +119,11 @@ bool str_cmp(const char* s1, const char* s2)
     size_t len_s1 = str_len(s1);
     size_t len_s2 = str_len(s2);
 
+    if (0 == len_s1 || 0 == len_s2)
+    {
+        return false;
+    }
+
     bool check_len = (len_s1 == len_s2);
     bool check_val = (strncmp(s1, s2, len_s1) == 0);
 

@@ -128,6 +128,7 @@ uint32_t typetab_add_member_by_idx(uint32_t type_idx, const char* mem_name, cons
     global_typetab.table[type_idx].members[mem_idx].name = mem_name;
     global_typetab.table[type_idx].members[mem_idx].type_refer = mem_type_idx;
     global_typetab.table[type_idx].num_members++;
+    global_typetab.table[type_idx].size += typetab_get_size_by_idx(mem_type_idx);
 
     return mem_idx;
 }
@@ -143,6 +144,17 @@ uint32_t typetab_get_idx_by_name(const char* type_name)
     }
 
     return TYPETAB_NO_IDX;
+}
+
+uint32_t typetab_get_size_by_idx(uint32_t type_idx)
+{
+    if (TYPETAB_NO_IDX == type_idx || type_idx > global_typetab.top)
+    {
+        errors_add(error_typetab_no_type_name);
+        return 0;
+    }
+
+    return global_typetab.table[type_idx].size;
 }
 
 /**************************

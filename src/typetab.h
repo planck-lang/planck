@@ -44,6 +44,7 @@ void typetab_init(void);
 uint32_t typetab_add_type(const char* type_name);
 uint32_t typetab_add_member_by_idx(uint32_t type_idx, const char* mem_name, const char* mem_type_name);
 uint32_t typetab_get_idx_by_name(const char* type_name);
+uint32_t typetab_get_size_by_idx(uint32_t type_idx);
 
 /**************************
  * Inline functions

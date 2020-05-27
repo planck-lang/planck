@@ -29,6 +29,7 @@ SOFTWARE.
 #include "codegen.h"
 #include "utils.h"
 #include "symtab.h"
+#include "typetab.h"
 
 extern int yylex (void);
 
@@ -37,6 +38,8 @@ int yyerror(const char* str)
     //DEBUG_PRINT("[Parse Error] %s\n", str);
     return 0;
 }
+
+static uint32_t current_parsing_struct_idx;
 
 %}
 
@@ -78,10 +81,11 @@ member_decl_list
 
 member_decl
 : K_LET IDENTIFIER K_AS IDENTIFIER
+                            {typetab_add_member_by_idx(current_parsing_struct_idx, $2, $4);}
 ;
 
 struct_declaration
-: K_STRUCT IDENTIFIER OPENBLOCK member_decl_list CLOSEBLOCK
+: K_STRUCT IDENTIFIER {current_parsing_struct_idx = typetab_add_type($2);} OPENBLOCK member_decl_list CLOSEBLOCK
 ;
 
 assignment
