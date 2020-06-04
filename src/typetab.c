@@ -81,6 +81,7 @@ struct typetab global_typetab = {0};
 void typetab_init(void)
 {
     // index #0 is not used
+    global_typetab.top = 0;
     global_typetab.top++;
 
     global_typetab.table[valtype_int].name = "int";
@@ -155,6 +156,16 @@ uint32_t typetab_get_size_by_idx(uint32_t type_idx)
     }
 
     return global_typetab.table[type_idx].size;
+}
+
+void typetab_debug_dump_type_name(void)
+{
+    printf("\nType table dump : %d\n", global_typetab.top);
+
+    for (uint32_t idx = 0 ; idx < global_typetab.top ; idx++)
+    {
+        printf("%s\n", global_typetab.table[idx].name);
+    }
 }
 
 /**************************

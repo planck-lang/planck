@@ -46,6 +46,7 @@ executable('planck_static', 'src/main.c',
 unit_test_src = ['unittest/testcases/basic_op_test.c',
                 'unittest/testcases/error_test.c',
                 'unittest/testcases/variable_test.c',
+                'unittest/testcases/struct_test.c',
                 'unittest/framework/TestMain.c']
 
 test_incdir = include_directories(['src', 'unittest/framework'])
