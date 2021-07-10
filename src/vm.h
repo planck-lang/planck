@@ -53,12 +53,30 @@ typedef enum _inst_e_
     Inst_Shl,
 } Inst_e_t;
 
+typedef union _status_reg_s_t_
+{
+    uint64_t u64;
+
+    struct {
+        struct
+        {
+            uint8_t negative    : 1;
+            uint8_t zero        : 1;
+            uint8_t carry       : 1;
+            uint8_t overflow    : 1;
+            uint8_t rsvc        : 4;
+        } u8_0;
+
+        uint8_t reserved[7];
+    } byte_reg;
+} Stsr_s_t;
+
 typedef struct _reg_s_
 {
     uint64_t pc;
     uint64_t sp;
     uint64_t fp;
-    uint64_t status;
+    Stsr_s_t status;
     uint64_t r[NUM_REGS];
 } Reg_s_t;
 
@@ -78,3 +96,4 @@ typedef struct _mem_s_
 
 
 void vm_init(void);
+void vm_execute(uint64_t opcode);
