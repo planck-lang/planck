@@ -27,16 +27,22 @@ uint64_t vm_fetch(void)
     return (g_Mem.inst.mem[g_Regs.pc]);
 }
 
-void vm_decode(uint64_t op_bin)
+Opcode_u_t vm_decode(uint64_t op_bin)
 {
     Opcode_u_t opcode = {0};
     opcode.u64 = op_bin;
 
+    return opcode;
+}
+
+void vm_execute(Opcode_u_t opcode)
+{
     Inst_e_t inst = (Inst_e_t)opcode.instruction;
 
     switch (inst)
     {
         case Inst_Nop:
+            INC_PC();
         break;
 
         case Inst_Mov:

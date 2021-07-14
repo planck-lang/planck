@@ -73,7 +73,7 @@ typedef union _opcode_u_
 {
     uint64_t u64;
     uint8_t  instruction;
-    
+
     union
     {
         /*
@@ -153,29 +153,57 @@ typedef union _opcode_u_
        /*
        Jump type
             * Register based PC relative addressing
+            +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
+            | Instruction 8b|0 0| Rsvd 6b   | Cnd | Rsvd 5b | Register ID 8b|              Reserved 32b 
+
             * Immediate PC relative addressing
+            +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
+            | Instruction 8b|0 1| Rsvd 6b   | Cnd | Rsvd 5b |      Immediate value 32b                                      |  Reserved 8b
+
             * Register based addressing
+            +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
+            | Instruction 8b|1 0| Rsvd 6b   | Cnd | Rsvd 5b | Register ID 8b|              Reserved 32b 
+
             * Immediate addressing
+            +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
+            | Instruction 8b|1 1| Rsvd 6b   | Cnd | Rsvd 5b |      Immediate value 32b                                      |  Reserved 8b
        */
       struct
       {
+            uint8_t inst;
+            uint8_t rel_type;   // upper 6b are reserved
+            uint8_t condition;  // upper 6b are reserved
 
+            union
+            {
+                struct`
+                {
+                    uint8_t id;
+                    uint32_t rsvd;
+                } reg_based;
+
+                struct
+                {
+                    uint32_t value;
+                    uint8_t rsvd;
+                } imm;
+            } dest_addr;
       } jump_type;      // jmp, brn
 
       /*
       Memory type
-            * Store : [reg] = reg
+            * Store : [reg ...] = reg0 ... regN
             * Store : [reg] = imm
-            * Store : [imm] = reg
+            * Store : [imm ...] = reg0 ... regN
             * Store : [imm] = imm
-            * Load  : reg = [reg]
-            * Load  : reg = [imm]
+            * Load  : reg0 ... regN = [reg ...]
+            * Load  : reg0 ... regN = [imm ...]
       */
 
      /*
      Stack type
-            * Push : [stack .....] = reg0, reg1 .... reg56
-            * Pop : reg0, reg1 .... reg56 = [stack .....]
+            * Push : [stack ...] = reg0, reg1 ... regN
+            * Pop : reg0, reg1 ... regN = [stack ...]
      */
     } bytes;
 } Opcode_u_t;
@@ -225,4 +253,5 @@ typedef struct _mem_s_
 
 void        vm_init(void);
 uint64_t    vm_fetch(void);
-void        vm_decode(uint64_t op_bin);
+Opcode_u_t  vm_decode(uint64_t op_bin);
+void        vm_execute(Opcode_u_t opcode);
