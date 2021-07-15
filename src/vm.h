@@ -90,7 +90,7 @@ typedef union _opcode_u_
         {
             uint8_t inst;
             uint8_t dest_reg_id;
-            uint8_t is_imme;        // upper 7b are reserved
+            uint8_t param_type;        // upper 7b are reserved
             union
             {
                 struct
@@ -104,7 +104,7 @@ typedef union _opcode_u_
                     uint32_t value;
                     uint8_t rsvd;
                 } imm;      // is_imm = 1
-            } src;
+            } param;
         } simple_type;  // mov
 
         /*
@@ -125,7 +125,7 @@ typedef union _opcode_u_
        {
            uint8_t inst;
            uint8_t dest_reg_id;
-           uint8_t operand_type;    // upper 6b are reserved
+           uint8_t param_type;    // upper 6b are reserved
            union
            {
                struct
@@ -147,7 +147,7 @@ typedef union _opcode_u_
                    uint16_t imm1_val;
                    uint8_t rsvd;
                } imm_imm;       // operand_type = 10b
-           } operand;
+           } param;
        } arithmetic_type;   // add, sub, mul ..... and, or, xor
 
        /*
@@ -171,8 +171,8 @@ typedef union _opcode_u_
       struct
       {
             uint8_t inst;
-            uint8_t rel_type;   // upper 6b are reserved
-            uint8_t condition;  // upper 6b are reserved
+            uint8_t param_type;   // upper 6b are reserved
+            uint8_t condition;  // upper 6b are reserved - Refer Cond_e_t
 
             union
             {
@@ -187,18 +187,52 @@ typedef union _opcode_u_
                     uint32_t value;
                     uint8_t rsvd;
                 } imm;
-            } dest_addr;
+            } param;
       } jump_type;      // jmp, brn
 
       /*
       Memory type
             * Store : [reg ...] = reg0 ... regN
+            +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
+            | Instruction 8b|0 0 0| Rsvd 5b | Dest Reg ID 8b|U| Rsvd 7b     |    Src Reg ID bitmap 32b
+
             * Store : [reg] = imm
+            +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
+            | Instruction 8b|0 0 1| Rsvd 5b |Pge| Rsvd 6b   |  Dst Reg ID bitmap 16b        |  Src Immediate value 16b      | Rsvd 8b
+
             * Store : [imm ...] = reg0 ... regN
+            +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
+            | Instruction 8b|0 1 0| Rsvd 5b |Pge| Rsvd 6b   |  Src Reg ID bitmap 16b        |  Dst Immediate value 16b      | Rsvd 8b
+
             * Store : [imm] = imm
+            +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
+            | Instruction 8b|0 1 1| Rsvd 5b | Dst Immediate value 16b       |  Src Immediate value 16b      |  Reserved 16b
+
             * Load  : reg0 ... regN = [reg ...]
+            +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
+            | Instruction 8b|1 0 0| Rsvd 5b | Src Reg ID 8b|U| Rsvd 7b     |    Dst Reg ID bitmap 32b
+
             * Load  : reg0 ... regN = [imm ...]
+            +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
+            | Instruction 8b|0 1 0| Rsvd 5b |Pge| Rsvd 6b   |  Dst Reg ID bitmap 16b        |  src Immediate value 16b      | Rsvd 8b
       */
+     struct
+     {
+         uint8_t inst;
+         uint8_t param_type;     // upper 5b are reserved
+
+         union
+         {
+            struct
+            {
+                uint8_t reg_id;
+                uint8_t reg_bitmap_page;        // use only 1bit[0:0~32, 1:33~65]  upper 7b are reserved
+                uint32_t reg_bitmap;
+            } reg_reg_bmp; // Store : [reg ...] = reg0 ... regN  | Load  : reg0 ... regN = [reg ...]
+
+            
+         } param;
+     }
 
      /*
      Stack type
