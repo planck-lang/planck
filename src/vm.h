@@ -69,6 +69,13 @@ typedef enum _condition_e_
     Cond_let  = 6,
 } Cond_e_t;
 
+typedef enum _exe_result_e_
+{
+    Exe_Done,
+    Exe_Inst_Abort,
+    Exe_Data_Abort,
+} Exe_result_e_t;
+
 typedef union _opcode_u_
 {
     uint64_t u64;
@@ -316,3 +323,4 @@ void        vm_init(void);
 uint64_t    vm_fetch(void);
 Opcode_u_t  vm_decode(uint64_t op_bin);
 void        vm_execute(Opcode_u_t opcode);
+void        vm_abort(Exe_result_e_t exe_ret);

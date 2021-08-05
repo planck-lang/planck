@@ -1,10 +1,13 @@
-
+#include <stdio.h>
 #include <stdlib.h>
+#include <assert.h>
 
 #include "vm.h"
 
-#define INC_PC()    g_Regs.pc += LEN_WORD
-#define INC_SP(N)   g_Regs.sp += (LEN_WORD * N)
+#define INC_PC()                 g_Regs.pc += LEN_WORD
+#define INC_SP(N)                g_Regs.sp += (LEN_WORD * N)
+#define DEC_SP(N)                g_Regs.sp -= (LEN_WORD * N)
+#define VM_ASSERT(code, msg)     do{fprintf(stderr, msg); assert(1 == code);}while(0)
 
 Reg_s_t g_Regs = {0};
 Mem_s_t g_Mem = {0};
@@ -13,6 +16,38 @@ static void _assign_more_mem(Virtual_mem_s_t *vmem)
 {
     vmem->size_byte += GRAN_MEM;
     vmem->mem = (uint8_t*)realloc(vmem->mem, vmem->size_byte);
+}
+
+static Exe_result_e_t _exe_stack_inst(Opcode_u_t opcode)
+{
+    uint32_t bitmap = opcode.bytes.stack_type.reg_bitmap;
+    uint32_t reg_num = 0;
+
+    while (bitmap)
+    {
+        if (bitmap & 1)
+        {
+            if (Inst_Push == opcode.instruction)
+            {
+                uint64_t src = g_Regs.r[reg_num];
+                g_Mem.stack.mem[g_Regs.sp] = src;
+                INC_SP(1);
+            }
+            else if (Inst_Pop == opcode.instruction)
+            {
+                DEC_SP(1);
+                uint64_t src = g_Mem.stack.mem[g_Regs.sp];
+                g_Regs.r[reg_num] = src;
+            }
+            else
+            {
+                VM_ASSERT(3376, "unexpected instruction, must be push, pop");
+            }
+        }
+        bitmap = bitmap >> 1;
+        reg_num++;
+    }
+    return Exe_Done;
 }
 
 void vm_init(void)
@@ -38,6 +73,7 @@ Opcode_u_t vm_decode(uint64_t op_bin)
 void vm_execute(Opcode_u_t opcode)
 {
     Inst_e_t inst = (Inst_e_t)opcode.instruction;
+    Exe_result_e_t ret;
 
     switch (inst)
     {
@@ -61,6 +97,7 @@ void vm_execute(Opcode_u_t opcode)
 
         case Inst_Push:
         case Inst_Pop:
+        ret = _exe_stack_inst(opcode);
         break;
 
         case Inst_Add:
@@ -76,6 +113,21 @@ void vm_execute(Opcode_u_t opcode)
         break;
 
         default:
-         // Error
+            ret = Exe_Inst_Abort;
+    }
+
+    vm_abort(ret);
+}
+
+void vm_abort(Exe_result_e_t exe_ret)
+{
+    switch (exe_ret)
+    {
+        case Exe_Done:
+            return;
+        case Exe_Inst_Abort:
+            break;
+        case Exe_Data_Abort:
+            break;
     }
 }
