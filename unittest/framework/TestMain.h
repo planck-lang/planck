@@ -36,24 +36,24 @@
 #define TESTCASEINDENT  "  "
 #define TESTCASEMSGINDENT "    "
 
-#define ASSERTMSG_NUM_EQ_FAIL(expect, actual)  "FAIL! expect %f actual %f (at Line %d)\n", (double)expect, (double)actual, __LINE__
-#define ASSERTMSG_NUM_NEQ_FAIL(expect, actual)  "FAIL! expect %f should NOT same as %f (at Line %d)\n", (double)expect, (double)actual, __LINE__
-#define ASSERTMSG_UINT_EQ_FAIL(expect, actual)  "FAIL! expect 0x%lx actual 0x%lx (at Line %d)\n", (uint64_t)expect, (uint64_t)actual, __LINE__
-#define ASSERTMSG_UINT_NEQ_FAIL(expect, actual)  "FAIL! expect 0x%lx should NOT same as 0x%lx (at Line %d)\n", (uint64_t)expect, (uint64_t)actual, __LINE__
-#define ASSERTMSG_INT_EQ_FAIL(expect, actual)  "FAIL! expect %ld actual %ld (at Line %d)\n", (int64_t)expect, (int64_t)actual, __LINE__
-#define ASSERTMSG_INT_NEQ_FAIL(expect, actual)  "FAIL! expect %ld should NOT same as %ld (at Line %d)\n", (int64_t)expect, (int64_t)actual, __LINE__
-#define ASSERTMSG_STR_EQ_FAIL(expect, actual)  "FAIL! expect [\"%s\"] actual [\"%s\"] (at Line %d)\n", expect, actual, __LINE__
-#define ASSERTMSG_STR_NEQ_FAIL(expect, actual)  "FAIL! expect [\"%s\"] should NOT same as [\"%s\"] (at Line %d)\n", expect, actual, __LINE__
+#define ASSERTMSG_NUM_EQ_FAIL(expect, actual)  "FAIL! expect %f actual %f (at Line %d)\n", (double)(expect), (double)(actual), __LINE__
+#define ASSERTMSG_NUM_NEQ_FAIL(expect, actual)  "FAIL! expect %f should NOT same as %f (at Line %d)\n", (double)(expect), (double)(actual), __LINE__
+#define ASSERTMSG_UINT_EQ_FAIL(expect, actual)  "FAIL! expect 0x%lx actual 0x%lx (at Line %d)\n", (uint64_t)(expect), (uint64_t)(actual), __LINE__
+#define ASSERTMSG_UINT_NEQ_FAIL(expect, actual)  "FAIL! expect 0x%lx should NOT same as 0x%lx (at Line %d)\n", (uint64_t)(expect), (uint64_t)(actual), __LINE__
+#define ASSERTMSG_INT_EQ_FAIL(expect, actual)  "FAIL! expect %ld actual %ld (at Line %d)\n", (int64_t)(expect), (int64_t)(actual), __LINE__
+#define ASSERTMSG_INT_NEQ_FAIL(expect, actual)  "FAIL! expect %ld should NOT same as %ld (at Line %d)\n", (int64_t)(expect), (int64_t)(actual), __LINE__
+#define ASSERTMSG_STR_EQ_FAIL(expect, actual)  "FAIL! expect [\"%s\"] actual [\"%s\"] (at Line %d)\n", (expect), (actual), __LINE__
+#define ASSERTMSG_STR_NEQ_FAIL(expect, actual)  "FAIL! expect [\"%s\"] should NOT same as [\"%s\"] (at Line %d)\n", (expect), (actual), __LINE__
 
 #define ASSERT_CMPSTR(expect, actual) ((strncmp(expect, actual, strlen(actual)) == 0) && (strlen(expect) == strlen(actual)))
 #define ASSERT(cond, msgfmt) if(!(cond)){printf("\n" TESTCASEMSGINDENT msgfmt); tc->result = false; }
 
-#define ASSERT_EQ_NUM(expect, actual) ASSERT(((double)expect == (double)actual), ASSERTMSG_NUM_EQ_FAIL(expect, actual))
-#define ASEERT_NEQ_NUM(expect, actual) ASSERT(((double)expect != (double)actual), ASSERTMSG_NUM_NEQ_FAIL(expect, actual))
-#define ASSERT_EQ_UINT(expect, actual) ASSERT(((uint64_t)expect == (uint64_t)actual), ASSERTMSG_UINT_EQ_FAIL(expect, actual))
-#define ASEERT_NEQ_UINT(expect, actual) ASSERT(((uint64_t)expect != (uint64_t)actual), ASSERTMSG_UINT_NEQ_FAIL(expect, actual))
-#define ASSERT_EQ_INT(expect, actual) ASSERT(((int64_t)expect == (int64_t)actual), ASSERTMSG_INT_EQ_FAIL(expect, actual))
-#define ASEERT_NEQ_INT(expect, actual) ASSERT(((int64_t)expect != (int64_t)actual), ASSERTMSG_INT_NEQ_FAIL(expect, actual))
+#define ASSERT_EQ_NUM(expect, actual) ASSERT(((double)(expect) == (double)(actual)), ASSERTMSG_NUM_EQ_FAIL(expect, actual))
+#define ASEERT_NEQ_NUM(expect, actual) ASSERT(((double)(expect) != (double)(actual)), ASSERTMSG_NUM_NEQ_FAIL(expect, actual))
+#define ASSERT_EQ_UINT(expect, actual) ASSERT(((uint64_t)(expect) == (uint64_t)(actual)), ASSERTMSG_UINT_EQ_FAIL(expect, actual))
+#define ASEERT_NEQ_UINT(expect, actual) ASSERT(((uint64_t)(expect) != (uint64_t)(actual)), ASSERTMSG_UINT_NEQ_FAIL(expect, actual))
+#define ASSERT_EQ_INT(expect, actual) ASSERT(((int64_t)(expect) == (int64_t)(actual)), ASSERTMSG_INT_EQ_FAIL(expect, actual))
+#define ASEERT_NEQ_INT(expect, actual) ASSERT(((int64_t)(expect) != (int64_t)(actual)), ASSERTMSG_INT_NEQ_FAIL(expect, actual))
 #define ASSERT_EQ_STR(expect, actual) ASSERT(ASSERT_CMPSTR(expect,actual), ASSERTMSG_STR_EQ_FAIL(expect, actual))
 #define ASEERT_NEQ_STR(expect, actual) ASSERT((strncmp(expect, actual, strlen(actual)) != 0), ASSERTMSG_STR_NEQ_FAIL(expect, actual))
 
