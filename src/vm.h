@@ -266,12 +266,13 @@ typedef union _opcode_u_
                 * Push : reg0, reg1 ... regN
                 * Pop : reg0, reg1 ... regN
                 +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
-                | Instruction 8b|  Register bit map 56b
+                | Instruction 8b|               Reserved 24b                    |      Register bit map 32b 
         */
        struct
        {
-           uint64_t inst : 8;
-           uint64_t reg_bitmap : 56;
+            uint32_t inst : 8;
+            uint32_t reserved : 24;
+            uint32_t reg_bitmap;
        } stack_type;
     } bytes;
 } Opcode_u_t;
