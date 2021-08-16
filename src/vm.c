@@ -20,12 +20,13 @@ static void _assign_more_mem(Virtual_mem_s_t *vmem)
 
 static Exe_result_e_t _exe_stack_inst(Opcode_u_t opcode)
 {
-    uint64_t bitmap = opcode.bytes.stack_type.reg_bitmap;
-    uint32_t reg_num = 0;
+    uint32_t bitmap = opcode.bytes.stack_type.reg_bitmap;
+    uint32_t reg_num = (Inst_Push == opcode.instruction) ? 0 : 31;
+    uint32_t mask = (Inst_Push == opcode.instruction) ? 1 : (1 << 31);
 
     while (bitmap)
     {
-        if (bitmap & 1)
+        if (bitmap & mask)
         {
             if (Inst_Push == opcode.instruction)
             {
@@ -44,8 +45,21 @@ static Exe_result_e_t _exe_stack_inst(Opcode_u_t opcode)
                 VM_ASSERT(3376, "unexpected instruction, must be push, pop");
             }
         }
-        bitmap = bitmap >> 1;
-        reg_num++;
+
+        if (Inst_Push == opcode.instruction)
+        {
+            bitmap = bitmap >> 1;
+            reg_num++;
+        }
+        else if (Inst_Pop == opcode.instruction)
+        {
+            bitmap = bitmap << 1;
+            reg_num--;
+        }
+        else
+        {
+            VM_ASSERT(3376, "unexpected instruction, must be push, pop");
+        }
     }
     return Exe_Done;
 }
