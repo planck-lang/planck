@@ -133,3 +133,21 @@ TESTCASE(3, "mov test")
 
     ASSERT_EQ_UINT(0x20210818, g_Regs.r[53]);
 }
+
+TESTCASE(4, "nop test")
+{
+    Opcode_u_t nop_op = {.instruction = Inst_Nop};
+
+    uint64_t last_pc_addr = g_Regs.pc;
+
+    *(uint64_t*)g_Regs.pc = nop_op.u64;
+
+    uint64_t op_bin = vm_fetch();
+    Opcode_u_t opcode = vm_decode(op_bin);
+    vm_execute(opcode);
+
+    // PC was increased when run the vm_fetch()
+    // and PC was increased one more time when executes the NOP instruction
+    // so, expected PC is increased as (LEN_WORD * 2)
+    ASSERT_EQ_UINT(last_pc_addr + (LEN_WORD * 2), g_Regs.pc);
+}
