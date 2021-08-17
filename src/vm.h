@@ -87,30 +87,26 @@ typedef union _opcode_u_
         Simple type
             * Source from register
             +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
-            |Instruction 8b | Dest Reg 8b   |0| reserved 7b |  Src Reg 8b   |                   Reserved 32b                                |
+            |Instruction 8b | Dest Reg 8b   |0| reserved 15b                |  Src Reg 8b   |   Reserved 24b                                |
 
             * Source from immediate value
             +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
-            |Instruction 8b | Dest Reg 8b   |1| reserved 7b |            Immediate Value 32b                                | reserved 8b   |
+            |Instruction 8b | Dest Reg 8b   |1| reserved 15b                |            Immediate Value 32b                                | 
         */
         struct
         {
             uint8_t inst;
             uint8_t dest_reg_id;
-            uint8_t param_type;        // upper 7b are reserved
+            uint16_t param_type;        // upper 15b are reserved
             union
             {
                 struct
                 {
-                    uint8_t id;
-                    uint32_t rsvd;
-                } reg;      // is_imm = 0
+                    uint32_t id : 8;
+                    uint32_t rsvd : 24;
+                } reg;      // param_type = 0
 
-                struct
-                {
-                    uint32_t value;
-                    uint8_t rsvd;
-                } imm;      // is_imm = 1
+                uint32_t imm_val; // param_type = 1
             } param;
         } simple_type;  // mov
 
@@ -144,14 +140,14 @@ typedef union _opcode_u_
 
                 struct
                 {
-                   uint8_t reg0_id;
+                   uint8_t reg_id;
                    uint32_t imm_val;
                 } reg_imm;       // operand_type = 01b
 
                 struct
                 {    
-                   uint16_t imm0_val;
-                   uint16_t imm1_val;
+                   uint16_t imm_val0;
+                   uint16_t imm_val1;
                    uint8_t rsvd;
                 } imm_imm;       // operand_type = 10b
             } param;
