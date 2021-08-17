@@ -88,3 +88,48 @@ TESTCASE(2, "pop test")
     ASSERT_EQ_UINT(0x2324242, g_Regs.r[28]);
     ASSERT_EQ_UINT(0x888234, g_Regs.r[31]);
 }
+
+TESTCASE(3, "mov test")
+{
+    Opcode_u_t mov_op = {.instruction = Inst_Mov};
+    
+    // Reg = Reg
+    mov_op.bytes.simple_type.param_type = 0;
+
+    g_Regs.r[34] = 0x20210817;
+    g_Regs.r[43] = 0;
+
+    mov_op.bytes.simple_type.dest_reg_id = 43;
+    mov_op.bytes.simple_type.param.reg.id = 34;
+
+    *(uint64_t*)g_Regs.pc = mov_op.u64;
+
+    uint64_t op_bin = vm_fetch();
+    ASSERT_EQ_UINT(0x0000002200002b01, op_bin);
+
+    Opcode_u_t opcode = vm_decode(op_bin);
+    vm_execute(opcode);
+
+    ASSERT_EQ_UINT(0x20210817, g_Regs.r[43]);
+
+    // Reg = Imm
+    mov_op.u64 = 0; // reset
+    mov_op.instruction = Inst_Mov;
+
+    mov_op.bytes.simple_type.param_type = 1;
+
+    g_Regs.r[53] = 0x99939820; // dummy
+
+    mov_op.bytes.simple_type.dest_reg_id = 53;
+    mov_op.bytes.simple_type.param.imm_val = 0x20210818;
+
+    *(uint64_t*)g_Regs.pc = mov_op.u64;
+
+    op_bin = vm_fetch();
+    ASSERT_EQ_UINT(0x2021081800013501, op_bin);
+
+    opcode = vm_decode(op_bin);
+    vm_execute(opcode);
+
+    ASSERT_EQ_UINT(0x20210818, g_Regs.r[53]);
+}

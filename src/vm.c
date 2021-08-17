@@ -4,10 +4,17 @@
 
 #include "vm.h"
 
+#define SUPPORT_STOP_VM_IMMEDIATE       (1)
+
 #define INC_PC()                 g_Regs.pc += LEN_WORD
 #define INC_SP(N)                g_Regs.sp += (LEN_WORD * N)
 #define DEC_SP(N)                g_Regs.sp -= (LEN_WORD * N)
-#define VM_ASSERT(code, msg)     do{fprintf(stderr, msg); assert(1 == code);}while(0)
+
+#if (1 == SUPPORT_STOP_VM_IMMEDIATE)
+    #define VM_ASSERT(code, msg)     do{fprintf(stderr, msg); assert(1 == code);}while(0)
+#else
+    #define VM_ASSERT(code, msg)     // do nothing
+#endif
 
 Reg_s_t g_Regs = {0};
 Mem_s_t g_Mem = {0};
@@ -42,7 +49,8 @@ static Exe_result_e_t _exe_stack_inst(Opcode_u_t opcode)
             }
             else
             {
-                VM_ASSERT(3376, "unexpected instruction, must be push, pop");
+                VM_ASSERT(0x3376, "unexpected instruction, must be push, pop");
+                return Exe_Inst_Abort;
             }
         }
 
@@ -58,9 +66,35 @@ static Exe_result_e_t _exe_stack_inst(Opcode_u_t opcode)
         }
         else
         {
-            VM_ASSERT(3376, "unexpected instruction, must be push, pop");
+            VM_ASSERT(0x3376, "unexpected instruction, must be push, pop");
+            return Exe_Inst_Abort;
         }
     }
+    return Exe_Done;
+}
+
+static Exe_result_e_t _exe_mov_inst(Opcode_u_t opcode)
+{
+    uint32_t dest_reg_id = opcode.bytes.simple_type.dest_reg_id;
+
+    if (0 == opcode.bytes.simple_type.param_type)
+    {
+        // Reg = Reg
+        uint32_t src_reg_id = opcode.bytes.simple_type.param.reg.id;
+        g_Regs.r[dest_reg_id] = g_Regs.r[src_reg_id];
+    }
+    else if (1 == opcode.bytes.simple_type.param_type)
+    {
+        // Reg = Imm
+        uint32_t imm_val = opcode.bytes.simple_type.param.imm_val;
+        g_Regs.r[dest_reg_id] = imm_val;
+    }
+    else
+    {
+        VM_ASSERT(0x0817, "unexpected param type, must be 0 or 1");
+        return Exe_Inst_Abort;
+    }
+    
     return Exe_Done;
 }
 
@@ -101,6 +135,7 @@ void vm_execute(Opcode_u_t opcode)
         break;
 
         case Inst_Mov:
+        ret = _exe_mov_inst(opcode);
         break;
 
         case Inst_Ldr:
