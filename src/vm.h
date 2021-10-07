@@ -197,27 +197,27 @@ typedef union _opcode_u_
         Memory type
             * Store : [reg ...] = reg0 ... regN
             +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
-            | Instruction 8b|0 0 0| Rsvd 5b | Dest Reg ID 8b|U| Rsvd 7b     |    Src Reg ID bitmap 32b
-
-            * Store : [reg] = imm
-            +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
-            | Instruction 8b|0 0 1| Rsvd 5b |  Dst Reg ID 8b|      Src Immediate value 32b                                  | Rsvd 8b
+            | Instruction 8b|0 0|   Rsvd 6b | Dest Reg ID 8b|P| Rsvd 7b     |    Src Reg ID bitmap 32b
 
             * Store : [imm ...] = reg0 ... regN
             +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
-            | Instruction 8b|0 1 0| Rsvd 5b |Pge| Rsvd 6b   |  Src Reg ID bitmap 16b        |  Dst Immediate value 16b      | Rsvd 8b
+            | Instruction 8b|0 1|   Rsvd 6b |Pge| Rsvd 6b   |  Src Reg ID bitmap 16b        |  Dst Immediate value 16b      | Rsvd 8b
+
+            * Store : [reg] = imm
+            +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
+            | Instruction 8b|1 0|   Rsvd 6b |  Dst Reg ID 8b|      Src Immediate value 32b                                  | Rsvd 8b
 
             * Store : [imm] = imm
             +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
-            | Instruction 8b|0 1 1| Rsvd 5b | Dst Immediate value 16b       |  Src Immediate value 16b      |  Reserved 16b
+            | Instruction 8b|1 1|   Rsvd 6b | Dst Immediate value 16b       |  Src Immediate value 16b      |  Reserved 16b
 
             * Load  : reg0 ... regN = [reg ...]
             +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
-            | Instruction 8b|1 0 0| Rsvd 5b | Src Reg ID 8b|U| Rsvd 7b     |    Dst Reg ID bitmap 32b
+            | Instruction 8b|0 0|   Rsvd 6b | Src Reg ID 8b|P| Rsvd 7b     |    Dst Reg ID bitmap 32b
 
             * Load  : reg0 ... regN = [imm ...]
             +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
-            | Instruction 8b|0 1 0| Rsvd 5b |Pge| Rsvd 6b   |  Dst Reg ID bitmap 16b        |  src Immediate value 16b      | Rsvd 8b
+            | Instruction 8b|0 1|   Rsvd 6b |Pge| Rsvd 6b   |  Dst Reg ID bitmap 16b        |  src Immediate value 16b      | Rsvd 8b
         */
         struct
         {
@@ -272,6 +272,21 @@ typedef union _opcode_u_
        } stack_type;
     } bytes;
 } Opcode_u_t;
+
+#define SIMPLE_TYPE_REG     (0)
+#define SIMPLE_TYPE_IMM     (1)
+
+#define MEMORY_TYPE_REG_REG     (0)
+#define MOMORY_TYPE_REG_IMM     (1)
+#define MOMORY_TYPE_IMM_REG     (2)
+#define MOMORY_TYPE_IMM_IMM     (3)
+
+#define REG_PAGE_32_0           (0)
+#define REG_PAGE_32_1           (1)
+#define REG_PAGE_16_0           (0)
+#define REG_PAGE_16_1           (1)
+#define REG_PAGE_16_2           (2)
+#define REG_PAGE_16_3           (3)
 
 typedef union _status_reg_u_
 {

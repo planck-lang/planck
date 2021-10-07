@@ -126,7 +126,7 @@ Opcode_u_t vm_decode(uint64_t op_bin)
 void vm_execute(Opcode_u_t opcode)
 {
     Inst_e_t inst = (Inst_e_t)opcode.instruction;
-    Exe_result_e_t ret;
+    Exe_result_e_t ret = Exe_Inst_Abort;
 
     switch (inst)
     {

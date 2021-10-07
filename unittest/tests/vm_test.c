@@ -94,7 +94,7 @@ TESTCASE(3, "mov test")
     Opcode_u_t mov_op = {.instruction = Inst_Mov};
     
     // Reg = Reg
-    mov_op.bytes.simple_type.param_type = 0;
+    mov_op.bytes.simple_type.param_type = SIMPLE_TYPE_REG;
 
     g_Regs.r[34] = 0x20210817;
     g_Regs.r[43] = 0;
@@ -116,7 +116,7 @@ TESTCASE(3, "mov test")
     mov_op.u64 = 0; // reset
     mov_op.instruction = Inst_Mov;
 
-    mov_op.bytes.simple_type.param_type = 1;
+    mov_op.bytes.simple_type.param_type = SIMPLE_TYPE_IMM;
 
     g_Regs.r[53] = 0x99939820; // dummy
 
@@ -150,4 +150,25 @@ TESTCASE(4, "nop test")
     // and PC was increased one more time when executes the NOP instruction
     // so, expected PC is increased as (LEN_WORD * 2)
     ASSERT_EQ_UINT(last_pc_addr + (LEN_WORD * 2), g_Regs.pc);
+}
+
+TESTCASE(5, "str test")
+{
+    Opcode_u_t str_op = {.instruction = Inst_Str};
+
+    // reg bitmap to [reg] , page 0 (reg0 ~ reg31)
+
+    // reg bitmap to [reg] , page 1 (reg32 ~ reg63)
+
+    // reg bitmap to [imm] , page 0 (reg0 ~ reg15)
+
+    // reg bitmap to [imm] , page 1 (reg16 ~ reg31)
+
+    // reg bitmap to [imm] , page 2 (reg32 ~ reg47)
+
+    // reg bitmap to [imm] , page 3 (reg48 ~ reg63)
+
+    // imm to [reg]
+
+    // imm to [imm]
 }
