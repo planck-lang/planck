@@ -157,6 +157,24 @@ TESTCASE(5, "str test")
     Opcode_u_t str_op = {.instruction = Inst_Str};
 
     // reg bitmap to [reg] , page 0 (reg0 ~ reg31)
+    g_Regs.r[5] = 0x55;
+    g_Regs.r[9] = 0x99;
+    g_Regs.r[13] = 0xdd;
+    g_Regs.r[22] = 0x16
+    g_Regs.r[30] = 0x1e
+
+    g_Regs.r[48] = g_Mem.data.mem + 0x48c
+
+    str_op.memory_type.reg_reg_bmp.reg_id = 48;
+    str_op.memory_type.reg_reg_bmp.reg_bitmap_page_1b = 0;
+    str_op.memory_type.reg_bitmap = 0;
+    str_op.memory_type.reg_bitmap |= (1 << 5);
+    str_op.memory_type.reg_bitmap |= (1 << 9);
+    str_op.memory_type.reg_bitmap |= (1 << 13);
+    str_op.memory_type.reg_bitmap |= (1 << 22);
+    str_op.memory_type.reg_bitmap |= (1 << 30);
+
+    
 
     // reg bitmap to [reg] , page 1 (reg32 ~ reg63)
 
