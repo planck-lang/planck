@@ -56,6 +56,8 @@ typedef enum _inst_e_
     Inst_And,
     Inst_Or,
     Inst_Xor,
+    // Alias
+    Inst_Cmp = Inst_Sub,
 } Inst_e_t;
 
 typedef enum _condition_e_
