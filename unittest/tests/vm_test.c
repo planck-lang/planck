@@ -201,3 +201,9 @@ TESTCASE(5, "str test")
 
     // imm to [imm]
 }
+
+
+TESTCASE(300, "Opcode size")
+{
+    ASSERT_EQ_UINT(8, sizeof(Opcode_u_t));
+}

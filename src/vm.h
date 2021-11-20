@@ -136,20 +136,20 @@ typedef union _opcode_u_
                     uint8_t reg0_id;
                     uint8_t reg1_id;
                     uint8_t rsvd[3];
-                } reg_reg;       // operand_type = 00b
+                } __attribute__((aligned(1),packed)) reg_reg;       // operand_type = 00b
 
                 struct
                 {
                    uint8_t reg_id;
                    uint32_t imm_val;
-                } reg_imm;       // operand_type = 01b
+                } __attribute__((aligned(1),packed)) reg_imm;       // operand_type = 01b
 
                 struct
                 {    
                    uint16_t imm_val0;
                    uint16_t imm_val1;
                    uint8_t rsvd;
-                } imm_imm;       // operand_type = 10b
+                } __attribute__((aligned(1),packed)) imm_imm;       // operand_type = 10b
             } param;
         } arithmetic_type;   // add, sub, mul ..... and, or, xor
 
@@ -183,13 +183,13 @@ typedef union _opcode_u_
                 {
                     uint8_t id;
                     uint32_t rsvd;
-                } reg_based;
+                } __attribute__((aligned(1),packed)) reg_based;
 
                 struct
                 {
                     uint32_t value;
                     uint8_t rsvd;
-                } imm;
+                } __attribute__((aligned(1),packed)) imm;
             } param;
         } jump_type;      // jmp, brn
 
