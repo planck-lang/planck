@@ -201,7 +201,7 @@ typedef union _opcode_u_
 
             * Store : [imm ...] = reg0 ... regN
             +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
-            | Instruction 8b|0 1|   Rsvd 6b |Pge| Rsvd 6b   |  Src Reg ID bitmap 16b        |  Dst Immediate value 16b      | Rsvd 8b
+            | Instruction 8b|0 1|   Rsvd 6b |Pge| Rsvd 6b   |  Src Reg ID bitmap 16b        |  Dst Immediate value 16b      | Base Addr Reg
 
             * Store : [reg] = imm
             +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
@@ -209,7 +209,7 @@ typedef union _opcode_u_
 
             * Store : [imm] = imm
             +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
-            | Instruction 8b|1 1|   Rsvd 6b | Dst Immediate value 16b       |  Src Immediate value 16b      |  Reserved 16b
+            | Instruction 8b|1 1|   Rsvd 6b | Dst Immediate value 16b       |  Src Immediate value 16b      | Base Addr Reg | Reserved 8b
 
             * Load  : reg0 ... regN = [reg ...]
             +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
@@ -217,12 +217,12 @@ typedef union _opcode_u_
 
             * Load  : reg0 ... regN = [imm ...]
             +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
-            | Instruction 8b|0 1|   Rsvd 6b |Pge| Rsvd 6b   |  Dst Reg ID bitmap 16b        |  src Immediate value 16b      | Rsvd 8b
+            | Instruction 8b|0 1|   Rsvd 6b |Pge| Rsvd 6b   |  Dst Reg ID bitmap 16b        |  src Immediate value 16b      | Base Addr Reg
         */
         struct
         {
             uint8_t inst;
-            uint8_t param_type;     // upper 5b are reserved
+            uint8_t param_type;     // upper 6b are reserved
 
             union
             {
@@ -231,29 +231,30 @@ typedef union _opcode_u_
                     uint8_t reg_id;
                     uint8_t reg_bitmap_page_1b;     // use only 1bit[0:0~31, 1:32~63]  upper 7b are reserved
                     uint32_t reg_bitmap;
-                } reg_reg_bmp; // Store : [reg ...] = reg0 ... regN  | Load  : reg0 ... regN = [reg ...]
+                } __attribute__((aligned(1),packed)) reg_reg_bmp; // Store : [reg ...] = reg0 ... regN  | Load  : reg0 ... regN = [reg ...]
 
                 struct
                 {
                     uint8_t reg_id;
                     uint32_t imm_val;
                     uint8_t rsvd;
-                } reg_imm;  // Store : [reg] = imm
+                } __attribute__((aligned(1),packed)) reg_imm;  // Store : [reg] = imm
 
                 struct
                 {
                     uint8_t reg_bitmap_page_2b;     // use only 2b [00:0~15, 01:16~31, 10:32~47, 11:48~63]
                     uint16_t reg_bitmap;
                     uint16_t imm_val;
-                    uint8_t rsvd;
-                } imm_reg_bmp;  // Store : [imm ...] = reg0 ... regN | Load  : reg0 ... regN = [imm ...]
+                    uint8_t base_reg_id;
+                } __attribute__((aligned(1),packed)) imm_reg_bmp;  // Store : [imm ...] = reg0 ... regN | Load  : reg0 ... regN = [imm ...]
 
                 struct
                 {
                     uint16_t imm_val0;
                     uint16_t imm_val1;
-                    uint16_t rsvd;
-                } imm_imm;  // Store : [imm] = imm
+                    uint8_t base_reg_id;
+                    uint8_t rsvd;
+                } __attribute__((aligned(1),packed)) imm_imm;  // Store : [imm] = imm
             } param;
         } memory_type;
 

@@ -98,6 +98,76 @@ static Exe_result_e_t _exe_mov_inst(Opcode_u_t opcode)
     return Exe_Done;
 }
 
+static uint32_t _get_lsb_bitmap_and_clear(uint32_t *bitmap)
+{
+    uint32_t max_bitmap = 32;
+
+    for (uint32_t cnt = 0; cnt < max_bitmap ; cnt++)
+    {
+        if ((*bitmap >> cnt) & 1)
+        {
+            *bitmap &= ~(1<<cnt);   // clear bit
+            return cnt;             // lsb offset (zero base)
+        }
+    }
+    return max_bitmap;
+}
+
+static Exe_result_e_t _exe_memory_inst(Opcode_u_t opcode)
+{
+    if (Inst_Str == opcode.instruction)
+    {
+        if (MEMORY_TYPE_REG_REG == opcode.bytes.memory_type.param_type)
+        {
+            if (REG_PAGE_32_0 == opcode.bytes.memory_type.param.reg_reg_bmp.reg_bitmap_page_1b)
+            {
+            // reg bitmap to [reg] , page 0 (reg0 ~ reg31)
+                uint32_t bitmap = opcode.bytes.memory_type.param.reg_reg_bmp.reg_bitmap;
+                uint32_t dst_reg_idx = opcode.bytes.memory_type.param.reg_reg_bmp.reg_id;
+                uint64_t *dst_mem = (uint64_t*)g_Regs.r[dst_reg_idx];
+
+                while (0 != bitmap)
+                {
+                    uint32_t reg_idx = _get_lsb_bitmap_and_clear(&bitmap);
+                    *dst_mem = g_Regs.r[reg_idx];
+                    dst_mem++;
+                }
+            }
+            else if (REG_PAGE_32_1 == opcode.bytes.memory_type.param.reg_reg_bmp.reg_bitmap_page_1b)
+            {
+            // reg bitmap to [reg] , page 1 (reg32 ~ reg63)
+            }
+            else
+            {
+                VM_ASSERT(0x1120, "wrong REG page, must be 0 or 1 (1bit)");
+                return Exe_Inst_Abort;
+            }
+        
+        }
+        // reg bitmap to [imm] , page 0 (reg0 ~ reg15)
+
+        // reg bitmap to [imm] , page 1 (reg16 ~ reg31)
+
+        // reg bitmap to [imm] , page 2 (reg32 ~ reg47)
+
+        // reg bitmap to [imm] , page 3 (reg48 ~ reg63)
+
+        // imm to [reg]
+
+        // imm to [imm]
+    }
+    else if (Inst_Ldr == opcode.instruction)
+    {
+
+    }
+    else
+    {
+        VM_ASSERT(0x1119, "unexpected instruction type, must be STR or LDR");
+        return Exe_Inst_Abort;
+    }
+    return Exe_Done;
+}
+
 void vm_init(void)
 {
     _assign_more_mem(&g_Mem.data);
@@ -140,6 +210,7 @@ void vm_execute(Opcode_u_t opcode)
 
         case Inst_Ldr:
         case Inst_Str:
+        ret = _exe_memory_inst(opcode);
         break;
 
         case Inst_Jmp:
