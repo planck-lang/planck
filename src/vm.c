@@ -141,13 +141,31 @@ static Exe_result_e_t _exe_memory_inst(Opcode_u_t opcode)
                 return Exe_Inst_Abort;
             }
         }
-        // reg bitmap to [imm] , page 0 (reg0 ~ reg15)
+        // reg bitmap to [imm]
+        if (MEMORY_TYPE_REG_IMM == opcode.bytes.memory_type.param_type)
+        {
+            uint8_t reg_page = opcode.bytes.memory_type.param.imm_reg_bmp.reg_bitmap_page_2b;
+            if (REG_PAGE_16_0 == reg_page || REG_PAGE_16_1 == reg_page || REG_PAGE_16_2 == reg_page || REG_PAGE_16_3 == reg_page)
+            {
+                uint32_t bitmap = opcode.bytes.memory_type.param.imm_reg_bmp.reg_bitmap;
+                uint32_t base_reg_idx = opcode.bytes.memory_type.param.imm_reg_bmp.base_reg_id;
+                uint32_t imm_addr = opcode.bytes.memory_type.param.imm_reg_bmp.imm_val;
+                uint64_t* dst_mem = (uint64_t*)(g_Regs.r[base_reg_idx] + imm_addr);
 
-        // reg bitmap to [imm] , page 1 (reg16 ~ reg31)
-
-        // reg bitmap to [imm] , page 2 (reg32 ~ reg47)
-
-        // reg bitmap to [imm] , page 3 (reg48 ~ reg63)
+                while (0 != bitmap)
+                {
+                    uint32_t reg_idx = _get_lsb_bitmap_and_clear(&bitmap);
+                    reg_idx += (reg_page * 16);
+                    *dst_mem = g_Regs.r[reg_idx];
+                    dst_mem++;
+                }
+            }
+            else
+            {
+                VM_ASSERT(0x1130, "wrong REG page, must be one of 0,1,2,3 (2bits)");
+                return Exe_Inst_Abort;
+            }
+        }
 
         // imm to [reg]
 

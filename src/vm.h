@@ -248,7 +248,7 @@ typedef union _opcode_u_
                     uint16_t reg_bitmap;
                     uint16_t imm_val;
                     uint8_t base_reg_id;
-                } __attribute__((aligned(1),packed)) imm_reg_bmp;  // Store : [imm ...] = reg0 ... regN | Load  : reg0 ... regN = [imm ...]
+                } __attribute__((aligned(1),packed)) imm_reg_bmp;  // Store : [[base_reg_id] + imm ...] = reg0 ... regN | Load  : reg0 ... regN = [[base_reg_id] + imm ...]
 
                 struct
                 {
@@ -280,9 +280,9 @@ typedef union _opcode_u_
 #define SIMPLE_TYPE_IMM     (1)
 
 #define MEMORY_TYPE_REG_REG     (0)
-#define MOMORY_TYPE_REG_IMM     (1)
-#define MOMORY_TYPE_IMM_REG     (2)
-#define MOMORY_TYPE_IMM_IMM     (3)
+#define MEMORY_TYPE_REG_IMM     (1)
+#define MEMORY_TYPE_IMM_REG     (2)
+#define MEMORY_TYPE_IMM_IMM     (3)
 
 #define REG_PAGE_32_0           (0)
 #define REG_PAGE_32_1           (1)
