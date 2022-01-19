@@ -187,7 +187,40 @@ TESTCASE(5, "str test")
     ASSERT_EQ_UINT(0x16, *(uint64_t*)(g_Mem.data.mem + 0x8 + (LEN_WORD * 3)));
     ASSERT_EQ_UINT(0x1e, *(uint64_t*)(g_Mem.data.mem + 0x8 + (LEN_WORD * 4)));
 
+    // reset
+    str_op.u64 = 0;
+    str_op.instruction = Inst_Str;
+
     // reg bitmap to [reg] , page 1 (reg32 ~ reg63)
+    g_Regs.r[32] = 0x3322;
+    g_Regs.r[43] = 0x4433;
+    g_Regs.r[57] = 0x5577;
+    g_Regs.r[61] = 0x66ee;
+    g_Regs.r[63] = 0x33dd;
+
+    g_Regs.r[30] = (uint64_t)(g_Mem.data.mem + 0x30);
+
+    str_op.bytes.memory_type.param_type = MEMORY_TYPE_REG_REG;
+    str_op.bytes.memory_type.param.reg_reg_bmp.reg_id = 30;
+    str_op.bytes.memory_type.param.reg_reg_bmp.reg_bitmap_page_1b = REG_PAGE_32_1;
+    str_op.bytes.memory_type.param.reg_reg_bmp.reg_bitmap = 0;
+    str_op.bytes.memory_type.param.reg_reg_bmp.reg_bitmap |= (1 << (32 - 32));
+    str_op.bytes.memory_type.param.reg_reg_bmp.reg_bitmap |= (1 << (43 - 32));
+    str_op.bytes.memory_type.param.reg_reg_bmp.reg_bitmap |= (1 << (57 - 32));
+    str_op.bytes.memory_type.param.reg_reg_bmp.reg_bitmap |= (1 << (61 - 32));
+    str_op.bytes.memory_type.param.reg_reg_bmp.reg_bitmap |= (1 << (63 - 32));
+
+    *(uint64_t*)g_Regs.pc = str_op.u64;
+
+    op_bin = vm_fetch();
+    opcode = vm_decode(op_bin);
+    vm_execute(opcode);
+
+    ASSERT_EQ_UINT(0x3322, *(uint64_t*)(g_Mem.data.mem + 0x30));
+    ASSERT_EQ_UINT(0x4433, *(uint64_t*)(g_Mem.data.mem + 0x30 + (LEN_WORD * 1)));
+    ASSERT_EQ_UINT(0x5577, *(uint64_t*)(g_Mem.data.mem + 0x30 + (LEN_WORD * 2)));
+    ASSERT_EQ_UINT(0x66ee, *(uint64_t*)(g_Mem.data.mem + 0x30 + (LEN_WORD * 3)));
+    ASSERT_EQ_UINT(0x33dd, *(uint64_t*)(g_Mem.data.mem + 0x30 + (LEN_WORD * 4)));
 
     // reg bitmap to [imm] , page 0 (reg0 ~ reg15)
 
