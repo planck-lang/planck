@@ -46,6 +46,7 @@ typedef enum _inst_e_
     Inst_Ret,
     Inst_Push,
     Inst_Pop,
+    Inst_CallFunc,      // Call C function
     Inst_Add = 0x80,
     Inst_Sub,
     Inst_Mul,
