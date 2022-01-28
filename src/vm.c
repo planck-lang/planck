@@ -170,7 +170,11 @@ static Exe_result_e_t _exe_memory_inst(Opcode_u_t opcode)
         // [reg] = imm
         if (MEMORY_TYPE_REG_IMM == opcode.bytes.memory_type.param_type)
         {
+            uint32_t dst_reg_idx = opcode.bytes.memory_type.param.reg_imm.reg_id;
+            uint32_t src_value = opcode.bytes.memory_type.param.reg_imm.imm_val;
 
+            uint64_t* dst_mem = (uint64_t*)g_Regs.r[dst_reg_idx];
+            *dst_mem = src_value;
         }
 
         // imm to [imm]
