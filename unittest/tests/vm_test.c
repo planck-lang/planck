@@ -236,7 +236,7 @@ TESTCASE(5, "str test")
     str_op.bytes.memory_type.param_type = MEMORY_TYPE_IMM_REG;
     str_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap_page_2b = REG_PAGE_16_0;
     str_op.bytes.memory_type.param.imm_reg_bmp.base_reg_id = 17;
-    str_op.bytes.memory_type.param.imm_reg_bmp.imm_val = 0x230;
+    str_op.bytes.memory_type.param.imm_reg_bmp.imm_addr = 0x230;
     str_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap = 0;
     str_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap |= (1 << 5);
     str_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap |= (1 << 9);
@@ -266,7 +266,7 @@ TESTCASE(5, "str test")
     str_op.bytes.memory_type.param_type = MEMORY_TYPE_IMM_REG;
     str_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap_page_2b = REG_PAGE_16_1;
     str_op.bytes.memory_type.param.imm_reg_bmp.base_reg_id = 12;
-    str_op.bytes.memory_type.param.imm_reg_bmp.imm_val = 0x130;
+    str_op.bytes.memory_type.param.imm_reg_bmp.imm_addr = 0x130;
     str_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap = 0;
     str_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap |= (1 << (17 - 16));
     str_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap |= (1 << (28 - 16));
@@ -296,7 +296,7 @@ TESTCASE(5, "str test")
     str_op.bytes.memory_type.param_type = MEMORY_TYPE_IMM_REG;
     str_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap_page_2b = REG_PAGE_16_2;
     str_op.bytes.memory_type.param.imm_reg_bmp.base_reg_id = 29;
-    str_op.bytes.memory_type.param.imm_reg_bmp.imm_val = 0x90;
+    str_op.bytes.memory_type.param.imm_reg_bmp.imm_addr = 0x90;
     str_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap = 0;
     str_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap |= (1 << (33 - 32));
     str_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap |= (1 << (42 - 32));
@@ -326,7 +326,7 @@ TESTCASE(5, "str test")
     str_op.bytes.memory_type.param_type = MEMORY_TYPE_IMM_REG;
     str_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap_page_2b = REG_PAGE_16_3;
     str_op.bytes.memory_type.param.imm_reg_bmp.base_reg_id = 45;
-    str_op.bytes.memory_type.param.imm_reg_bmp.imm_val = 0x490;
+    str_op.bytes.memory_type.param.imm_reg_bmp.imm_addr = 0x490;
     str_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap = 0;
     str_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap |= (1 << (48 - 48));
     str_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap |= (1 << (50 - 48));

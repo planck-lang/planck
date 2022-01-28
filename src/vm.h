@@ -204,7 +204,7 @@ typedef union _opcode_u_
 
             * Store : [imm ...] = reg0 ... regN
             +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
-            | Instruction 8b|0 1|   Rsvd 6b |Pge| Rsvd 6b   |  Src Reg ID bitmap 16b        |  Dst Immediate value 16b      | Base Addr Reg
+            | Instruction 8b|0 1|   Rsvd 6b |Pge| Rsvd 6b   |  Src Reg ID bitmap 16b        |  Dst Immediate address 16b    | Base Addr Reg
 
             * Store : [reg] = imm
             +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
@@ -247,14 +247,14 @@ typedef union _opcode_u_
                 {
                     uint8_t reg_bitmap_page_2b;     // use only 2b [00:0~15, 01:16~31, 10:32~47, 11:48~63]
                     uint16_t reg_bitmap;
-                    uint16_t imm_val;
+                    uint16_t imm_addr;
                     uint8_t base_reg_id;
                 } __attribute__((aligned(1),packed)) imm_reg_bmp;  // Store : [[base_reg_id] + imm ...] = reg0 ... regN | Load  : reg0 ... regN = [[base_reg_id] + imm ...]
 
                 struct
                 {
-                    uint16_t imm_val0;
-                    uint16_t imm_val1;
+                    uint16_t imm_addr;
+                    uint16_t imm_val;
                     uint8_t base_reg_id;
                     uint8_t rsvd;
                 } __attribute__((aligned(1),packed)) imm_imm;  // Store : [imm] = imm
