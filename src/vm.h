@@ -281,8 +281,8 @@ typedef union _opcode_u_
 #define SIMPLE_TYPE_IMM     (1)
 
 #define MEMORY_TYPE_REG_REG     (0)
-#define MEMORY_TYPE_REG_IMM     (1)
-#define MEMORY_TYPE_IMM_REG     (2)
+#define MEMORY_TYPE_IMM_REG     (1)
+#define MEMORY_TYPE_REG_IMM     (2)
 #define MEMORY_TYPE_IMM_IMM     (3)
 
 #define REG_PAGE_32_0           (0)

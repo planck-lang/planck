@@ -117,7 +117,7 @@ static Exe_result_e_t _exe_memory_inst(Opcode_u_t opcode)
 {
     if (Inst_Str == opcode.instruction)
     {
-        // reg bitmap to [reg]
+        // [reg] = reg bitmap
         if (MEMORY_TYPE_REG_REG == opcode.bytes.memory_type.param_type)
         {
             uint8_t reg_page = opcode.bytes.memory_type.param.reg_reg_bmp.reg_bitmap_page_1b;
@@ -141,8 +141,8 @@ static Exe_result_e_t _exe_memory_inst(Opcode_u_t opcode)
                 return Exe_Inst_Abort;
             }
         }
-        // reg bitmap to [imm]
-        if (MEMORY_TYPE_REG_IMM == opcode.bytes.memory_type.param_type)
+        // [imm] = reg bitmap
+        if (MEMORY_TYPE_IMM_REG == opcode.bytes.memory_type.param_type)
         {
             uint8_t reg_page = opcode.bytes.memory_type.param.imm_reg_bmp.reg_bitmap_page_2b;
             if (REG_PAGE_16_0 == reg_page || REG_PAGE_16_1 == reg_page || REG_PAGE_16_2 == reg_page || REG_PAGE_16_3 == reg_page)
@@ -167,7 +167,11 @@ static Exe_result_e_t _exe_memory_inst(Opcode_u_t opcode)
             }
         }
 
-        // imm to [reg]
+        // [reg] = imm
+        if (MEMORY_TYPE_REG_IMM == opcode.bytes.memory_type.param_type)
+        {
+
+        }
 
         // imm to [imm]
     }

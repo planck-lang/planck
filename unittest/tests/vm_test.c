@@ -156,7 +156,7 @@ TESTCASE(5, "str test")
 {
     Opcode_u_t str_op = {.instruction = Inst_Str};
 
-    // reg bitmap to [reg] , page 0 (reg0 ~ reg31)
+    // [reg] = reg bitmap, page 0 (reg0 ~ reg31)
     g_Regs.r[5] = 0x55;
     g_Regs.r[9] = 0x99;
     g_Regs.r[13] = 0xdd;
@@ -191,7 +191,7 @@ TESTCASE(5, "str test")
     str_op.u64 = 0;
     str_op.instruction = Inst_Str;
 
-    // reg bitmap to [reg] , page 1 (reg32 ~ reg63)
+    // [reg] = reg bitmap, page 1 (reg32 ~ reg63)
     g_Regs.r[32] = 0x3322;
     g_Regs.r[43] = 0x4433;
     g_Regs.r[57] = 0x5577;
@@ -226,14 +226,14 @@ TESTCASE(5, "str test")
     str_op.u64 = 0;
     str_op.instruction = Inst_Str;
 
-    // reg bitmap to [imm] , page 0 (reg0 ~ reg15)
+    // [imm] = reg bitmap, page 0 (reg0 ~ reg15)
     g_Regs.r[5] = 0x55aa;
     g_Regs.r[9] = 0x99cd;
     g_Regs.r[13] = 0xdd8498;
 
     g_Regs.r[17] = (uint64_t)(g_Mem.data.mem + 0x60);
 
-    str_op.bytes.memory_type.param_type = MEMORY_TYPE_REG_IMM;
+    str_op.bytes.memory_type.param_type = MEMORY_TYPE_IMM_REG;
     str_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap_page_2b = REG_PAGE_16_0;
     str_op.bytes.memory_type.param.imm_reg_bmp.base_reg_id = 17;
     str_op.bytes.memory_type.param.imm_reg_bmp.imm_val = 0x230;
@@ -256,14 +256,14 @@ TESTCASE(5, "str test")
     str_op.u64 = 0;
     str_op.instruction = Inst_Str;
     
-    // reg bitmap to [imm] , page 1 (reg16 ~ reg31)
+    // [imm] = reg bitmap, page 1 (reg16 ~ reg31)
     g_Regs.r[17] = 0xaabb;
     g_Regs.r[28] = 0xcdef;
     g_Regs.r[30] = 0x8498dd;
 
     g_Regs.r[12] = (uint64_t)(g_Mem.data.mem + 0x70);
 
-    str_op.bytes.memory_type.param_type = MEMORY_TYPE_REG_IMM;
+    str_op.bytes.memory_type.param_type = MEMORY_TYPE_IMM_REG;
     str_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap_page_2b = REG_PAGE_16_1;
     str_op.bytes.memory_type.param.imm_reg_bmp.base_reg_id = 12;
     str_op.bytes.memory_type.param.imm_reg_bmp.imm_val = 0x130;
@@ -286,14 +286,14 @@ TESTCASE(5, "str test")
     str_op.u64 = 0;
     str_op.instruction = Inst_Str;
 
-    // reg bitmap to [imm] , page 2 (reg32 ~ reg47)
+    // [imm] = reg bitmap, page 2 (reg32 ~ reg47)
     g_Regs.r[33] = 0xddaabb;
     g_Regs.r[42] = 0x32cdef;
     g_Regs.r[47] = 0x98dd03;
 
     g_Regs.r[29] = (uint64_t)(g_Mem.data.mem + 0x80);
 
-    str_op.bytes.memory_type.param_type = MEMORY_TYPE_REG_IMM;
+    str_op.bytes.memory_type.param_type = MEMORY_TYPE_IMM_REG;
     str_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap_page_2b = REG_PAGE_16_2;
     str_op.bytes.memory_type.param.imm_reg_bmp.base_reg_id = 29;
     str_op.bytes.memory_type.param.imm_reg_bmp.imm_val = 0x90;
@@ -316,14 +316,14 @@ TESTCASE(5, "str test")
     str_op.u64 = 0;
     str_op.instruction = Inst_Str;
 
-    // reg bitmap to [imm] , page 3 (reg48 ~ reg63)
+    // [imm] = reg bitmap, page 3 (reg48 ~ reg63)
     g_Regs.r[48] = 0x32ddaa;
     g_Regs.r[50] = 0xcd93ef;
     g_Regs.r[60] = 0x98cd03;
 
     g_Regs.r[45] = (uint64_t)(g_Mem.data.mem + 0x10);
 
-    str_op.bytes.memory_type.param_type = MEMORY_TYPE_REG_IMM;
+    str_op.bytes.memory_type.param_type = MEMORY_TYPE_IMM_REG;
     str_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap_page_2b = REG_PAGE_16_3;
     str_op.bytes.memory_type.param.imm_reg_bmp.base_reg_id = 45;
     str_op.bytes.memory_type.param.imm_reg_bmp.imm_val = 0x490;
