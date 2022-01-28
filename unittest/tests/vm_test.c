@@ -361,7 +361,25 @@ TESTCASE(5, "str test")
 
     ASSERT_EQ_UINT(0xc0ffee, *(uint64_t*)(g_Mem.data.mem + 0x410));
 
-    // imm to [imm]
+    // reset
+    str_op.u64 = 0;
+    str_op.instruction = Inst_Str;
+
+    // [imm] = imm
+    g_Regs.r[4] = (uint64_t)(g_Mem.data.mem + 0x400);
+
+    str_op.bytes.memory_type.param_type = MEMORY_TYPE_IMM_IMM;
+    str_op.bytes.memory_type.param.imm_imm.base_reg_id = 4;
+    str_op.bytes.memory_type.param.imm_imm.imm_addr = 0x24;
+    str_op.bytes.memory_type.param.imm_imm.imm_val = 0x0516;
+
+    *(uint64_t*)g_Regs.pc = str_op.u64;
+
+    op_bin = vm_fetch();
+    opcode = vm_decode(op_bin);
+    vm_execute(opcode);
+
+    ASSERT_EQ_UINT(0x0516, *(uint64_t*)(g_Mem.data.mem + 0x424));
 }
 
 
