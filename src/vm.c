@@ -25,44 +25,77 @@ static void _assign_more_mem(Virtual_mem_s_t *vmem)
     vmem->mem = (uint8_t*)realloc(vmem->mem, vmem->size_byte);
 }
 
+static uint32_t _get_lsb_bitmap_and_clear(uint32_t *bitmap)
+{
+    uint32_t max_bitmap = 32;
+
+    for (uint32_t cnt = 0; cnt < max_bitmap ; cnt++)
+    {
+        if ((*bitmap >> cnt) & 1)
+        {
+            *bitmap &= ~(1<<cnt);   // clear bit
+            return cnt;             // lsb offset (zero base)
+        }
+    }
+    VM_ASSERT(0x220128, "Bitmap should not be zero");
+    return max_bitmap;
+}
+
+static uint32_t _get_msb_bitmap_and_clear(uint32_t *bitmap)
+{
+    for (uint32_t cnt = 31; cnt >= 0 ; cnt--)
+    {
+        if ((*bitmap >> cnt) & 1)
+        {
+            *bitmap &= ~(1<<cnt);   // clear bit
+            return cnt;             // msb offset (zero base)
+        }
+    }
+    VM_ASSERT(0x22012802, "Bitmap should not be zero");
+    return 32;
+}
+
+#define REG_ID_REG_BMP_LSB      0
+#define REG_ID_REG_BMP_MSB      1
+static uint32_t _get_reg_id_from_reg_bitmap(uint32_t *bitmap, uint32_t reg_page, uint32_t reg_page_granularity, uint32_t from)
+{
+    uint32_t reg_idx = 0;
+    
+    if (REG_ID_REG_BMP_LSB == from)
+    {
+        reg_idx = _get_lsb_bitmap_and_clear(bitmap);
+    }
+    else if (REG_ID_REG_BMP_MSB == from)
+    {
+        reg_idx = _get_msb_bitmap_and_clear(bitmap);
+    }
+    else
+    {
+        VM_ASSERT(0x22012802, "Invalid LSB, MSB flag");
+    }
+
+    return (reg_idx + (reg_page * reg_page_granularity));
+}
+
 static Exe_result_e_t _exe_stack_inst(Opcode_u_t opcode)
 {
     uint32_t bitmap = opcode.bytes.stack_type.reg_bitmap;
-    uint32_t reg_num = (Inst_Push == opcode.instruction) ? 0 : 31;
-    uint32_t mask = (Inst_Push == opcode.instruction) ? 1 : (1 << 31);
 
-    while (bitmap)
+    while (0 != bitmap)
     {
-        if (bitmap & mask)
-        {
-            if (Inst_Push == opcode.instruction)
-            {
-                uint64_t src = g_Regs.r[reg_num];
-                *(uint64_t*)g_Regs.sp = src;
-                INC_SP(1);
-            }
-            else if (Inst_Pop == opcode.instruction)
-            {
-                DEC_SP(1);
-                uint64_t src = *(uint64_t*)g_Regs.sp;
-                g_Regs.r[reg_num] = src;
-            }
-            else
-            {
-                VM_ASSERT(0x3376, "unexpected instruction, must be push, pop");
-                return Exe_Inst_Abort;
-            }
-        }
-
         if (Inst_Push == opcode.instruction)
         {
-            bitmap = bitmap >> 1;
-            reg_num++;
+            uint32_t reg_idx = _get_reg_id_from_reg_bitmap(&bitmap, 0, 32, REG_ID_REG_BMP_LSB);
+            uint64_t src = g_Regs.r[reg_idx];
+            *(uint64_t*)g_Regs.sp = src;
+            INC_SP(1);
         }
         else if (Inst_Pop == opcode.instruction)
         {
-            bitmap = bitmap << 1;
-            reg_num--;
+            DEC_SP(1);
+            uint64_t src = *(uint64_t*)g_Regs.sp;
+            uint32_t reg_idx = _get_reg_id_from_reg_bitmap(&bitmap, 0, 32, REG_ID_REG_BMP_MSB);
+            g_Regs.r[reg_idx] = src;
         }
         else
         {
@@ -98,22 +131,6 @@ static Exe_result_e_t _exe_mov_inst(Opcode_u_t opcode)
     return Exe_Done;
 }
 
-static uint32_t _get_lsb_bitmap_and_clear(uint32_t *bitmap)
-{
-    uint32_t max_bitmap = 32;
-
-    for (uint32_t cnt = 0; cnt < max_bitmap ; cnt++)
-    {
-        if ((*bitmap >> cnt) & 1)
-        {
-            *bitmap &= ~(1<<cnt);   // clear bit
-            return cnt;             // lsb offset (zero base)
-        }
-    }
-    VM_ASSERT(0x220128, "Bitmap should not be zero");
-    return max_bitmap;
-}
-
 static Exe_result_e_t _exe_memory_inst(Opcode_u_t opcode)
 {
     if (Inst_Str == opcode.instruction)
@@ -130,8 +147,7 @@ static Exe_result_e_t _exe_memory_inst(Opcode_u_t opcode)
 
                 while (0 != bitmap)
                 {
-                    uint32_t reg_idx = _get_lsb_bitmap_and_clear(&bitmap);
-                    reg_idx += (reg_page * 32);
+                    uint32_t reg_idx = _get_reg_id_from_reg_bitmap(&bitmap, reg_page, 32, REG_ID_REG_BMP_LSB);
                     *dst_mem = g_Regs.r[reg_idx];
                     dst_mem++;
                 }
@@ -155,8 +171,7 @@ static Exe_result_e_t _exe_memory_inst(Opcode_u_t opcode)
 
                 while (0 != bitmap)
                 {
-                    uint32_t reg_idx = _get_lsb_bitmap_and_clear(&bitmap);
-                    reg_idx += (reg_page * 16);
+                    uint32_t reg_idx = _get_reg_id_from_reg_bitmap(&bitmap, reg_page, 16, REG_ID_REG_BMP_LSB);
                     *dst_mem = g_Regs.r[reg_idx];
                     dst_mem++;
                 }
