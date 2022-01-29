@@ -110,6 +110,7 @@ static uint32_t _get_lsb_bitmap_and_clear(uint32_t *bitmap)
             return cnt;             // lsb offset (zero base)
         }
     }
+    VM_ASSERT(0x220128, "Bitmap should not be zero");
     return max_bitmap;
 }
 
@@ -118,7 +119,7 @@ static Exe_result_e_t _exe_memory_inst(Opcode_u_t opcode)
     if (Inst_Str == opcode.instruction)
     {
         // [reg] = reg bitmap
-        if (MEMORY_TYPE_REG_REG == opcode.bytes.memory_type.param_type)
+        if (MEMORY_TYPE_STR_REG_REG == opcode.bytes.memory_type.param_type)
         {
             uint8_t reg_page = opcode.bytes.memory_type.param.reg_reg_bmp.reg_bitmap_page_1b;
             if (REG_PAGE_32_0 == reg_page || REG_PAGE_32_1 == reg_page)
@@ -142,7 +143,7 @@ static Exe_result_e_t _exe_memory_inst(Opcode_u_t opcode)
             }
         }
         // [imm] = reg bitmap
-        if (MEMORY_TYPE_IMM_REG == opcode.bytes.memory_type.param_type)
+        if (MEMORY_TYPE_STR_IMM_REG == opcode.bytes.memory_type.param_type)
         {
             uint8_t reg_page = opcode.bytes.memory_type.param.imm_reg_bmp.reg_bitmap_page_2b;
             if (REG_PAGE_16_0 == reg_page || REG_PAGE_16_1 == reg_page || REG_PAGE_16_2 == reg_page || REG_PAGE_16_3 == reg_page)
@@ -168,7 +169,7 @@ static Exe_result_e_t _exe_memory_inst(Opcode_u_t opcode)
         }
 
         // [reg] = imm
-        if (MEMORY_TYPE_REG_IMM == opcode.bytes.memory_type.param_type)
+        if (MEMORY_TYPE_STR_REG_IMM == opcode.bytes.memory_type.param_type)
         {
             uint32_t dst_reg_idx = opcode.bytes.memory_type.param.reg_imm.reg_id;
             uint32_t src_value = opcode.bytes.memory_type.param.reg_imm.imm_val;
@@ -177,8 +178,8 @@ static Exe_result_e_t _exe_memory_inst(Opcode_u_t opcode)
             *dst_mem = src_value;
         }
 
-        // imm to [imm]
-        if (MEMORY_TYPE_IMM_IMM == opcode.bytes.memory_type.param_type)
+        // [imm] = imm
+        if (MEMORY_TYPE_STR_IMM_IMM == opcode.bytes.memory_type.param_type)
         {
             uint32_t base_reg_idx = opcode.bytes.memory_type.param.imm_imm.base_reg_id;
             uint32_t imm_addr = opcode.bytes.memory_type.param.imm_imm.imm_addr;
@@ -190,7 +191,9 @@ static Exe_result_e_t _exe_memory_inst(Opcode_u_t opcode)
     }
     else if (Inst_Ldr == opcode.instruction)
     {
+        // reg .... reg = [reg...]
 
+        // reg .... reg = [imm...]
             
     }
     else

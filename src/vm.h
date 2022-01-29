@@ -216,7 +216,7 @@ typedef union _opcode_u_
 
             * Load  : reg0 ... regN = [reg ...]
             +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
-            | Instruction 8b|0 0|   Rsvd 6b | Src Reg ID 8b|P| Rsvd 7b     |    Dst Reg ID bitmap 32b
+            | Instruction 8b|0 0|   Rsvd 6b | Src Reg ID 8b |P| Rsvd 7b     |    Dst Reg ID bitmap 32b
 
             * Load  : reg0 ... regN = [imm ...]
             +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
@@ -280,10 +280,13 @@ typedef union _opcode_u_
 #define SIMPLE_TYPE_REG     (0)
 #define SIMPLE_TYPE_IMM     (1)
 
-#define MEMORY_TYPE_REG_REG     (0)
-#define MEMORY_TYPE_IMM_REG     (1)
-#define MEMORY_TYPE_REG_IMM     (2)
-#define MEMORY_TYPE_IMM_IMM     (3)
+#define MEMORY_TYPE_STR_REG_REG     (0)
+#define MEMORY_TYPE_STR_IMM_REG     (1)
+#define MEMORY_TYPE_STR_REG_IMM     (2)
+#define MEMORY_TYPE_STR_IMM_IMM     (3)
+
+#define MEMORY_TYPE_LDR_REG_REG     (0)
+#define MEMORY_TYPE_LDR_REG_IMM     (1)
 
 #define REG_PAGE_32_0           (0)
 #define REG_PAGE_32_1           (1)
