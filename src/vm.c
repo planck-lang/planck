@@ -80,12 +80,13 @@ static uint32_t _get_reg_id_from_reg_bitmap(uint32_t *bitmap, uint32_t reg_page,
 static Exe_result_e_t _exe_stack_inst(Opcode_u_t opcode)
 {
     uint32_t bitmap = opcode.bytes.stack_type.reg_bitmap;
+    uint8_t reg_page = opcode.bytes.stack_type.reg_bitmap_page_1b;
 
     while (0 != bitmap)
     {
         if (Inst_Push == opcode.instruction)
         {
-            uint32_t reg_idx = _get_reg_id_from_reg_bitmap(&bitmap, 0, 32, REG_ID_REG_BMP_LSB);
+            uint32_t reg_idx = _get_reg_id_from_reg_bitmap(&bitmap, reg_page, 32, REG_ID_REG_BMP_LSB);
             uint64_t src = g_Regs.r[reg_idx];
             *(uint64_t*)g_Regs.sp = src;
             INC_SP(1);
@@ -94,7 +95,7 @@ static Exe_result_e_t _exe_stack_inst(Opcode_u_t opcode)
         {
             DEC_SP(1);
             uint64_t src = *(uint64_t*)g_Regs.sp;
-            uint32_t reg_idx = _get_reg_id_from_reg_bitmap(&bitmap, 0, 32, REG_ID_REG_BMP_MSB);
+            uint32_t reg_idx = _get_reg_id_from_reg_bitmap(&bitmap, reg_page, 32, REG_ID_REG_BMP_MSB);
             g_Regs.r[reg_idx] = src;
         }
         else
