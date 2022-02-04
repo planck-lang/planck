@@ -296,6 +296,11 @@ typedef union _opcode_u_
 #define REG_PAGE_16_2           (2)
 #define REG_PAGE_16_3           (3)
 
+#define JUMP_TYPE_REG_BASED_PC_REL      (0)
+#define JUMP_TYPE_IMM_PC_REL            (1)
+#define JUMP_TYPE_REG_BASED             (2)
+#define JUMP_TYPE_IMM                   (3)
+
 typedef union _status_reg_u_
 {
     uint64_t u64;
