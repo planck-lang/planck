@@ -441,10 +441,162 @@ TESTCASE(6, "ldr test")
     Opcode_u_t ldr_op = {.instruction = Inst_Ldr};
 
     // reg .... reg = [reg...], page 0 (reg0 ~ reg31)
+    g_Regs.r[41] = (uint64_t)(g_Mem.data.mem + 0x30);       // This address are used by the privious STR unittest
+
+    ldr_op.bytes.memory_type.param_type = MEMORY_TYPE_LDR_REG_REG;
+    ldr_op.bytes.memory_type.param.reg_reg_bmp.reg_id = 41;
+    ldr_op.bytes.memory_type.param.reg_reg_bmp.reg_bitmap_page_1b = REG_PAGE_32_0;
+    ldr_op.bytes.memory_type.param.reg_reg_bmp.reg_bitmap = 0;
+    ldr_op.bytes.memory_type.param.reg_reg_bmp.reg_bitmap |= (1 << 3);
+    ldr_op.bytes.memory_type.param.reg_reg_bmp.reg_bitmap |= (1 << 17);
+    ldr_op.bytes.memory_type.param.reg_reg_bmp.reg_bitmap |= (1 << 23);
+    ldr_op.bytes.memory_type.param.reg_reg_bmp.reg_bitmap |= (1 << 28);
+    ldr_op.bytes.memory_type.param.reg_reg_bmp.reg_bitmap |= (1 << 30);
+
+    *(uint64_t*)g_Regs.pc = ldr_op.u64;
+
+    uint64_t op_bin = vm_fetch();
+    Opcode_u_t opcode = vm_decode(op_bin);
+    vm_execute(opcode);
+
+    ASSERT_EQ_UINT(0x3322, g_Regs.r[3]);
+    ASSERT_EQ_UINT(0x4433, g_Regs.r[17]);
+    ASSERT_EQ_UINT(0x5577, g_Regs.r[23]);
+    ASSERT_EQ_UINT(0x66ee, g_Regs.r[28]);
+    ASSERT_EQ_UINT(0x33dd, g_Regs.r[30]);
+
+    // reset
+    ldr_op.u64 = 0;
+    ldr_op.instruction = Inst_Ldr;
+
     // reg .... reg = [reg...], page 1 (reg32 ~ reg63)
+    g_Regs.r[18] = (uint64_t)(g_Mem.data.mem + 0x8);       // This address are used by the privious STR unittest
 
+    ldr_op.bytes.memory_type.param_type = MEMORY_TYPE_LDR_REG_REG;
+    ldr_op.bytes.memory_type.param.reg_reg_bmp.reg_id = 18;
+    ldr_op.bytes.memory_type.param.reg_reg_bmp.reg_bitmap_page_1b = REG_PAGE_32_1;
+    ldr_op.bytes.memory_type.param.reg_reg_bmp.reg_bitmap = 0;
+    ldr_op.bytes.memory_type.param.reg_reg_bmp.reg_bitmap |= (1 << (32 - 32));
+    ldr_op.bytes.memory_type.param.reg_reg_bmp.reg_bitmap |= (1 << (40 - 32));
+    ldr_op.bytes.memory_type.param.reg_reg_bmp.reg_bitmap |= (1 << (45 - 32));
+    ldr_op.bytes.memory_type.param.reg_reg_bmp.reg_bitmap |= (1 << (49 - 32));
+    ldr_op.bytes.memory_type.param.reg_reg_bmp.reg_bitmap |= (1 << (58 - 32));
 
-    // reg .... reg = [imm...]
+    *(uint64_t*)g_Regs.pc = ldr_op.u64;
+
+    op_bin = vm_fetch();
+    opcode = vm_decode(op_bin);
+    vm_execute(opcode);
+
+    ASSERT_EQ_UINT(0x55, g_Regs.r[32]);
+    ASSERT_EQ_UINT(0x99, g_Regs.r[40]);
+    ASSERT_EQ_UINT(0xdd, g_Regs.r[45]);
+    ASSERT_EQ_UINT(0x16, g_Regs.r[49]);
+    ASSERT_EQ_UINT(0x1e, g_Regs.r[58]);
+
+    // reset
+    ldr_op.u64 = 0;
+    ldr_op.instruction = Inst_Ldr;
+
+    // reg .... reg = [imm...], page 0 (reg0 ~ reg15)
+    g_Regs.r[45] = (uint64_t)(g_Mem.data.mem + 0x10);       // This address are used by the privious STR unittest
+
+    ldr_op.bytes.memory_type.param_type = MEMORY_TYPE_LDR_REG_IMM;
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap_page_2b = REG_PAGE_16_0;
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.base_reg_id = 45;
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.imm_addr = 0x490;
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap = 0;
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap |= (1 << 6);
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap |= (1 << 10);
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap |= (1 << 14);
+
+    *(uint64_t*)g_Regs.pc = ldr_op.u64;
+
+    op_bin = vm_fetch();
+    opcode = vm_decode(op_bin);
+    vm_execute(opcode);
+
+    ASSERT_EQ_UINT(0x32ddaa, g_Regs.r[6]);
+    ASSERT_EQ_UINT(0xcd93ef, g_Regs.r[10]);
+    ASSERT_EQ_UINT(0x98cd03, g_Regs.r[14]);
+
+    // reset
+    ldr_op.u64 = 0;
+    ldr_op.instruction = Inst_Ldr;
+
+    // reg .... reg = [imm...], page 1 (reg16 ~ reg31)
+    g_Regs.r[37] = (uint64_t)(g_Mem.data.mem + 0x60);       // This address are used by the privious STR unittest
+
+    ldr_op.bytes.memory_type.param_type = MEMORY_TYPE_LDR_REG_IMM;
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap_page_2b = REG_PAGE_16_1;
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.base_reg_id = 37;
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.imm_addr = 0x230;
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap = 0;
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap |= (1 << (25 - 16));
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap |= (1 << (19 - 16));
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap |= (1 << (23 - 16));
+
+    *(uint64_t*)g_Regs.pc = ldr_op.u64;
+
+    op_bin = vm_fetch();
+    opcode = vm_decode(op_bin);
+    vm_execute(opcode);
+
+    ASSERT_EQ_UINT(0x55aa, g_Regs.r[19]);
+    ASSERT_EQ_UINT(0x99cd, g_Regs.r[23]);
+    ASSERT_EQ_UINT(0xdd8498, g_Regs.r[25]);
+
+    // reset
+    ldr_op.u64 = 0;
+    ldr_op.instruction = Inst_Ldr;
+
+    // reg .... reg = [imm...], page 2 (reg32 ~ reg47)
+    g_Regs.r[27] = (uint64_t)(g_Mem.data.mem + 0x70);       // This address are used by the privious STR unittest
+
+    ldr_op.bytes.memory_type.param_type = MEMORY_TYPE_LDR_REG_IMM;
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap_page_2b = REG_PAGE_16_2;
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.base_reg_id = 27;
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.imm_addr = 0x130;
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap = 0;
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap |= (1 << (37 - 32));
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap |= (1 << (33 - 32));
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap |= (1 << (40 - 32));
+
+    *(uint64_t*)g_Regs.pc = ldr_op.u64;
+
+    op_bin = vm_fetch();
+    opcode = vm_decode(op_bin);
+    vm_execute(opcode);
+
+    ASSERT_EQ_UINT(0xaabb, g_Regs.r[33]);
+    ASSERT_EQ_UINT(0xcdef, g_Regs.r[37]);
+    ASSERT_EQ_UINT(0x8498dd, g_Regs.r[40]);
+
+    // reset
+    ldr_op.u64 = 0;
+    ldr_op.instruction = Inst_Ldr;
+
+    // reg .... reg = [imm...], page 4 (reg48 ~ reg63)
+    g_Regs.r[29] = (uint64_t)(g_Mem.data.mem + 0x80);       // This address are used by the privious STR unittest
+
+    ldr_op.bytes.memory_type.param_type = MEMORY_TYPE_LDR_REG_IMM;
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap_page_2b = REG_PAGE_16_3;
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.base_reg_id = 29;
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.imm_addr = 0x90;
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap = 0;
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap |= (1 << (53 - 48));
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap |= (1 << (62 - 48));
+    ldr_op.bytes.memory_type.param.imm_reg_bmp.reg_bitmap |= (1 << (57 - 48));
+
+    *(uint64_t*)g_Regs.pc = ldr_op.u64;
+
+    op_bin = vm_fetch();
+    opcode = vm_decode(op_bin);
+    vm_execute(opcode);
+
+    ASSERT_EQ_UINT(0xddaabb, g_Regs.r[53]);
+    ASSERT_EQ_UINT(0x32cdef, g_Regs.r[57]);
+    ASSERT_EQ_UINT(0x98dd03, g_Regs.r[62]);
 }
 
 TESTCASE(300, "Opcode size")

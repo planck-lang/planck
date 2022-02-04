@@ -208,9 +208,52 @@ static Exe_result_e_t _exe_memory_inst(Opcode_u_t opcode)
     else if (Inst_Ldr == opcode.instruction)
     {
         // reg .... reg = [reg...]
+        if (MEMORY_TYPE_LDR_REG_REG == opcode.bytes.memory_type.param_type)
+        {
+            uint8_t reg_page = opcode.bytes.memory_type.param.reg_reg_bmp.reg_bitmap_page_1b;
+            if (REG_PAGE_32_0 == reg_page || REG_PAGE_32_1 == reg_page)
+            {
+                uint32_t bitmap = opcode.bytes.memory_type.param.reg_reg_bmp.reg_bitmap;
+                uint32_t src_reg_idx = opcode.bytes.memory_type.param.reg_reg_bmp.reg_id;
+                uint64_t *src_mem = (uint64_t*)g_Regs.r[src_reg_idx];
 
+                while (0 != bitmap)
+                {
+                    uint32_t reg_idx = _get_reg_id_from_reg_bitmap(&bitmap, reg_page, 32, REG_ID_REG_BMP_LSB);
+                    g_Regs.r[reg_idx] = *src_mem;
+                    src_mem++;
+                }
+            }
+            else
+            {
+                VM_ASSERT(0x22020300, "wrong REG page, must be 0 or 1 (1bit)");
+                return Exe_Inst_Abort;
+            }
+        }
         // reg .... reg = [imm...]
-            
+        if (MEMORY_TYPE_LDR_REG_IMM == opcode.bytes.memory_type.param_type)
+        {
+            uint8_t reg_page = opcode.bytes.memory_type.param.imm_reg_bmp.reg_bitmap_page_2b;
+            if (REG_PAGE_16_0 == reg_page || REG_PAGE_16_1 == reg_page || REG_PAGE_16_2 == reg_page || REG_PAGE_16_3 == reg_page)
+            {
+                uint32_t bitmap = opcode.bytes.memory_type.param.imm_reg_bmp.reg_bitmap;
+                uint32_t base_reg_idx = opcode.bytes.memory_type.param.imm_reg_bmp.base_reg_id;
+                uint32_t imm_addr = opcode.bytes.memory_type.param.imm_reg_bmp.imm_addr;
+                uint64_t* src_mem = (uint64_t*)(g_Regs.r[base_reg_idx] + imm_addr);
+
+                while (0 != bitmap)
+                {
+                    uint32_t reg_idx = _get_reg_id_from_reg_bitmap(&bitmap, reg_page, 16, REG_ID_REG_BMP_LSB);
+                    g_Regs.r[reg_idx] = *src_mem;
+                    src_mem++;
+                }
+            }
+            else
+            {
+                VM_ASSERT(0x22020301, "wrong REG page, must be one of 0,1,2,3 (2bits)");
+                return Exe_Inst_Abort;
+            }
+        }
     }
     else
     {
