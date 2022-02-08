@@ -599,6 +599,25 @@ TESTCASE(6, "ldr test")
     ASSERT_EQ_UINT(0x98dd03, g_Regs.r[62]);
 }
 
+TESTCASE(7, "jmp test")
+{
+    // Register based PC relative
+        // forward
+        // backward
+
+    // Immediated PC relative
+        // forward
+        // backward
+    
+    // Register based
+        // forward
+        // backward
+
+    // Immediated
+        // forward
+        // backward
+}
+
 TESTCASE(300, "Opcode size")
 {
     ASSERT_EQ_UINT(8, sizeof(Opcode_u_t));
