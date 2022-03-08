@@ -66,10 +66,10 @@ typedef enum _condition_e_
     Cond_None = 0,
     Cond_Eq   = 1,
     Cond_Neq  = 2,
-    Cond_gt   = 3,
-    Cond_lt   = 4,
-    Cond_get  = 5,
-    Cond_let  = 6,
+    Cond_Gt   = 3,
+    Cond_Lt   = 4,
+    Cond_Get  = 5,
+    Cond_Let  = 6,
 } Cond_e_t;
 
 typedef enum _exe_result_e_
@@ -160,25 +160,25 @@ typedef union _opcode_u_
        Jump type
             * Register based PC relative addressing
             +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
-            | Instruction 8b|0 0| Rsvd 6b   | Cnd | Rsvd 5b | Register ID 8b|              Reserved 32b 
+            | Instruction 8b|x 0 0| Rsvd 5b | Cnd | Rsvd 5b | Register ID 8b|              Reserved 32b 
 
             * Immediate PC relative addressing
             +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
-            | Instruction 8b|0 1| Rsvd 6b   | Cnd | Rsvd 5b |      Immediate value 32b                                      |  Reserved 8b
+            | Instruction 8b|x 0 1| Rsvd 5b | Cnd | Rsvd 5b |      Immediate value 32b                                      |  Reserved 8b
 
             * Register based addressing
             +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
-            | Instruction 8b|1 0| Rsvd 6b   | Cnd | Rsvd 5b | Register ID 8b|              Reserved 32b 
+            | Instruction 8b|x 1 0| Rsvd 5b | Cnd | Rsvd 5b | Register ID 8b|              Reserved 32b 
 
             * Immediate addressing
             +-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-*-+-+-+-+-+-+-+-+
-            | Instruction 8b|1 1| Rsvd 6b   | Cnd | Rsvd 5b |      Immediate value 32b                                      |  Reserved 8b
+            | Instruction 8b|x 1 1| Rsvd 5b | Cnd | Rsvd 5b |      Immediate value 32b                                      |  Reserved 8b
        */
         struct
         {
             uint8_t inst;
-            uint8_t param_type;   // upper 6b are reserved
-            uint8_t condition;  // upper 6b are reserved - Refer Cond_e_t
+            uint8_t param_type;   // upper 5b are reserved
+            uint8_t condition;  // upper 5b are reserved - Refer Cond_e_t
 
             union
             {
@@ -296,10 +296,14 @@ typedef union _opcode_u_
 #define REG_PAGE_16_2           (2)
 #define REG_PAGE_16_3           (3)
 
-#define JUMP_TYPE_REG_BASED_PC_REL      (0)
-#define JUMP_TYPE_IMM_PC_REL            (1)
-#define JUMP_TYPE_REG_BASED             (2)
-#define JUMP_TYPE_IMM                   (3)
+#define JUMP_TYPE_REG_BASED_PC_REL_F      (0)
+#define JUMP_TYPE_IMM_PC_REL_F            (1)
+#define JUMP_TYPE_REG_BASED_F             (2)
+#define JUMP_TYPE_IMM_F                   (3)
+#define JUMP_TYPE_REG_BASED_PC_REL_B      (4)
+#define JUMP_TYPE_IMM_PC_REL_B            (5)
+#define JUMP_TYPE_REG_BASED_B             (6)
+#define JUMP_TYPE_IMM_B                   (7)
 
 typedef union _status_reg_u_
 {

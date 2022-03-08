@@ -602,9 +602,34 @@ TESTCASE(6, "ldr test")
 TESTCASE(7, "jmp test")
 {
     Opcode_u_t jmp_op = {.instruction = Inst_Jmp};
+    uint64_t prior_pc = 0;
+    uint64_t op_bin = 0;
+    Opcode_u_t opcode = {0};
 
     // Register based PC relative
+    jmp_op.bytes.jump_type.param_type = JUMP_TYPE_REG_BASED_PC_REL_F;
         // forward
+            // Cond_None = 0,
+            prior_pc = g_Regs.pc;
+            jmp_op.bytes.jump_type.condition = (uint8_t)Cond_None;
+            g_Regs.r[22] = 0x7;
+            jmp_op.bytes.jump_type.param.reg_based.id = 22;
+
+            *(uint64_t*)g_Regs.pc = jmp_op.u64;
+
+            op_bin = vm_fetch();
+            opcode = vm_decode(op_bin);
+            vm_execute(opcode);
+
+            ASSERT_EQ_UINT((prior_pc + LEN_WORD * 0x7), g_Regs.pc);
+            
+            // Cond_Eq   = 1,
+            // Cond_Neq  = 2,
+            // Cond_gt   = 3,
+            // Cond_lt   = 4,
+            // Cond_get  = 5,
+            // Cond_let  = 6,
+
         // backward
 
     jmp_op.u64 = 0;
@@ -623,7 +648,7 @@ TESTCASE(7, "jmp test")
 
     jmp_op.u64 = 0;
     jmp_op.instruction = Inst_Jmp;
-    
+
     // Immediated
         // forward
         // backward

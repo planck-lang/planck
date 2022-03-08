@@ -263,6 +263,76 @@ static Exe_result_e_t _exe_memory_inst(Opcode_u_t opcode)
     return Exe_Done;
 }
 
+static Exe_result_e_t _exe_jump_inst(Opcode_u_t opcode)
+{
+    uint64_t jmp_words = 0;
+    uint64_t jmp_bytes = 0;
+    uint64_t target_pc = 0;
+
+    if (Inst_Jmp == opcode.bytes.jump_type.inst)
+    {
+        switch((Cond_e_t)opcode.bytes.jump_type.condition)
+        {
+            case Cond_None:
+            {
+                if (JUMP_TYPE_REG_BASED_PC_REL_F == opcode.bytes.jump_type.param_type || JUMP_TYPE_REG_BASED_PC_REL_B == opcode.bytes.jump_type.param_type)
+                {
+                    jmp_words = g_Regs.r[opcode.bytes.jump_type.param.reg_based.id];
+                    jmp_bytes = LEN_WORD * jmp_words;
+                    target_pc = (JUMP_TYPE_REG_BASED_PC_REL_F == opcode.bytes.jump_type.param_type)?
+                                            (g_Regs.pc + jmp_bytes):
+                                            (g_Regs.pc - jmp_bytes);
+                    // Adjustment target_pc because current PC is now increased an Word at the fetch step.
+                    target_pc -= LEN_WORD;
+                }
+                break;
+            }
+            case Cond_Eq:
+            {
+                break;
+            }
+            case Cond_Neq:
+            {
+              break;
+            }
+            case Cond_Gt:
+            {
+                break;
+            }
+            case Cond_Lt:
+            {
+                break;
+            }
+            case Cond_Get:
+            {
+                break;
+            }
+            case Cond_Let:
+            {
+                break;
+            }
+            default:
+            {
+                VM_ASSERT(0x2022030702, "unexpeced condition");
+            }
+        }
+    }
+    else if (Inst_Brn == opcode.bytes.jump_type.inst)
+    {
+
+    }
+    else
+    {
+        VM_ASSERT(0x2022030701, "unexpected instruction type, must be JMP or BRN");
+        return Exe_Inst_Abort;
+    }
+
+    // update PC
+    g_Regs.pc = target_pc;
+
+    return Exe_Done;
+}
+
 void vm_init(void)
 {
     _assign_more_mem(&g_Mem.data);
@@ -310,6 +380,7 @@ void vm_execute(Opcode_u_t opcode)
 
         case Inst_Jmp:
         case Inst_Brn:
+        ret = _exe_jump_inst(opcode);
         break;
 
         case Inst_Ret:
