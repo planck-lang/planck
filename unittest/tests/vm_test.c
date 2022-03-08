@@ -601,18 +601,29 @@ TESTCASE(6, "ldr test")
 
 TESTCASE(7, "jmp test")
 {
+    Opcode_u_t jmp_op = {.instruction = Inst_Jmp};
+
     // Register based PC relative
         // forward
         // backward
+
+    jmp_op.u64 = 0;
+    jmp_op.instruction = Inst_Jmp;
 
     // Immediated PC relative
         // forward
         // backward
     
+    jmp_op.u64 = 0;
+    jmp_op.instruction = Inst_Jmp;
+
     // Register based
         // forward
         // backward
 
+    jmp_op.u64 = 0;
+    jmp_op.instruction = Inst_Jmp;
+    
     // Immediated
         // forward
         // backward
